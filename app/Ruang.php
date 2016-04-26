@@ -22,4 +22,9 @@ class Ruang extends Model
     	 return $this->hasMany('App\Jenisruang', 'id', 'jenisruang_id');
     }
 
+    public function ipfingerprint()
+    {
+         return $this->hasOne('App\Ipfingerprint', 'ruang_id', 'id');
+    }
+
 }

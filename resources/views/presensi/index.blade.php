@@ -17,13 +17,13 @@
 							<table id="datatable1" class="table table-striped table-hover">
 						        <thead>
 						            <tr>
+						                <th>Hari id</th>
 						                <th>Semester</th>
 						                <th>Matakuliah</th>
 						                <th>Kelas</th>
 						                <th>Hari</th>
 						                <th>Ruang</th>
 						                <th>Waktu</th>
-						                <th>Rec Status</th>
 						                <th>Action</th>
 						            </tr>
 						        </thead>
@@ -40,16 +40,17 @@
 	{
 		$('#datatable1').DataTable({
 			"dom": 'lCfrtip',
-			"order": [[ 1, "asc" ]],
+			"iDisplayLength": 100, 
+			"order": [[ 0, "asc" ]],
 	        ajax: '{!! url('getDataJadwalDosen') !!}',
 	        columns: [
+	            { data: 'hari_id', visible: false },
 	            { data: 'semester'},
 	            { data: 'matakuliah_id'},
 	            { data: 'kelas'},
-	            { data: 'hari_id'},
+	            { data: 'hari_name'},
 	            { data: 'ruang_id'},
 	            { data: 'waktu'},
-	            { data: 'recstatus'},
 	            { data: 'action', name: 'action', orderable: false, searchable: false}
 	        ],
 			"language": {

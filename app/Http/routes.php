@@ -35,10 +35,24 @@ Route::group(['middleware' => 'web'], function () {
 	});
 
 
+	Route::post('studentvalidate', 'PresensiController@studentvalidate');
+
+
 	Route::get('presensi', 'PresensiController@index');
 	Route::get('getDataJadwalDosen', 'PresensiController@getDataJadwalDosen');
 	Route::get('presensi/{id}', 'PresensiController@validasi');
 	Route::get('getDataPresensiMahasiswa/{id}', 'PresensiController@getDataPresensiMahasiswa');
+
+	Route::get('reportDosen', 'ReportController@indexDosen');
+	Route::get('reportDosenData', 'ReportController@reportDosenData');
+
+	Route::get('reportMahasiswa', 'ReportController@indexMahasiswa');
+	Route::get('reportMahasiswaData', 'ReportController@reportMahasiswaData');
+
+
+	Route::get('reportAdmin', 'ReportController@indexAdmin');
+
+
 
 
 //-------------------------------------------------MASTERTABLE----------------------------------------------------//
@@ -68,25 +82,6 @@ Route::group(['middleware' => 'web'], function () {
 
 
 //----------------------------------------------ENDOFMASTERTABLE---------------------------------------------------//
-
-
-	Route::get('compare', function () {
-		$jmk = App\Kelasmk::select('waktu', 'matakuliah_id')->orderBy('id', 'desc')->first();
-		$collections = $jmk->matakuliah;
-		foreach($collections as $collection) {
-			$matakuliah = $collection->sks;
-		}
-
-	    $start = Carbon\Carbon::parse($jmk->waktu);
-	    $end = $start->addHours($matakuliah);
-	    $end = Carbon\Carbon::parse('21:00:00'); // test only
-
-        $result = App\Dami::select('datetime','id')->where('datetime', '>=', $start->toDateTimeString())->where('datetime', '<=', $end->toDateTimeString())->get();
-        return $result;
-
-	});
-
-
 
 	Route::get('practice', function () {
 	    return view('practice.xmltojson')->with('tests', '');

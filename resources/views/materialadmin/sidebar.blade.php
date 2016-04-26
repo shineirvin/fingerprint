@@ -118,6 +118,30 @@
 				</a>
 			</li>
 
+			@if ( Auth::user()->roles === 'Dosen' )
+			<li class="{!! set_active('reportDosen') !!}">
+				<a href="{!! url('reportDosen') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report</span>
+				</a>
+			</li>
+			@elseif ( Auth::user()->roles === 'Mahasiswa' )
+			<li class="{!! set_active('reportMahasiswa') !!}">
+				<a href="{!! url('reportMahasiswa') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report</span>
+				</a>
+			</li>
+			@elseif ( Auth::user()->roles === 'Admin' )
+			<li class="{!! set_active('reportAdmin') !!}">
+				<a href="{!! url('reportAdmin') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report</span>
+				</a>
+			</li>
+			@endif
+
+
 			<!-- BEGIN FORMS -->
 			<li class="gui-folder">
 				<a>
@@ -136,69 +160,6 @@
 			</li><!--end /menu-li -->
 			<!-- END FORMS -->
 
-			<!-- BEGIN PAGES -->
-			<li class="gui-folder">
-				<a>
-					<div class="gui-icon"><i class="md md-computer"></i></div>
-					<span class="title">Pages</span>
-				</a>
-				<!--start submenu -->
-				<ul>
-					<li class="gui-folder">
-						<a href="javascript:void(0);">
-							<span class="title">Contacts</span>
-						</a>
-						<!--start submenu -->
-						<ul>
-							<li><a href="materialadmin/html/pages/contacts/search.html" ><span class="title">Search</span></a></li>
-							<li><a href="materialadmin/html/pages/contacts/details.html" ><span class="title">Contact card</span></a></li>
-							<li><a href="materialadmin/html/pages/contacts/add.html" ><span class="title">Insert contact</span></a></li>
-						</ul><!--end /submenu -->
-					</li><!--end /menu-li -->
-					<li class="gui-folder">
-						<a href="javascript:void(0);">
-							<span class="title">Search</span>
-						</a>
-						<!--start submenu -->
-						<ul>
-							<li><a href="materialadmin/html/pages/search/results-text.html" ><span class="title">Results - Text</span></a></li>
-							<li><a href="materialadmin/html/pages/search/results-text-image.html" ><span class="title">Results - Text and Image</span></a></li>
-						</ul><!--end /submenu -->
-					</li><!--end /menu-li -->
-					<li class="gui-folder">
-						<a href="javascript:void(0);">
-							<span class="title">Blog</span>
-						</a>
-						<!--start submenu -->
-						<ul>
-							<li><a href="materialadmin/html/pages/blog/masonry.html" ><span class="title">Blog masonry</span></a></li>
-							<li><a href="materialadmin/html/pages/blog/list.html" ><span class="title">Blog list</span></a></li>
-							<li><a href="materialadmin/html/pages/blog/post.html" ><span class="title">Blog post</span></a></li>
-						</ul><!--end /submenu -->
-					</li><!--end /menu-li -->
-					<li class="gui-folder">
-						<a href="javascript:void(0);">
-							<span class="title">Error pages</span>
-						</a>
-						<!--start submenu -->
-						<ul>
-							<li><a href="materialadmin/html/pages/404.html" ><span class="title">404 page</span></a></li>
-							<li><a href="materialadmin/html/pages/500.html" ><span class="title">500 page</span></a></li>
-						</ul><!--end /submenu -->
-					</li><!--end /menu-li -->
-					<li><a href="materialadmin/html/pages/profile.html" ><span class="title">User profile<span class="badge style-accent">42</span></span></a></li>
-					<li><a href="materialadmin/html/pages/invoice.html" ><span class="title">Invoice</span></a></li>
-					<li><a href="materialadmin/html/pages/calendar.html" ><span class="title">Calendar</span></a></li>
-					<li><a href="materialadmin/html/pages/pricing.html" ><span class="title">Pricing</span></a></li>
-					<li><a href="materialadmin/html/pages/timeline.html" ><span class="title">Timeline</span></a></li>
-					<li><a href="materialadmin/html/pages/maps.html" ><span class="title">Maps</span></a></li>
-					<li><a href="materialadmin/html/pages/locked.html" ><span class="title">Lock screen</span></a></li>
-					<li><a href="materialadmin/html/pages/login.html" ><span class="title">Login</span></a></li>
-					<li><a href="materialadmin/html/pages/blank.html" ><span class="title">Blank page</span></a></li>
-				</ul><!--end /submenu -->
-			</li><!--end /menu-li -->
-			<!-- END FORMS -->
-
 			<!-- BEGIN CHARTS -->
 			<li>
 				<a href="{{ url('datatables') }}" >
@@ -208,57 +169,6 @@
 			</li><!--end /menu-li -->
 			<!-- END CHARTS -->
 
-			<!-- BEGIN LEVELS -->
-			<li class="gui-folder">
-				<a>
-					<div class="gui-icon"><i class="fa fa-folder-open fa-fw"></i></div>
-					<span class="title">Menu levels demo</span>
-				</a>
-				<!--start submenu -->
-				<ul>
-					<li><a href="#"><span class="title">Item 1</span></a></li>
-					<li><a href="#"><span class="title">Item 1</span></a></li>
-					<li class="gui-folder">
-						<a href="javascript:void(0);">
-							<span class="title">Open level 2</span>
-						</a>
-						<!--start submenu -->
-						<ul>
-							<li><a href="#"><span class="title">Item 2</span></a></li>
-							<li class="gui-folder">
-								<a href="javascript:void(0);">
-									<span class="title">Open level 3</span>
-								</a>
-								<!--start submenu -->
-								<ul>
-									<li><a href="#"><span class="title">Item 3</span></a></li>
-									<li><a href="#"><span class="title">Item 3</span></a></li>
-									<li class="gui-folder">
-										<a href="javascript:void(0);">
-											<span class="title">Open level 4</span>
-										</a>
-										<!--start submenu -->
-										<ul>
-											<li><a href="#"><span class="title">Item 4</span></a></li>
-											<li class="gui-folder">
-												<a href="javascript:void(0);">
-													<span class="title">Open level 5</span>
-												</a>
-												<!--start submenu -->
-												<ul>
-													<li><a href="#"><span class="title">Item 5</span></a></li>
-													<li><a href="#"><span class="title">Item 5</span></a></li>
-												</ul><!--end /submenu -->
-											</li><!--end /submenu-li -->
-										</ul><!--end /submenu -->
-									</li><!--end /submenu-li -->
-								</ul><!--end /submenu -->
-							</li><!--end /submenu-li -->
-						</ul><!--end /submenu -->
-					</li><!--end /submenu-li -->
-				</ul><!--end /submenu -->
-			</li><!--end /menu-li -->
-			<!-- END LEVELS -->
 
 		</ul><!--end .main-menu -->
 		<!-- END MAIN MENU -->

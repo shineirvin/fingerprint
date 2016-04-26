@@ -15,6 +15,7 @@ use App\Ruang;
 use App\Kelasmk;
 use App\Dami;
 use App\Hari;
+use App\Presensikelas;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -45,7 +46,7 @@ class PresensiController extends Controller
             ->editColumn('semester', function ($lecturerSchedules) {
                 return strtoupper($lecturerSchedules->semester);
             })
-            ->editColumn('hari_id', function ($lecturerSchedules) {
+            ->editColumn('hari_name', function ($lecturerSchedules) {
                 $hari = Hari::findOrFail($lecturerSchedules->hari_id);
                 return $hari->namahari;
             })
@@ -62,30 +63,55 @@ class PresensiController extends Controller
 
     public function getDataPresensiMahasiswa($id)
     {
-        $datas = Kelasmk::select('waktu', 'matakuliah_id')->where('id', $id)->get();
-        foreach($datas as $data) {
-            $collections = $data->matakuliah;
-            $time = $data->waktu;
-            foreach($collections as $collection) {
-                $matakuliah = $collection->sks;
-            }   
-        }
-        // select from external database where time >= start and <= end of lecture (based on sks)
-        $result = Dami::select('datetime','id')->where('datetime', '>=', Carbon::parse($time))->where('datetime', '<=', Carbon::parse($time)->addHours($matakuliah))->get();
-        
-        // $result = Dami::select('datetime','id')->where('datetime', '>=', "2016-03-21 06:46:32")->where('datetime', '<=', "2016-03-21 19:49:48")->get();
+        $presensikelas = Presensikelas::select('*')->where('NIM', '!=', '')->where('kelasmk_id', $id)->get();
 
-        return Datatables::of($result)
-            ->addColumn('action', function ($result) {
-                return '<a href="presensi/'.$result->id.'" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
+        return Datatables::of($presensikelas)
+            ->addColumn('action', function ($presensikelas) {
+                return '<a href="presensi/'.$presensikelas->id.'" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
+            })
+            ->addColumn('keterangan', function ($presensikelas) {
+                return '<input name="id[]" type="hidden" value="'. $presensikelas->id .'">
+                    <input name="datetime[]" type="hidden" value="'. $presensikelas->waktu .'">
+                        <span style="padding-right: 15%;"> 
+                            <label class="radio-inline radio-styled radio-success">
+                                <input name="'. $presensikelas->id .'" type="radio" value="'.$presensikelas->id.'1" '. ($presensikelas->keterangan == '1' ? 'checked' : '') .'>
+                                <span></span>
+                            </label>
+                        </span>                                     
+                        <span style="padding-right: 15%;">
+                            <label class="radio-inline radio-styled radio-success">
+                                <input name="'.$presensikelas->id.'" type="radio" value="'.$presensikelas->id.'2"  '. ($presensikelas->keterangan == '2' ? 'checked' : '') .'>
+                                <span></span>
+                            </label>
+                        </span>
+                        <span style="padding-right: 16%;">
+                            <label class="radio-inline radio-styled radio-success">
+                                <input name="'.$presensikelas->id.'" type="radio" value="'.$presensikelas->id.'3" '. ($presensikelas->keterangan == '3' ? 'checked' : '') .'>
+                                <span></span>
+                            </label>
+                        </span>
+                            <label class="radio-inline radio-styled radio-success">
+                                <input name="'.$presensikelas->id.'" type="radio" value="'.$presensikelas->id.'4" '. ($presensikelas->keterangan == '4' ? 'checked' : '') .'>
+                                <span></span>
+                            </label>';
             })
             ->make(true);   
     }
 
     public function validasi($id)
     {
-        $idjadwal = $id;        
-        return view('presensi.validasi', compact('idjadwal'));
+        return view('presensi.validasi', compact('id'));
+    }
+
+    public function studentvalidate(Request $request)
+    {
+        $id = $request->input('idpage');
+        foreach ($request['id'] as $id) {
+            $attendances = Presensikelas::findOrFail($id);
+            $attendances->keterangan = substr($request[$id], -1);
+            $attendances->save();
+        }
+        return redirect()->back()->with('id');
     }
 
 }
