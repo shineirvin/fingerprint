@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Presensikelas extends Model
+class Presensiasdos extends Model
 {
-	protected $table = 'presensikelas';
+	protected $table = 'presensiasdos';
 
 	public $timestamps = false;
 	
@@ -14,18 +14,18 @@ class Presensikelas extends Model
         'nim',
         'waktu',
         'keterangan',
-        'kelasmk_id',
+        'jadwal_kelas_id',
     	'pertemuan',
     ];
 
     /**
-     * Presensikelas belongs to Kelasmk.
+     * Presensidosen belongs to Jadwalkelas.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function Kelasmk()
+    public function Jadwalkelas()
     {
-        return $this->belongsTo('App\Kelasmk');
+        return $this->belongsTo('App\Jadwalkelas');
     }
 
 }

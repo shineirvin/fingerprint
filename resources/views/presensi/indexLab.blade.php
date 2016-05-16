@@ -41,7 +41,7 @@
 			"dom": 'lCfrtip',
 			"iDisplayLength": 100, 
 			"order": [[ 0, "asc" ]],
-	        ajax: '{!! url('getDataJadwalDosen') !!}',
+	        ajax: '{!! url('getDataJadwalDosenLab') !!}',
 	        columns: [
 	            { data: 'hari_id', visible: false },
 	            { data: 'semester'},

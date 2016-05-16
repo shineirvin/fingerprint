@@ -4,22 +4,21 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Presensikelas extends Model
+class Asistenkelas extends Model
 {
-	protected $table = 'presensikelas';
+	protected $table = 'asisten_kelas';
 
 	public $timestamps = false;
 	
     protected $fillable = [
+        'id_kelas',
         'nim',
-        'waktu',
-        'keterangan',
-        'kelasmk_id',
-    	'pertemuan',
+        'semester',
+        'recstatus',
     ];
 
     /**
-     * Presensikelas belongs to Kelasmk.
+     * Presensidosen belongs to Kelasmk.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

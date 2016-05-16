@@ -42,23 +42,6 @@
 			</li><!--end /menu-li -->
 			<!-- END UI -->
 
-
-			<!-- BEGIN EMAIL -->
-			<li class="gui-folder">
-				<a>
-					<div class="gui-icon"><i class="md md-email"></i></div>
-					<span class="title">Email</span>
-				</a>
-				<!--start submenu -->
-				<ul>
-					<li><a href="materialadmin/html/mail/inbox.html" ><span class="title">Inbox</span></a></li>
-					<li><a href="materialadmin/html/mail/compose.html" ><span class="title">Compose</span></a></li>
-					<li><a href="materialadmin/html/mail/reply.html" ><span class="title">Reply</span></a></li>
-					<li><a href="materialadmin/html/mail/message.html" ><span class="title">View message</span></a></li>
-				</ul><!--end /submenu -->
-			</li><!--end /menu-li -->
-			<!-- END EMAIL -->
-
 			<!-- BEGIN DASHBOARD -->
 			<li class="{!! set_active('practice') !!}">
 				<a href="{!! Url('practice/') !!}">
@@ -102,37 +85,74 @@
 			</li><!--end /menu-li -->
 			<!-- END UI -->
 
-			<!-- BEGIN TABLES -->
 			<li class="{!! set_active('datatables') !!}">
 				<a href="{!! url('datatables') !!}">
 					<div class="gui-icon"><i class="fa fa-table"></i></div>
 					<span class="title">Tables</span>
 				</a>
-			</li><!--end /menu-li -->
-			<!-- END TABLES -->
+			</li>
 
+		{!! Form::hidden($dosen_id = App\Jadwalkelas::where('dosen_id', Auth::user()->username)->get()) !!}
+        @foreach ($dosen_id as $dosen_nim)
+            @if (!$dosen_nim)
+                {!! Form::hidden($dosen_id = FALSE) !!}
+            @else
+                {!! Form::hidden($dosen_id = $dosen_nim->dosen_id) !!}
+            @endif
+        @endforeach
+
+		{!! Form::hidden($mahasiswa_id = App\Asistenkelas::where('nim', Auth::user()->username)->get()) !!}
+        @foreach ($mahasiswa_id as $mahasiswa_nim)
+            @if (!$mahasiswa_nim) 
+                {!! Form::hidden($mahasiswa_id = FALSE) !!}
+			@else
+                {!! Form::hidden($mahasiswa_id = $mahasiswa_nim->nim) !!}
+            @endif
+        @endforeach
+
+			@if (Auth::user()->roles === 'Dosen' )
 			<li class="{!! set_active('presensi') !!}">
 				<a href="{!! url('presensi') !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Presensi</span>
 				</a>
 			</li>
+			@endif
+			@if (Auth::user()->roles === 'Dosen' && Auth::user()->username == $dosen_id)
+			<li class="{!! set_active('presensilab') !!}">
+				<a href="{!! url('presensilab') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Presensi Lab</span>
+				</a>
+			</li>
+			@endif	
 
-			@if ( Auth::user()->roles === 'Dosen' )
+
+			@if (Auth::user()->roles === 'Dosen')
 			<li class="{!! set_active('reportDosen') !!}">
 				<a href="{!! url('reportDosen') !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report</span>
 				</a>
 			</li>
-			@elseif ( Auth::user()->roles === 'Mahasiswa' )
+
+			@endif
+			@if (Auth::user()->roles === 'Mahasiswa')
 			<li class="{!! set_active('reportMahasiswa') !!}">
 				<a href="{!! url('reportMahasiswa') !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report</span>
 				</a>
 			</li>
-			@elseif ( Auth::user()->roles === 'Admin' )
+			<li class="{!! set_active('reportMahasiswaLab') !!}">
+				<a href="{!! url('reportMahasiswaLab') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Lab</span>
+				</a>
+			</li>											
+
+			@endif
+			@if (Auth::user()->roles === 'Admin')
 			<li class="{!! set_active('reportAdmin') !!}">
 				<a href="{!! url('reportAdmin') !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
@@ -141,6 +161,22 @@
 			</li>
 			@endif
 
+			@if (Auth::user()->roles === 'Dosen' && Auth::user()->username == $dosen_id)
+			<li class="{!! set_active('reportDosenLab') !!}">
+				<a href="{!! url('reportDosenLab') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Lab</span>
+				</a>
+			</li>
+			@endif
+			@if (Auth::user()->roles === 'Mahasiswa' && Auth::user()->username == $mahasiswa_id)
+			<li class="{!! set_active('reportAsdos') !!}">
+				<a href="{!! url('reportAsdos') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Asdos</span>
+				</a>
+			</li>
+			@endif
 
 			<!-- BEGIN FORMS -->
 			<li class="gui-folder">

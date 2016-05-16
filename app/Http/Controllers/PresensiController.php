@@ -38,7 +38,7 @@ class PresensiController extends Controller
         $lecturerSchedules = Kelasmk::select('*')->where('dosen_id', Auth::user()->username)->get();
         return Datatables::of($lecturerSchedules)
             ->addColumn('action', function ($lecturerSchedules) {
-                return '<a href="presensi/'.$lecturerSchedules->id.'" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
+                return '<a href="presensi/'.$lecturerSchedules->id.'/0" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
             })
             ->editColumn('recstatus', function ($lecturerSchedules) {
                 return ($lecturerSchedules->recstatus == '1' ? 'Active' : 'Non Active');
@@ -61,13 +61,17 @@ class PresensiController extends Controller
             ->make(true);   
     }
 
-    public function getDataPresensiMahasiswa($id)
+    public function getDataPresensiMahasiswa($id, $encounter)
     {
-        $presensikelas = Presensikelas::select('*')->where('NIM', '!=', '')->where('kelasmk_id', $id)->get();
+        $presensikelas = Presensikelas::select('*')->where('kelasmk_id', $id)->where('pertemuan', $encounter)->get();
 
         return Datatables::of($presensikelas)
             ->addColumn('action', function ($presensikelas) {
                 return '<a href="presensi/'.$presensikelas->id.'" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
+            })
+            ->editColumn('name', function ($presensikelas) {
+                $nama = User::where('username', $presensikelas->nim)->first();
+                return $nama->name;
             })
             ->addColumn('keterangan', function ($presensikelas) {
                 return '<input name="id[]" type="hidden" value="'. $presensikelas->id .'">
@@ -98,9 +102,9 @@ class PresensiController extends Controller
             ->make(true);   
     }
 
-    public function validasi($id)
+    public function validasi($id, $encounter)
     {
-        return view('presensi.validasi', compact('id'));
+        return view('presensi.validasi', compact('id', 'encounter'));
     }
 
     public function studentvalidate(Request $request)

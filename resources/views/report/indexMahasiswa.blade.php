@@ -21,7 +21,7 @@
 						                <th rowspan="2" style="vertical-align: middle"> NAMA MATAKULIAH </th>
 						                <th rowspan="2" style="vertical-align: middle"> SKS </th>
 						                <th rowspan="2" style="vertical-align: middle"> KELAS </th>
-						                <th colspan="13" style="text-align: center"> MINGGU KE - </th>
+						                <th colspan="14" style="text-align: center"> PERTEMUAN KE - </th>
 						                <th rowspan="2" style="vertical-align: middle"> JML HADIR </th>
 
 
@@ -40,6 +40,7 @@
 						                <th> 11 </th>
 						                <th> 12 </th>
 						                <th> 13 </th>
+						                <th> 14 </th>
 
 						            </tr>
 						        </thead>
@@ -66,18 +67,19 @@
 	            { data: 'kelas'},
 	            { data: '1'},
 	            { data: '2'},
-	            { data: '2'},
-	            { data: '2'},
-	            { data: '2'},
-	            { data: '2'},
-	            { data: '2'},
-	            { data: '2'},
-	            { data: '2'},
-	            { data: '2'},
-	            { data: '2'},
-	            { data: '2'},
-	            { data: '2'},
-	            { data: '2'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: 'jml_hadir'},
 	        ],
 			"language": {
 				"lengthMenu": '_MENU_ entries per page',

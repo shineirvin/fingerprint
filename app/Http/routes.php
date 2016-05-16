@@ -10,13 +10,12 @@ Route::get('fingerprint', function () {
 
 Route::get('cobatarikdata', 'FingerprintController@cobatarikdata');
 Route::get('cobaupdatedata', 'FingerprintController@cobaupdatedata');
+Route::get('cleardata', 'FingerprintController@cleardata');
+
+Route::get('labfingerprint', 'FingerprintController@labfingerprint');
 
 Route::get('tarikdata', function () {
     return view('fingerprint.tarik-data');
-});
-
-Route::get('cleardata', function () {
-    return view('fingerprint.clear-data');
 });
 
 Route::get('uploadnama', function () {
@@ -27,7 +26,7 @@ Route::group(['middleware' => 'web'], function () {
 	Route::auth();
 
 	Route::get('/', ['middleware' => 'guest', function() {
-	    return view('auth.login');
+		return view('auth.login');
 	}]);
 
 	Route::get('register', function () {
@@ -40,8 +39,13 @@ Route::group(['middleware' => 'web'], function () {
 
 	Route::get('presensi', 'PresensiController@index');
 	Route::get('getDataJadwalDosen', 'PresensiController@getDataJadwalDosen');
-	Route::get('presensi/{id}', 'PresensiController@validasi');
-	Route::get('getDataPresensiMahasiswa/{id}', 'PresensiController@getDataPresensiMahasiswa');
+	Route::get('presensi/{id}/{encounter}', 'PresensiController@validasi');
+	Route::get('getDataPresensiMahasiswa/{id}/{encounter}', 'PresensiController@getDataPresensiMahasiswa');
+
+	Route::get('presensilab', 'PresensiLabController@index');
+	Route::get('getDataJadwalDosenLab', 'PresensiLabController@getDataJadwalDosen');
+	Route::get('presensilab/{id}/{encounter}', 'PresensiLabController@validasi');
+	Route::get('getDataPresensiMahasiswaLab/{id}/{encounter}', 'PresensiLabController@getDataPresensiMahasiswa');
 
 	Route::get('reportDosen', 'ReportController@indexDosen');
 	Route::get('reportDosenData', 'ReportController@reportDosenData');
@@ -49,8 +53,25 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('reportMahasiswa', 'ReportController@indexMahasiswa');
 	Route::get('reportMahasiswaData', 'ReportController@reportMahasiswaData');
 
-
 	Route::get('reportAdmin', 'ReportController@indexAdmin');
+	Route::get('reportAdminData', 'ReportController@reportAdminData');
+
+
+
+	Route::get('reportDosenLab', 'ReportLabController@indexDosen');
+	Route::get('reportDosenLabData', 'ReportLabController@reportDosenData');
+
+	Route::get('reportMahasiswaLab', 'ReportLabController@indexMahasiswa');
+	Route::get('reportMahasiswaLabData', 'ReportLabController@reportMahasiswaData');
+
+	Route::get('reportMahasiswaLab', 'ReportLabController@indexMahasiswa');
+	Route::get('reportMahasiswaLabData', 'ReportLabController@reportMahasiswaData');
+
+	Route::get('reportAsdos', 'ReportLabController@indexAsdos');
+	Route::get('reportAsdosData', 'ReportLabController@reportAsdosData');
+
+	Route::get('reportAdminLab', 'ReportLabController@indexAdmin');
+	Route::get('reportAdminLabData', 'ReportLabController@reportAdminData');
 
 
 

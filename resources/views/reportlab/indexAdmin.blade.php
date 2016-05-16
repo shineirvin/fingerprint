@@ -5,7 +5,7 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Rekap Kehadiran <b> {{ Auth::user()->name }} ( {{ Auth::user()->username }} ) </b> </h2> 
+				<h2 class="text-primary"> Rekap Kehadiran Dosen</b> </h2> 
 			</div>
 			@include('partials.flash')
 			<div class="section-body">
@@ -17,8 +17,10 @@
 							<table id="datatable1" class="table table-striped table-hover table-bordered">
 						        <thead>
 						            <tr>
+						                <th rowspan="2" style="vertical-align: middle"> NIK </th>
+						                <th rowspan="2" style="vertical-align: middle"> NAMA DOSEN </th>
 						                <th rowspan="2" style="vertical-align: middle"> KODE MK </th>
-						                <th rowspan="2" style="vertical-align: middle"> NAMA MATAKULIAH </th>
+						                <th rowspan="2" style="vertical-align: middle"> NAMA MK </th>
 						                <th rowspan="2" style="vertical-align: middle"> SKS </th>
 						                <th rowspan="2" style="vertical-align: middle"> KELAS </th>
 						                <th colspan="14" style="text-align: center"> PERTEMUAN KE - </th>
@@ -59,26 +61,28 @@
 			"dom": 'lCfrtip',
 			"iDisplayLength": 100, 
 			"order": [[ 0, "asc" ]],
-	        ajax: '{!! url('reportDosenData') !!}',
+	        ajax: '{!! url('reportAdminLabData') !!}',
 	        columns: [
+	            { data: 'dosen_id'},
+	            { data: 'nama_dosen'},
 	            { data: 'matakuliah_id'},
 	            { data: 'nama_matakuliah'},
 	            { data: 'sks'},
 	            { data: 'kelas'},
 	            { data: '1'},
 	            { data: '2'},
-	            { data: '3'},
-	            { data: '4'},
-	            { data: '5'},
-	            { data: '6'},
-	            { data: '7'},
-	            { data: '0'},
-	            { data: '0'},
-	            { data: '0'},
-	            { data: '0'},
-	            { data: '0'},
-	            { data: '0'},
-	            { data: '0'},
+	            { data: '2'},
+	            { data: '2'},
+	            { data: '2'},
+	            { data: '2'},
+	            { data: '2'},
+	            { data: '2'},
+	            { data: '2'},
+	            { data: '2'},
+	            { data: '2'},
+	            { data: '2'},
+	            { data: '2'},
+	            { data: '2'},
 	            { data: 'jml_hadir'},
 	        ],
 			"language": {

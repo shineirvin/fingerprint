@@ -83,7 +83,7 @@
 			"dom": 'lCfrtip',
 			"iDisplayLength": 100,
 			"order": [[ 1, "asc" ]],
-	        ajax: '{!! url('getDataPresensiMahasiswa/'.$id.'/'.$encounter) !!}',
+	        ajax: '{!! url('getDataPresensiMahasiswaLab/'.$id.'/'.$encounter) !!}',
 
 	        columns: [
 	            { data: 'nim'},
