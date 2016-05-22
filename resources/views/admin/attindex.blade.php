@@ -18,6 +18,7 @@
 						            <tr>
 						                <th>Hari id</th>
 						                <th>NIK</th>
+						                <th>Nama</th>
 						                <th>Matakuliah</th>
 						                <th>Kelas</th>
 						                <th>Hari</th>
@@ -41,10 +42,11 @@
 			"dom": 'lCfrtip',
 			"iDisplayLength": 100, 
 			"order": [[ 0, "asc" ]],
-	        ajax: '{!! url('getDataJadwalDosenLab') !!}',
+	        ajax: '{!! url('getDataJadwalDosenAll') !!}',
 	        columns: [
 	            { data: 'hari_id', visible: false },
 	            { data: 'dosen_id'},
+	            { data: 'name'},
 	            { data: 'matakuliah_id'},
 	            { data: 'kelas'},
 	            { data: 'hari_name'},

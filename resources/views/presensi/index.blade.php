@@ -17,7 +17,7 @@
 						        <thead>
 						            <tr>
 						                <th>Hari id</th>
-						                <th>Semester</th>
+						                <th>NIK</th>
 						                <th>Matakuliah</th>
 						                <th>Kelas</th>
 						                <th>Hari</th>
@@ -44,7 +44,7 @@
 	        ajax: '{!! url('getDataJadwalDosen') !!}',
 	        columns: [
 	            { data: 'hari_id', visible: false },
-	            { data: 'semester'},
+	            { data: 'dosen_id'},
 	            { data: 'matakuliah_id'},
 	            { data: 'kelas'},
 	            { data: 'hari_name'},

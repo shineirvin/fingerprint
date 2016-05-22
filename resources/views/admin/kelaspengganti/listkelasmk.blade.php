@@ -5,7 +5,7 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Jadwal Perkuliahan </h2> 
+				<h2 class="text-primary"> Jadwal Kelas Matakuliah </h2> 
 			</div>
 			@include('partials.flash')
 			<div class="section-body">
@@ -16,8 +16,9 @@
 							<table id="datatable1" class="table table-striped table-hover">
 						        <thead>
 						            <tr>
-						                <th>Hari id</th>
-						                <th>NIK</th>
+						                <th>Semester</th>
+						                <th>NIM</th>
+						                <th>Nama</th>
 						                <th>Matakuliah</th>
 						                <th>Kelas</th>
 						                <th>Hari</th>
@@ -41,10 +42,11 @@
 			"dom": 'lCfrtip',
 			"iDisplayLength": 100, 
 			"order": [[ 0, "asc" ]],
-	        ajax: '{!! url('getDataJadwalDosenLab') !!}',
+	        ajax: '{!! url('getDataListKelasmk') !!}',
 	        columns: [
-	            { data: 'hari_id', visible: false },
-	            { data: 'dosen_id'},
+	            { data: 'semester'},
+	            { data: 'nim'},
+	            { data: 'name'},
 	            { data: 'matakuliah_id'},
 	            { data: 'kelas'},
 	            { data: 'hari_name'},

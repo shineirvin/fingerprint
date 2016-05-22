@@ -16,6 +16,7 @@ use App\Jadwalkelas;
 use App\Detailkelas;
 use App\Asistenkelas;
 use App\Presensidosenlab;
+use App\Kelaspengganti;
 
 use Carbon\Carbon;
 
@@ -40,25 +41,6 @@ class FingerprintController extends Controller
 
 	}
 
-	public function matchfingerprint($ip_address)
-	{
-		$newBuffer = $this->connection($ip_address);
-		$for_limit = count($this->connection($ip_address));
-		for($a=1;$a<$for_limit-1;$a++) {
-        	$data = $this->Parse_Data($newBuffer[$a],"<Row>","</Row>");
-        	$lastTime = Dami::orderBy('datetime', 'desc')->first();
-			if( strtotime( $this->Parse_Data($data,"<DateTime>","</DateTime>")) > strtotime($lastTime->datetime)) {
-		        $data_row = [
-		            "identity" => $this->Parse_Data($data,"<PIN>","</PIN>"),
-		            "datetime" => $this->Parse_Data($data,"<DateTime>","</DateTime>"),
-		        ];
-		        $x = new Dami($data_row);
-		        $x->save();
-    		}
-		}
-    	
-	}
-
 	/**
 	 * Grab data from the fingerprint machine from the last time with additional filter
 	 * @param  String $ip_address
@@ -69,22 +51,64 @@ class FingerprintController extends Controller
 		$newBuffer = $this->connection($ip_address);
 		$for_limit = count($this->connection($ip_address));
         $hari = $this->datefilter();
+		$datetime = Carbon::now();
+        $semester = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2');
+
 
         $ruang = Ipfingerprint::select('ruang_id')
         		->where('ip_address', $ip_address)
         		->first();
-        $data = Kelasmk::select('id', 'waktu', 'ruang_id', 'dosen_id')
+
+        $data = Kelasmk::select('id', 'waktu', 'ruang_id', 'dosen_id', 'semester')
         		->where('waktu', '<=', Carbon::now())
         		->where('hari_id', $hari)
         		->where('ruang_id', $ruang->ruang_id)
+        		->where('semester', $semester)
         		->orderBy('waktu', 'desc')
         		->first();
 
-        $time = $data->waktu;
+        $kelaspengganti = Kelaspengganti::select('id', 'kelasmk_id', 'waktu', 'hari_id', 'status')
+        				  ->where('kelasmk_id', $data->kelasmk_id)
+        				  ->where('ruang_id', $ruang->ruang_id)
+        				  ->where('status', '1')
+        				  ->where('hari_id', $hari)
+        				  ->orderBy('id', 'desc')
+        				  ->first();
+
+        if ($kelaspenggati) {
+        	return;
+        }
+
+        $kelaspengganti = kelaspenggantinti::select('id', 'kelasmk_id', 'waktu', 'hari_id', 'status')
+						  ->where('waktu', '<=', Carbon::now())
+        				  ->where('kelasmk_id', $data->kelasmk_id)
+        				  ->where('ruang_id', $ruang->ruang_id)
+        				  ->where('status', '1')
+        				  ->where('hari_id', $hari)
+        				  ->orderBy('id', 'desc')
+        				  ->first();
+
+        if (!$kelaspenggati) {
+	        $data = Kelasmk::select('id', 'waktu', 'ruang_id', 'dosen_id', 'semester')
+	        		->where('waktu', '<=', Carbon::now())
+	        		->where('hari_id', $hari)
+	        		->where('ruang_id', $ruang->ruang_id)
+	        		->where('semester', $semester)
+	        		->orderBy('waktu', 'desc')
+	        		->first();
+	        
+	        $time = $data->waktu;
+        } else { 
+	        $data = Kelasmk::select('id', 'waktu', 'ruang_id', 'dosen_id', 'semester')
+	        		->where('id', $kelaspengganti->kelasmk_id)
+	        		->first();
+       		$time = $kelaspengganti->waktu;
+       	}
+
+ 		$dosen_id = $data->dosen_id;
+ 		$kelasmk_id = $data->id;
 		$nim = array();
 		$datetime = array();
- 		$kelasmk_id = $data->id;
- 		$dosen_id = $data->dosen_id;
 
 		$dpmk = Dpmk::select('nim')->where('kelasmk_id', $data->id)->get();
 		foreach ($dpmk as $peserta) {
@@ -201,6 +225,11 @@ class FingerprintController extends Controller
 		\DB::table('presensikelas')->insert($absensi);
 		\DB::table('presensidosen')->insert($absensiDosen);
 
+
+		$updateStatusKP = Kelaspengganti::find($kelasmk_id);
+		$updateStatusKP->status = '0';
+		$updateStatusKP->save();
+
 		/*$this->matchfingerprint($ip_address);*/
 		$this->cleardata($ip_address);
 
@@ -227,13 +256,18 @@ class FingerprintController extends Controller
 		$newBuffer = $this->connection($ip_address);
 		$for_limit = count($this->connection($ip_address));
         $hari = $this->datefilter();
+		$datetime = Carbon::now();
+        $semester = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2');
 
         $ruang = Ipfingerprint::select('ruang_id')
         		->where('ip_address', $ip_address)
         		->first();
 		$data = Jadwalkelas::select('id_kelas', 'time_start', 'time_end', 'ruang_id', 'dosen_id')
-        		->where('time_start', '<=', Carbon::now())->where('hari_id', $hari)
-        		->where('ruang_id', $ruang->ruang_id)->orderBy('time_start', 'desc')
+        		->where('time_start', '<=', Carbon::now())
+        		->where('hari_id', $hari)
+        		->where('ruang_id', $ruang->ruang_id)
+        		->orderBy('time_start', 'desc')
+        		->where('semester', $semester)
         		->first();
 
         $timeStart = $data->time_start;

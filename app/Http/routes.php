@@ -22,6 +22,8 @@ Route::get('uploadnama', function () {
     return view('fingerprint.upload-nama');
 });
 
+
+
 Route::group(['middleware' => 'web'], function () {
 	Route::auth();
 
@@ -104,6 +106,43 @@ Route::group(['middleware' => 'web'], function () {
 
 //----------------------------------------------ENDOFMASTERTABLE---------------------------------------------------//
 
+    Route::get('profile', 'HomeController@profile');
+    Route::post('profile/picture', 'HomeController@profilepicture');
+    Route::put('profile/changepassword', 'HomeController@changepassword');
+
+
+
+    Route::get('changepassdosen', 'AdminController@changepassdosen_index');
+    Route::get('changepassdosenData', 'AdminController@changepassdosenData');
+    Route::get('getDosenData/{dosen_id}', 'AdminController@getDosenData');
+    Route::post('newpassdosen', 'AdminController@newpassdosen');
+
+    Route::get('changepassmahasiswa', 'AdminController@changepassmahasiswa_index');
+    Route::get('changepassmahasiswaData', 'AdminController@changepassmahasiswaData');
+    Route::get('getMahasiswaData/{mahasiswa_id}', 'AdminController@getMahasiswaData');
+    Route::post('newpassmahasiswa', 'AdminController@newpassmahasiswa');
+
+    Route::get('changepassadmin', 'AdminController@changepassadmin_index');
+    Route::get('changepassadminData', 'AdminController@changepassadminData');
+    Route::get('getAdminData/{admin_id}', 'AdminController@getAdminData');
+    Route::post('newpassadmin', 'AdminController@newpassadmin');
+
+    Route::get('adminvalidation', 'AdminController@validate_index');
+	Route::get('getDataJadwalDosenAll', 'AdminController@getDataJadwalDosenAll');
+
+
+	Route::get('kelaspenggantiDataView', 'AdminController@kelaspengganti_index');
+	Route::get('getDataKelasPengganti', 'AdminController@getDataKelasPengganti');
+	Route::get('kelaspenggantiData/{id}', 'AdminController@registerkelaspengganti');
+	Route::post('kelaspenggantiData', 'AdminController@store_kelaspengganti');
+	Route::get('kelaspenggantiData/{id}/edit', 'AdminController@edit_kelaspengganti');
+	Route::patch('kelaspenggantiData/{id}', 'AdminController@update_kelaspengganti');
+	Route::get('kelaspenggantiDataDelete/{id}', 'AdminController@destroy_kelaspengganti');
+	Route::get('listkelasmk', 'AdminController@listkelasmk');
+	Route::get('getDataListKelasmk', 'AdminController@getDataListKelasmk');
+
+
+
 	Route::get('practice', function () {
 	    return view('practice.xmltojson')->with('tests', '');
 	});
@@ -114,14 +153,13 @@ Route::group(['middleware' => 'web'], function () {
 	    'getIndex' => 'datatables',
 	]);
 
-	Route::get('index', 'TestController@testo');
-
-    Route::get('/home', 'HomeController@index');
 
     Route::resource('articles', 'ArticlesController');
 
     Route::get('tags/{tag}', 'TagsController@show');
 
+
+	Route::get('index', 'HomeController@index');
 
 
 Route::get('test', function(){

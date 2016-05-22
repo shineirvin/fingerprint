@@ -16,8 +16,13 @@
 		<link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/css/theme-default/libs/DataTables/jquery.dataTables.css')!!}"/>
 		<link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/js/libs/DataTables/extensions/Button/css/buttons.dataTables.min.css')!!}"/>
 		<link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/css/theme-default/libs/DataTables/extensions/dataTables.tableTools.css')!!}"/>
+		<link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/css/theme-default/libs/bootstrap-datepicker/datepicker3.css')!!}"/>
 		<link type="text/css" rel="stylesheet" href="{!! url('assets/sweetalert-master/dist/sweetalert.css')!!}"/>
 		<link type="text/css" rel="stylesheet" href="{!! url('assets/sweetalert-master/themes/twitter/twitter.css')!!}"/>
+		<link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/css/theme-default/libs/select2/select2.css')!!}"/>
+
+		<link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/js/libs/bootstrap-clockpicker/bootstrap-clockpicker.min.css')!!}"/>
+
 		<script src="{!! url('materialadmin/assets/js/libs/jquery/jquery-1.11.2.min.js')!!}"></script>
 
 	</head>
@@ -41,6 +46,8 @@
 		<script src="{!! url('materialadmin/assets/js/libs/jquery/jquery-migrate-1.2.1.min.js')!!}"></script>
 		<script src="{!! url('assets/sweetalert-master/dist/sweetalert-dev.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/bootstrap/bootstrap.min.js')!!}"></script>
+		<script src="{!! url('materialadmin/assets/js/libs/bootstrap-clockpicker/bootstrap-clockpicker.min.js')!!}"></script>
+		<script src="{!! url('materialadmin/assets/js/libs/select2/select2.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/spin.js/spin.min.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/autosize/jquery.autosize.min.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/DataTables/jquery.dataTables.min.js')!!}"></script>
@@ -57,7 +64,9 @@
 		<script src="{!! url('materialadmin/assets/js/core/source/AppForm.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/core/source/AppNavSearch.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/core/source/AppVendor.js')!!}"></script>
-		<script src="{!! url('materialadmin/assets/js/core/source/AppVendor.js')!!}"></script>
 
+		@yield('intJS')
+
+		@include('flash')
 	</body>
 </html>

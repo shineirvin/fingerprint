@@ -20,7 +20,7 @@ class TestController extends Controller
         $this->middleware('auth');
     }
 
-    public function testo()
+    public function index()
     {
         return view('practice.index');
     }

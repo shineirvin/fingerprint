@@ -1,4 +1,3 @@
-<!-- BEGIN MENUBAR-->
 <div id="menubar" class="menubar-inverse ">
 	<div class="menubar-fixed-panel">
 		<div>
@@ -26,71 +25,44 @@
 			</li><!--end /menu-li -->
 			<!-- END DASHBOARD -->
 
-
-			<!-- BEGIN UI -->
 			<li class="gui-folder">
 				<a>
 					<div class="gui-icon"><i class="fa fa-puzzle-piece fa-fw"></i></div>
 					<span class="title">Data Master</span>
 				</a>
-				<!--start submenu -->
 				<ul>
 					<li><a href="{!! url('matakuliahDataView') !!}" class="{!! set_active('matakuliahDataView') !!}"><span class="title">Matakuliah</span></a></li>
 					<li><a href="{!! url('ruangDataView') !!}" class="{!! set_active('ruangDataView') !!}"><span class="title">Ruang</span></a></li>
 					<li><a href="{!! url('jenisruangDataView') !!}" class="{!! set_active('jenisruangDataView') !!}"><span class="title">Jenis Ruang</span></a></li>
-				</ul><!--end /submenu -->
-			</li><!--end /menu-li -->
-			<!-- END UI -->
+				</ul>
+			</li>
 
-			<!-- BEGIN DASHBOARD -->
-			<li class="{!! set_active('practice') !!}">
-				<a href="{!! Url('practice/') !!}">
-					<div class="gui-icon"><i class="md md-web"></i></div>
-					<span class="title">Layouts</span>
-				</a>
-			</li><!--end /menu-li -->
-			<!-- END DASHBOARD -->
-
-			<!-- BEGIN UI -->
+			@if (Auth::user()->roles === 'Admin')
 			<li class="gui-folder">
 				<a>
 					<div class="gui-icon"><i class="fa fa-puzzle-piece fa-fw"></i></div>
-					<span class="title">UI elements</span>
+					<span class="title">Users Settings</span>
 				</a>
-				<!--start submenu -->
 				<ul>
-					<li><a href="materialadmin/html/ui/colors.html" ><span class="title">Colors</span></a></li>
-					<li><a href="materialadmin/html/ui/typography.html" ><span class="title">Typography</span></a></li>
-					<li><a href="materialadmin/html/ui/cards.html" ><span class="title">Cards</span></a></li>
-					<li><a href="materialadmin/html/ui/buttons.html" ><span class="title">Buttons</span></a></li>
-					<li><a href="materialadmin/html/ui/lists.html" ><span class="title">Lists</span></a></li>
-					<li><a href="materialadmin/html/ui/tabs.html" ><span class="title">Tabs</span></a></li>
-					<li><a href="materialadmin/html/ui/accordions.html" ><span class="title">Accordions</span></a></li>
-					<li><a href="materialadmin/html/ui/messages.html" ><span class="title">Messages</span></a></li>
-					<li><a href="materialadmin/html/ui/offcanvas.html" ><span class="title">Off-canvas</span></a></li>
-					<li><a href="materialadmin/html/ui/grid.html" ><span class="title">Grid</span></a></li>
-					<li class="gui-folder">
-						<a href="javascript:void(0);">
-							<span class="title">Icons</span>
-						</a>
-						<!--start submenu -->
-						<ul>
-							<li><a href="materialadmin/html/ui/icons/materialicons.html" ><span class="title">Material Design Icons</span></a></li>
-							<li><a href="materialadmin/html/ui/icons/fontawesome.html" ><span class="title">Font Awesome</span></a></li>
-							<li><a href="materialadmin/html/ui/icons/glyphicons.html" ><span class="title">Glyphicons</span></a></li>
-							<li><a href="materialadmin/html/ui/icons/skycons.html" ><span class="title">Skycons</span></a></li>
-						</ul><!--end /submenu -->
-					</li><!--end /menu-li -->
-				</ul><!--end /submenu -->
-			</li><!--end /menu-li -->
-			<!-- END UI -->
-
-			<li class="{!! set_active('datatables') !!}">
-				<a href="{!! url('datatables') !!}">
-					<div class="gui-icon"><i class="fa fa-table"></i></div>
-					<span class="title">Tables</span>
+					<li><a href="{!! url('changepassadmin') !!}" class="{!! set_active('changepassadmin') !!}"><span class="title">Admin</span></a></li>
+					<li><a href="{!! url('changepassdosen') !!}" class="{!! set_active('changepassdosen') !!}"><span class="title">Dosen</span></a></li>
+					<li><a href="{!! url('changepassmahasiswa') !!}" class="{!! set_active('changepassmahasiswa') !!}"><span class="title">Mahasiswa</span></a></li>
+				</ul>
+			</li>
+			<li class="{!! set_active('adminvalidation') !!}">
+				<a href="{!! url('adminvalidation') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Attendance Validation</span>
 				</a>
 			</li>
+			<li class="{!! set_active('kelaspenggantiDataView') !!}">
+				<a href="{!! url('kelaspenggantiDataView') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Kelas Pengganti</span>
+				</a>
+			</li>
+			@endif
+
 
 		{!! Form::hidden($dosen_id = App\Jadwalkelas::where('dosen_id', Auth::user()->username)->get()) !!}
         @foreach ($dosen_id as $dosen_nim)
@@ -178,42 +150,14 @@
 			</li>
 			@endif
 
-			<!-- BEGIN FORMS -->
-			<li class="gui-folder">
-				<a>
-					<div class="gui-icon"><span class="glyphicon glyphicon-list-alt"></span></div>
-					<span class="title">Forms</span>
-				</a>
-				<!--start submenu -->
-				<ul>
-					<li><a href="materialadmin/html/forms/basic.html" ><span class="title">Form basic</span></a></li>
-					<li><a href="materialadmin/html/forms/advanced.html" ><span class="title">Form advanced</span></a></li>
-					<li><a href="materialadmin/html/forms/layouts.html" ><span class="title">Form layouts</span></a></li>
-					<li><a href="materialadmin/html/forms/editors.html" ><span class="title">Editors</span></a></li>
-					<li><a href="materialadmin/html/forms/validation.html" ><span class="title">Form validation</span></a></li>
-					<li><a href="materialadmin/html/forms/wizard.html" ><span class="title">Form wizard</span></a></li>
-				</ul><!--end /submenu -->
-			</li><!--end /menu-li -->
-			<!-- END FORMS -->
-
-			<!-- BEGIN CHARTS -->
-			<li>
-				<a href="{{ url('datatables') }}" >
-					<div class="gui-icon"><i class="md md-assessment"></i></div>
-					<span class="title">Charts</span>
-				</a>
-			</li><!--end /menu-li -->
-			<!-- END CHARTS -->
 
 
-		</ul><!--end .main-menu -->
-		<!-- END MAIN MENU -->
+		</ul>
 
 		<div class="menubar-foot-panel">
 			<small class="no-linebreak hidden-folded">
 				<span class="opacity-75">Copyright &copy; 2016</span> <strong>Life is Strange</strong>
 			</small>
 		</div>
-	</div><!--end .menubar-scroll-panel-->
-</div><!--end #menubar-->
-<!-- END MENUBAR -->
+	</div>
+</div>
