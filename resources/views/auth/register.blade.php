@@ -10,13 +10,17 @@
         <meta name="description" content="Short explanation about this website">
         <!-- END META -->
 
-        <!-- BEGIN STYLESHEETS -->
         <link href='http://fonts.googleapis.com/css?family=Roboto:300italic,400italic,300,400,500,700,900' rel='stylesheet' type='text/css'/>
-        <link type="text/css" rel="stylesheet" href="materialadmin/assets/css/theme-default/bootstrap.css?1422792965" />
-        <link type="text/css" rel="stylesheet" href="materialadmin/assets/css/theme-default/materialadmin.css?1425466319" />
-        <link type="text/css" rel="stylesheet" href="materialadmin/assets/css/theme-default/font-awesome.min.css?1422529194" />
-        <link type="text/css" rel="stylesheet" href="materialadmin/assets/css/theme-default/material-design-iconic-font.min.css?1421434286" />
-        <!-- END STYLESHEETS -->
+        <link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/css/theme-default/bootstrap.css') !!}"/>
+        <link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/css/theme-default/materialadmin.css')!!}"/>
+        <link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/css/theme-default/font-awesome.min.css')!!}"/>
+        <link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/css/theme-default/material-design-iconic-font.min.css')!!}"/>
+        <link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/css/theme-default/libs/DataTables/jquery.dataTables.css')!!}"/>
+        <link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/js/libs/DataTables/extensions/Button/css/buttons.dataTables.min.css')!!}"/>
+        <link type="text/css" rel="stylesheet" href="{!! url('materialadmin/assets/css/theme-default/libs/DataTables/extensions/dataTables.tableTools.css')!!}"/>
+        <link type="text/css" rel="stylesheet" href="{!! url('assets/sweetalert-master/dist/sweetalert.css')!!}"/>
+        <link type="text/css" rel="stylesheet" href="{!! url('assets/sweetalert-master/themes/twitter/twitter.css')!!}"/>
+        <script src="{!! url('materialadmin/assets/js/libs/jquery/jquery-1.11.2.min.js')!!}"></script>
     </head>
     <body class="menubar-hoverable header-fixed ">
 

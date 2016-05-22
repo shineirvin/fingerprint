@@ -8,13 +8,12 @@ class Dami extends Model
 {
 	protected $table = 'dami';
 
-    public $incrementing = false;
+    public $timestamps = false;
 	
     protected $fillable = [
     	'id',
+    	'identity',
     	'datetime',
-    	'verified',
-    	'status'
     ];
 
 }

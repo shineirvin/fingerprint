@@ -9,7 +9,6 @@
 			</div>
 			@include('partials.flash')
 			<div class="section-body">
-
 				<!-- BEGIN DATATABLE 1 -->
 				<div class="row">
 					<div class="col-lg-12">
@@ -17,13 +16,13 @@
 							<table id="datatable1" class="table table-striped table-hover">
 						        <thead>
 						            <tr>
-						                <th>Semester</th>
+						                <th>Hari id</th>
+						                <th>NIK</th>
 						                <th>Matakuliah</th>
 						                <th>Kelas</th>
 						                <th>Hari</th>
 						                <th>Ruang</th>
 						                <th>Waktu</th>
-						                <th>Rec Status</th>
 						                <th>Action</th>
 						            </tr>
 						        </thead>
@@ -40,16 +39,17 @@
 	{
 		$('#datatable1').DataTable({
 			"dom": 'lCfrtip',
-			"order": [[ 1, "asc" ]],
+			"iDisplayLength": 100, 
+			"order": [[ 0, "asc" ]],
 	        ajax: '{!! url('getDataJadwalDosen') !!}',
 	        columns: [
-	            { data: 'semester'},
+	            { data: 'hari_id', visible: false },
+	            { data: 'dosen_id'},
 	            { data: 'matakuliah_id'},
 	            { data: 'kelas'},
-	            { data: 'hari_id'},
+	            { data: 'hari_name'},
 	            { data: 'ruang_id'},
 	            { data: 'waktu'},
-	            { data: 'recstatus'},
 	            { data: 'action', name: 'action', orderable: false, searchable: false}
 	        ],
 			"language": {

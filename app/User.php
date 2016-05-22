@@ -2,6 +2,9 @@
 
 namespace App;
 
+use Auth;
+
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -12,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'username', 'name', 'email', 'password', 'roles', 'status'
+        'username', 'name', 'email', 'password', 'roles', 'status', 'profilepic'
     ];
 
     /**
@@ -27,6 +30,16 @@ class User extends Authenticatable
     public function articles()
     {
         return $this->hasMany('App\Article');
+    }
+
+    public function isAdmin()
+    {   
+        if (Auth::user()->roles == 'Admin') {
+            return TRUE;
+        }
+        else {
+            return FALSE;
+        }
     }
 
 }

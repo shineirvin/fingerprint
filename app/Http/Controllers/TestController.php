@@ -5,7 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+
 use App\User;
+use App\Asistenkelas;
+use App\Jadwalkelas;
+use Auth;
+
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
 
@@ -15,7 +20,7 @@ class TestController extends Controller
         $this->middleware('auth');
     }
 
-    public function testo()
+    public function index()
     {
         return view('practice.index');
     }
