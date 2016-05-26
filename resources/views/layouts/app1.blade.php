@@ -47,6 +47,8 @@
 		<script src="{!! url('assets/sweetalert-master/dist/sweetalert-dev.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/bootstrap/bootstrap.min.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/bootstrap-clockpicker/bootstrap-clockpicker.min.js')!!}"></script>
+		<script src="{!! url('materialadmin/assets/js/libs/moment/moment.min.js')!!}"></script>
+		<script src="{!! url('materialadmin/assets/js/libs/bootstrap-datepicker/bootstrap-datepicker.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/select2/select2.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/spin.js/spin.min.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/autosize/jquery.autosize.min.js')!!}"></script>
@@ -68,5 +70,12 @@
 		@yield('intJS')
 
 		@include('flash')
+
+		<script>
+			$('#datepicker').datepicker({ 
+				format: 'dd/mm/yyyy'
+			}) 
+		</script>
+
 	</body>
 </html>

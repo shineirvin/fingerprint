@@ -61,6 +61,12 @@
 					<span class="title">Kelas Pengganti</span>
 				</a>
 			</li>
+			<li class="{!! set_active('reportBulanan') !!}">
+				<a href="{!! url('reportBulanan') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Bulanan Dosen</span>
+				</a>
+			</li>
 			@endif
 
 

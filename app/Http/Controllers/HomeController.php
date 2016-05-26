@@ -10,6 +10,7 @@ use App\Matakuliah;
 use App\Presensikelas;
 use App\User;
 use Auth;
+use PHPExcel_Worksheet_Drawing;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -34,95 +35,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        /*$pdf = \PDF::loadView('index');
-        return $pdf->download('invoice.pdf');*/
-        Excel::create('Filename', function($excel) { 
-            $excel->sheet('First sheet', function($sheet) {
-                $studentSubjects = Kelasmk::select('*')->get();
-
-                $sheet->mergeCells('H1:K1');
-                $sheet->mergeCells('A1:A2');
-                $sheet->mergeCells('B1:B2');
-                $sheet->mergeCells('C1:C2');
-                $sheet->mergeCells('D1:D2');
-                $sheet->mergeCells('E1:E2');
-                $sheet->mergeCells('F1:F2');
-                $sheet->mergeCells('G1:G2');
-                $sheet->mergeCells('L1:L2');
-  
-                $sheet->row(1, array(
-                    'NO','NIK','NAMA DOSEN', 'KODE MK', 'NAMA MATAKULIAH', 'SKS', 'KELAS', 'MINGGU KE -', '', '', '', 'JML HADIR'
-                ));
-                $sheet->row(2, array(
-                    '', '', '', '', '', '', '', '1', '2', '3', '4',
-                ));
-
-                $sheet->setWidth(array(
-                    'A'     =>  4,
-                    'B'     =>  15,
-                    'C'     =>  35,
-                    'D'     =>  15,
-                    'E'     =>  40,
-                    'F'     =>  4,
-                    'G'     =>  6,
-                    'H'     =>  4,
-                    'I'     =>  4,
-                    'J'     =>  4,
-                    'K'     =>  4,
-                    'L'     =>  10,
-
-                ));
-
-                foreach ($studentSubjects as $key => $value) {
-                    $matakuliah = Matakuliah::findOrFail($value->matakuliah_id);
-                    $LecturerNames = User::select('name')->where('username', $value->dosen_id)->first();
-                    $sks = Matakuliah::findOrFail($value->matakuliah_id);
-                    $sheet->row($key+3, array(
-                         $key+1,
-                         $value->dosen_id, 
-                         $LecturerNames->name, 
-                         $value->matakuliah_id, 
-                         $matakuliah->nama_matakuliah, 
-                         $sks->sks, 
-                         $value->kelas, 
-                         '1', 
-                         '1', 
-                         '2', 
-                         '1', 
-                         '3'
-                    ));
-                }
-                        
-                $sheet->setBorder('A1:L'.(count($studentSubjects) + 2), 'thin');
-                
-                $sheet->cells('A1:L'.(count($studentSubjects) + 2), function($cells) {
-                    $cells->setValignment('center');
-                    $cells->setAlignment('center');
-                });
-
-                $sheet->cells('C3:C'.(count($studentSubjects) + 2), function($cells) {
-                    $cells->setValignment('left');
-                    $cells->setAlignment('left');
-                });
-                $sheet->cells('D3:D'.(count($studentSubjects) + 2), function($cells) {
-                    $cells->setValignment('left');
-                    $cells->setAlignment('left');
-                });
-                $sheet->cells('E3:E'.(count($studentSubjects) + 2), function($cells) {
-                    $cells->setValignment('left');
-                    $cells->setAlignment('left');
-                });
-
-
-        });
-
-
-        })->export('xls');
-
-
-
-
-
         return view('index');
     }
 

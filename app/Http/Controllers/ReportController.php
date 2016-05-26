@@ -151,7 +151,7 @@ class ReportController extends Controller
                     ->where('keterangan', '1')
                     ->where('kelasmk_id', $studentSubjects->id)
                     ->where('NIK', $studentSubjects->dosen_id)
-                    ->count('keterangan');  
+                    ->count('pertemuan');  
                 if (!$classes) {
                     return '';
                 }
@@ -160,8 +160,8 @@ class ReportController extends Controller
                 }
             })
             ->editColumn('1', function ($studentSubjects) {
-                $classes = \DB::table('presensikelas')
-                    ->join('kelasmk', 'presensikelas.kelasmk_id', '=', 'kelasmk.id')
+                $classes = \DB::table('presensidosen')
+                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
                     ->select('keterangan')
                     ->where('kelasmk_id', $studentSubjects->id)
                     ->where('pertemuan', '1')
@@ -174,11 +174,95 @@ class ReportController extends Controller
                 }
             })
             ->editColumn('2', function ($studentSubjects) {
-                $classes = \DB::table('presensikelas')
-                    ->join('kelasmk', 'presensikelas.kelasmk_id', '=', 'kelasmk.id')
+                $classes = \DB::table('presensidosen')
+                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
                     ->select('keterangan')
                     ->where('kelasmk_id', $studentSubjects->id)
                     ->where('pertemuan', '2')
+                    ->first();
+                if (!$classes) {
+                    return '';
+                }
+                else {
+                    return $classes->keterangan;
+                }
+            })
+            ->editColumn('3', function ($studentSubjects) {
+                $classes = \DB::table('presensidosen')
+                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
+                    ->select('keterangan')
+                    ->where('kelasmk_id', $studentSubjects->id)
+                    ->where('pertemuan', '3')
+                    ->first();
+                if (!$classes) {
+                    return '';
+                }
+                else {
+                    return $classes->keterangan;
+                }
+            })
+            ->editColumn('4', function ($studentSubjects) {
+                $classes = \DB::table('presensidosen')
+                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
+                    ->select('keterangan')
+                    ->where('kelasmk_id', $studentSubjects->id)
+                    ->where('pertemuan', '4')
+                    ->first();
+                if (!$classes) {
+                    return '';
+                }
+                else {
+                    return $classes->keterangan;
+                }
+            })
+            ->editColumn('5', function ($studentSubjects) {
+                $classes = \DB::table('presensidosen')
+                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
+                    ->select('keterangan')
+                    ->where('kelasmk_id', $studentSubjects->id)
+                    ->where('pertemuan', '5')
+                    ->first();
+                if (!$classes) {
+                    return '';
+                }
+                else {
+                    return $classes->keterangan;
+                }
+            })
+            ->editColumn('6', function ($studentSubjects) {
+                $classes = \DB::table('presensidosen')
+                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
+                    ->select('keterangan')
+                    ->where('kelasmk_id', $studentSubjects->id)
+                    ->where('pertemuan', '6')
+                    ->first();
+                if (!$classes) {
+                    return '';
+                }
+                else {
+                    return $classes->keterangan;
+                }
+            })
+            ->editColumn('7', function ($studentSubjects) {
+                $classes = \DB::table('presensidosen')
+                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
+                    ->select('keterangan')
+                    ->where('kelasmk_id', $studentSubjects->id)
+                    ->where('pertemuan', '7')
+                    ->first();
+                if (!$classes) {
+                    return '';
+                }
+                else {
+                    return $classes->keterangan;
+                }
+            })
+            ->editColumn('8', function ($studentSubjects) {
+                $classes = \DB::table('presensidosen')
+                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
+                    ->select('keterangan')
+                    ->where('kelasmk_id', $studentSubjects->id)
+                    ->where('pertemuan', '8')
                     ->first();
                 if (!$classes) {
                     return '';

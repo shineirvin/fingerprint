@@ -142,6 +142,16 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('getDataListKelasmk', 'AdminController@getDataListKelasmk');
 
 
+	Route::get('reportBulanan', 'AdminController@reportBulanan_index');
+	Route::get('reportBulanan/{dateS}/{dateE}', 'AdminController@reportBulananDetail_index');
+	Route::get('getDataReportBulanan/{dateS}/{dateE}', 'AdminController@getDataReportBulanan');
+
+	Route::get('monthlyreportexcel/{dateS}/{dateE}', 'AdminController@monthlyreportexcel');
+
+
+
+
+
 
 	Route::get('practice', function () {
 	    return view('practice.xmltojson')->with('tests', '');
@@ -160,6 +170,7 @@ Route::group(['middleware' => 'web'], function () {
 
 
 	Route::get('index', 'HomeController@index');
+
 
 
 Route::get('test', function(){
