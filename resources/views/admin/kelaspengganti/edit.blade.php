@@ -21,4 +21,10 @@
 </div><!--end #content-->
 <!-- END CONTENT -->
 
+	@section('clockpicker')
+		<script>        	
+        	$('.clockpicker').clockpicker();
+        </script>
+    @endsection
+    
 @stop

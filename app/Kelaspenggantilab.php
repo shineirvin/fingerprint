@@ -4,16 +4,17 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Praktikum extends Model
+class Kelaspenggantilab extends Model
 {
-	protected $table = 'praktikum';
+	protected $table = 'kelaspenggantilab';
 
     public $timestamps = false;
 	
     protected $fillable = [
-    	'jenis_praktikum',
-    	'id_matakuliah',
-    	'nama',
+    	'id',
+    	'jadwalkelas_id',
+    	'waktu',
+    	'ruang_id',
     	'status',
     ];
 

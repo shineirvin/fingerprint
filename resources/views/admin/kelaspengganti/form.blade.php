@@ -73,7 +73,7 @@
 			<div class="form-control-line"></div>
 		</div>
 
-		<label class="col-sm-1 control-label"><i class="fa fa-arrow-right"></i>Waktu</label>
+		<label class="col-sm-1 control-label"><i class="fa fa-arrow-right"></i>Ubah ke Waktu</label>
 		<div class="col-sm-2">
 			<div class="input-group clockpicker" data-autoclose="true">
 				{!! Form::text('waktu', null, ['class' => 'form-control input-lg']) !!}

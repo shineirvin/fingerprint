@@ -1,29 +1,5 @@
 <?php
 
-Route::get('fingerindex', function () {
-    return view('fingerprint.index');
-});
-
-Route::get('fingerprint', function () {
-    return view('fingerprint.coba');
-});
-
-Route::get('cobatarikdata', 'FingerprintController@cobatarikdata');
-Route::get('cobaupdatedata', 'FingerprintController@cobaupdatedata');
-Route::get('cleardata', 'FingerprintController@cleardata');
-
-Route::get('labfingerprint', 'FingerprintController@labfingerprint');
-
-Route::get('tarikdata', function () {
-    return view('fingerprint.tarik-data');
-});
-
-Route::get('uploadnama', function () {
-    return view('fingerprint.upload-nama');
-});
-
-
-
 Route::group(['middleware' => 'web'], function () {
 	Route::auth();
 
@@ -31,9 +7,14 @@ Route::group(['middleware' => 'web'], function () {
 		return view('auth.login');
 	}]);
 
+	Route::get('labfingerprint', 'FingerprintController@labfingerprint');
+	
 	Route::get('register', function () {
 	    return view('auth.register');
 	});
+	Route::get('registeradmin', 'AdminController@registeradmin');
+	Route::get('registerdosen', 'AdminController@registerdosen');
+	Route::get('registermahasiswa', 'AdminController@registermahasiswa');
 
 
 	Route::post('studentvalidate', 'PresensiController@studentvalidate');
@@ -55,8 +36,13 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('reportMahasiswa', 'ReportController@indexMahasiswa');
 	Route::get('reportMahasiswaData', 'ReportController@reportMahasiswaData');
 
-	Route::get('reportAdmin', 'ReportController@indexAdmin');
-	Route::get('reportAdminData', 'ReportController@reportAdminData');
+	Route::get('reportAdmin/{semester}', 'ReportController@indexAdmin');
+	Route::get('reportAdminData/{semester}', 'ReportController@reportAdminData');
+
+	Route::get('reportMhsAdmin/{semester}', 'ReportController@indexMhsAdmin');
+	Route::get('reportMhsAdminData/{semester}', 'ReportController@reportMhsAdminData');
+
+
 
 
 
@@ -72,8 +58,11 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('reportAsdos', 'ReportLabController@indexAsdos');
 	Route::get('reportAsdosData', 'ReportLabController@reportAsdosData');
 
-	Route::get('reportAdminLab', 'ReportLabController@indexAdmin');
-	Route::get('reportAdminLabData', 'ReportLabController@reportAdminData');
+	Route::get('reportAdminLab/{semester}', 'ReportLabController@indexAdminLab');
+	Route::get('reportAdminLabData/{semester}', 'ReportLabController@reportAdminLabData');
+
+	Route::get('reportMhsLabAdmin/{semester}', 'ReportLabController@indexMhsLabAdmin');
+	Route::get('reportMhsLabAdminData/{semester}', 'ReportLabController@reportMhsLabAdminData');
 
 
 
@@ -127,8 +116,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getAdminData/{admin_id}', 'AdminController@getAdminData');
     Route::post('newpassadmin', 'AdminController@newpassadmin');
 
-    Route::get('adminvalidation', 'AdminController@validate_index');
-	Route::get('getDataJadwalDosenAll', 'AdminController@getDataJadwalDosenAll');
+    Route::get('adminvalidation/{semester}', 'AdminController@validate_index');
+	Route::get('getDataJadwalDosenAll/{semester}', 'AdminController@getDataJadwalDosenAll');
 
 
 	Route::get('kelaspenggantiDataView', 'AdminController@kelaspengganti_index');
@@ -153,134 +142,11 @@ Route::group(['middleware' => 'web'], function () {
 
 
 
-	Route::get('practice', function () {
-	    return view('practice.xmltojson')->with('tests', '');
-	});
-	Route::post('practice', 'ArticlesController@practice');
-
-	Route::controller('datatables', 'TestController', [
-	    'anyData'  => 'datatables.data',
-	    'getIndex' => 'datatables',
-	]);
-
-
-    Route::resource('articles', 'ArticlesController');
-
-    Route::get('tags/{tag}', 'TagsController@show');
-
 
 	Route::get('index', 'HomeController@index');
 
 
 
-Route::get('test', function(){
-
-session_start();
-
-$fb = new Facebook\Facebook([
-  'app_id' => '1684736991757958',
-  'app_secret' => 'bcb72c777c2255cbf88c2d55c7347523',
-  'default_graph_version' => 'v2.5',
-  'default_access_token' => 'APP-ID|APP-SECRET'
-  ]);
-$helper = $fb->getRedirectLoginHelper();
-$permissions = ['email']; // optional
-	
-try {
-	if (isset($_SESSION['facebook_access_token'])) {
-		$accessToken = $_SESSION['facebook_access_token'];
-	} else {
-  		$accessToken = $helper->getAccessToken();
-	}
-} catch(Facebook\Exceptions\FacebookResponseException $e) {
- 	// When Graph returns an error
- 	echo 'Graph returned an error: ' . $e->getMessage();
-  	exit;
-} catch(Facebook\Exceptions\FacebookSDKException $e) {
- 	// When validation fails or other local issues
-	echo 'Facebook SDK returned an error: ' . $e->getMessage();
-  	exit;
- }
-if (isset($accessToken)) {
-	if (isset($_SESSION['facebook_access_token'])) {
-		$fb->setDefaultAccessToken($_SESSION['facebook_access_token']);
-	} else {
-		// getting short-lived access token
-		$_SESSION['facebook_access_token'] = (string) $accessToken;
-	  	// OAuth 2.0 client handler
-		$oAuth2Client = $fb->getOAuth2Client();
-		// Exchanges a short-lived access token for a long-lived one
-		$longLivedAccessToken = $oAuth2Client->getLongLivedAccessToken($_SESSION['facebook_access_token']);
-		$_SESSION['facebook_access_token'] = (string) $longLivedAccessToken;
-		// setting default access token to be used in script
-		$fb->setDefaultAccessToken($_SESSION['facebook_access_token']);
-	}
-	// redirect the user back to the same page if it has "code" GET variable
-	if (isset($_GET['code'])) {
-		header('Location: ./');
-	}
-	// getting basic info about user
-	try {
-		$profile_request = $fb->get('/me?fields=name,first_name,last_name,email');
-		$profile = $profile_request->getGraphNode()->asArray();
-	} catch(Facebook\Exceptions\FacebookResponseException $e) {
-		// When Graph returns an error
-		echo 'Graph returned an error: ' . $e->getMessage();
-		session_destroy();
-		// redirecting user back to app login page
-		header("Location: ./");
-		exit;
-	} catch(Facebook\Exceptions\FacebookSDKException $e) {
-		// When validation fails or other local issues
-		echo 'Facebook SDK returned an error: ' . $e->getMessage();
-		exit;
-	}
-	
-	// printing $profile array on the screen which holds the basic info about user
-	print_r($profile);
-  	// Now you can redirect to another page and use the access token from $_SESSION['facebook_access_token']
-} else {
-	// replace your website URL same as added in the developers.facebook.com/apps e.g. if you used http instead of https and you used non-www version or www version of your website then you must add the same here
-	$loginUrl = $helper->getLoginUrl('http://localhost:8000/material', $permissions);
-	return view('auth.login')->with('loginurl', $loginUrl);
-	echo '<a href="' . $loginUrl . '">Log in with Facebook!</a>';
-}
 
 
 });
-
-
-
-});
-
-Route::get('material', function(){
-$fb = new Facebook\Facebook([
-  'app_id' => '1684736991757958',
-  'app_secret' => 'bcb72c777c2255cbf88c2d55c7347523',
-  'default_graph_version' => 'v2.4',
-  ]);
-
-$helper = $fb->getRedirectLoginHelper();
-try {
-  $accessToken = $helper->getAccessToken();
-} catch(Facebook\Exceptions\FacebookResponseException $e) {
-  // When Graph returns an error
-  echo 'Graph returned an error: ' . $e->getMessage();
-  exit;
-}  catch(Facebook\Exceptions\FacebookSDKException $e) {
-  // When validation fails or other local issues
-  echo 'Facebook SDK returned an error: ' . $e->getMessage();
-  exit;
-}
-
-if (isset($accessToken)) {
-  // Logged in!
-  $_SESSION['facebook_access_token'] = (string) $accessToken;
-
-  // Now you can redirect to another page and use the
-  // access token from $_SESSION['facebook_access_token']
-}
-
-	return view('materialadmin.formlayout');
-});
-

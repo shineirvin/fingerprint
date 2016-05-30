@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Detailkelas extends Model
 {
 	protected $table = 'detail_kelas';
+	public $incrementing = false;
 
     public $timestamps = false;
 	

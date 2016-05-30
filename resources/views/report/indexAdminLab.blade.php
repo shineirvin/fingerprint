@@ -1,11 +1,10 @@
 @extends ('layouts.app1')
-
 @section ('content')
 
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Rekap Kehadiran Dosen</b> </h2> 
+				<h2 class="text-primary"> Rekap Kehadiran Dosen Lab</b> </h2> 
 			</div>
 			@include('partials.flash')
 			<div class="section-body">
@@ -96,7 +95,7 @@
 		    "select": true,
 			"iDisplayLength": 100, 
 			"order": [[ 0, "asc" ]],
-	        ajax: '{!! url('reportAdminData/'. $currentsemesterParams) !!}',
+	        ajax: '{!! url('reportAdminLabData/'. $currentsemesterParams) !!}',
 	        columns: [
 	            { data: 'dosen_id'},
 	            { data: 'nama_dosen'},
@@ -110,14 +109,14 @@
 	            { data: '4'},
 	            { data: '5'},
 	            { data: '6'},
-	            { data: '7'},
-	            { data: '8'},
-	            { data: '9'},
-	            { data: '10'},
-	            { data: '11'},
-	            { data: '12'},
-	            { data: '13'},
-	            { data: '14'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
 	            { data: 'jml_hadir'},
 	        ],
 			"language": {

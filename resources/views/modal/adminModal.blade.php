@@ -8,7 +8,7 @@
       </div>
       <div class="modal-body">
 
-<form class="form default-label" role="form" method="POST" action="{{ url('/newpassAdmin') }}">
+<form class="form default-label" role="form" method="POST" action="{{ url('/newpassadmin') }}">
         {!! csrf_field() !!}
         <input type="hidden" class="form-control" id="id" name="id">
           <div class="form-group">

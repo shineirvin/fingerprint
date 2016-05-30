@@ -46,6 +46,21 @@ class AdminController extends Controller
         return view('admin.cpadmin');
     }
 
+    public function registeradmin()
+    {
+        return view('admin.registeradmin');
+    }
+
+    public function registerdosen()
+    {
+        return view('admin.registerdosen');
+    }
+
+    public function registermahasiswa()
+    {
+        return view('admin.registermahasiswa');
+    }
+
     public function changepassdosenData()
     {
     	$dosen = User::select('*')->where('roles', 'Dosen')->get();
@@ -97,6 +112,7 @@ class AdminController extends Controller
     	$user = User::find($request->id);
     	$user->password = Hash::make($request->password);
     	$user->save();
+        flash()->success('Success!', 'Berhasil daftar dosen baru!');
 
     	return redirect('changepassdosen');
     }
@@ -106,6 +122,7 @@ class AdminController extends Controller
     	$user = User::find($request->id);
     	$user->password = Hash::make($request->password);
     	$user->save();
+        flash()->success('Success!', 'Berhasil daftar mahasiswa baru!');
 
     	return redirect('changepassmahasiswa');
     }
@@ -115,26 +132,34 @@ class AdminController extends Controller
     	$user = User::find($request->id);
     	$user->password = Hash::make($request->password);
     	$user->save();
+        flash()->success('Success!', 'Berhasil daftar dosen baru!');
 
-    	return redirect('changepassAdmin');
+    	return redirect('changepassadmin');
     }
 
-
-
-    public function validate_index()
+    public function validate_index($currentsemesterParams)
     {
-        return view('admin.attindex');
+        $datetime = Carbon::now();
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2');
+        $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
+        $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
+        $allSemester = Kelasmk::lists('semester');
+        foreach ($allSemester as $semester) {
+            $smst[] = substr($semester, 0, 4).' '.(substr($semester, -1) == 1 ? 'GANJIL' : 'GENAP');
+        }
+        $smstDirty = collect($smst);
+        $semester = $smstDirty->unique();
+        $semester->prepend('PILIH SEMESTER');
+
+        return view('admin.attindex', compact('semester', 'currentsemester', 'currentsemesterDirty', 'currentsemesterParams', 'currentsemesterParamsFilter'));
     }
 
-    public function getDataJadwalDosenAll()
+    public function getDataJadwalDosenAll($semester)
     {
-        $lecturerSchedules = Kelasmk::select('*')->get();
+        $lecturerSchedules = Kelasmk::select('*')->where('semester', $semester)->get();
         return Datatables::of($lecturerSchedules)
             ->addColumn('action', function ($lecturerSchedules) {
-                return '<a href="presensi/'.$lecturerSchedules->id.'/0" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
-            })
-            ->editColumn('recstatus', function ($lecturerSchedules) {
-                return ($lecturerSchedules->recstatus == '1' ? 'Active' : 'Non Active');
+                return '<a href="../presensi/'.$lecturerSchedules->id.'/0" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
             })
             ->editColumn('semester', function ($lecturerSchedules) {
                 return strtoupper($lecturerSchedules->semester);
@@ -223,7 +248,7 @@ class AdminController extends Controller
         $kelaspengganti->ruang_id = $request->input('ruang_id');
         $kelaspengganti->status = $request->input('recstatus');
         $kelaspengganti->save();
-        flash()->success('Success!', 'Kelas pengganti berhasil dibuat!');
+
         return redirect('kelaspenggantiDataView');
     }
 
@@ -315,8 +340,6 @@ class AdminController extends Controller
         $startmonth = substr($datestart, 2, 2);
         $startyear = substr($datestart, 4);
         $start = $startyear . '-' . $startmonth . '-' . $startday;
-        $startmin1 = Carbon::create($startyear, $startmonth, $startday, 0);
-        $startmin1->subDay();
 
         $endday = substr($dateend, 0, 2);
         $endmonth = substr($dateend, 2, 2);
@@ -357,7 +380,8 @@ class AdminController extends Controller
                 $classes = \DB::table('presensidosen')
                     ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
                     ->select('keterangan')
-                    ->whereBetween('presensidosen.waktu', [$start, $end])
+                    ->where('presensidosen.waktu', '>=', $start)
+                    ->where('presensidosen.waktu', '<=', $end)
                     ->where('keterangan', '1')
                     ->where('kelasmk_id', $lecturerSchedules->id)
                     ->where('NIK', $lecturerSchedules->dosen_id)
@@ -372,11 +396,12 @@ class AdminController extends Controller
                     return $classes;
                 }
             })
-            ->editColumn('1', function ($lecturerSchedules) use($startmin1, $end) {
+            ->editColumn('1', function ($lecturerSchedules) use($start, $end) {
                 $classes = \DB::table('presensidosen')
                     ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
                     ->select('keterangan')
-                    ->whereBetween('presensidosen.waktu', [$startmin1, $end])
+                    ->where('presensidosen.waktu', '>=', $start)
+                    ->where('presensidosen.waktu', '<=', $end)
                     ->where('kelasmk_id', $lecturerSchedules->id)
                     ->where('pertemuan', '1')
                     ->first();
@@ -387,12 +412,13 @@ class AdminController extends Controller
                     return $classes->keterangan;
                 }
             })
-            ->editColumn('2', function ($lecturerSchedules) use($startmin1, $end) {
+            ->editColumn('2', function ($lecturerSchedules) use($start, $end) {
 
                 $classes = \DB::table('presensidosen')
                     ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
                     ->select('keterangan')
-                    ->whereBetween('presensidosen.waktu', [$startmin1, $end])
+                    ->where('presensidosen.waktu', '>=', $start)
+                    ->where('presensidosen.waktu', '<=', $end)
                     ->where('kelasmk_id', $lecturerSchedules->id)
                     ->where('pertemuan', '2')
                     ->first();
@@ -403,11 +429,12 @@ class AdminController extends Controller
                     return $classes->keterangan;
                 }
             })
-            ->editColumn('3', function ($lecturerSchedules) use($startmin1, $end) {
+            ->editColumn('3', function ($lecturerSchedules) use($start, $end) {
                 $classes = \DB::table('presensidosen')
                     ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
                     ->select('keterangan')
-                    ->whereBetween('presensidosen.waktu', [$startmin1, $end])
+                    ->where('presensidosen.waktu', '>=', $start)
+                    ->where('presensidosen.waktu', '<=', $end)
                     ->where('kelasmk_id', $lecturerSchedules->id)
                     ->where('pertemuan', '3')
                     ->first();
@@ -418,11 +445,12 @@ class AdminController extends Controller
                     return $classes->keterangan;
                 }
             })
-            ->editColumn('4', function ($lecturerSchedules) use($startmin1, $end) {
+            ->editColumn('4', function ($lecturerSchedules) use($start, $end) {
                 $classes = \DB::table('presensidosen')
                     ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
                     ->select('keterangan')
-                    ->whereBetween('presensidosen.waktu', [$startmin1, $end])
+                    ->where('presensidosen.waktu', '>=', $start)
+                    ->where('presensidosen.waktu', '<=', $end)
                     ->where('kelasmk_id', $lecturerSchedules->id)
                     ->where('pertemuan', '4')
                     ->first();
@@ -439,7 +467,15 @@ class AdminController extends Controller
 
     public function reportBulananDetail_index($datestart, $dateend)
     {       
-        return view('admin.reportbulanan.indexdetail', compact('datestart', 'dateend'));
+        $startday = substr($datestart, 0, 2);
+        $startmonth = substr($datestart, 2, 2);
+        $startyear = substr($datestart, 4);
+        $start = $startday . '-' . $startmonth . '-' . $startyear;
+        $endday = substr($dateend, 0, 2);
+        $endmonth = substr($dateend, 2, 2);
+        $endyear = substr($dateend, 4);
+        $end = $endday . '-' . $endmonth . '-' . $endyear;
+        return view('admin.reportbulanan.indexdetail', compact('datestart', 'dateend', 'start', 'end'));
     }
 
     public function monthlyreportexcel($datestart, $dateend)
@@ -448,17 +484,17 @@ class AdminController extends Controller
         $startmonth = substr($datestart, 2, 2);
         $startyear = substr($datestart, 4);
         $start = $startyear . '-' . $startmonth . '-' . $startday;
-        $startmin1 = Carbon::create($startyear, $startmonth, $startday, 0);
-        $startmin1->subDay();
+        $startFormat = $startday . '-' . $this->monthfilter($startmonth) . '-' . $startyear;
 
         $endday = substr($dateend, 0, 2);
         $endmonth = substr($dateend, 2, 2);
         $endyear = substr($dateend, 4);
         $end = $endyear . '-' . $endmonth . '-' . $endday;
+        $endFormat = $endday . '-' . $this->monthfilter($endmonth) . '-' . $endyear;
         $endmin1 = Carbon::create($endyear, $endmonth, $endday, 0);
 
-        Excel::create('LAPORAN BULANAN', function($excel) use ($start, $end, $startmin1) { 
-            $excel->sheet('LAPORAN BULANAN', function($sheet) use($start, $end, $startmin1) {
+        Excel::create('LAPORAN BULANAN', function($excel) use ($start, $end, $startFormat, $endFormat) { 
+            $excel->sheet('LAPORAN BULANAN', function($sheet) use($start, $end, $startFormat, $endFormat) {
                 $dosen_id = array();
                 $dosen_id2 = array();
                 $objDrawing = new PHPExcel_Worksheet_Drawing;
@@ -471,6 +507,11 @@ class AdminController extends Controller
                                     ->select('kelasmk.*')
                                     ->orderBy('name', 'asc')
                                     ->get();
+                $semester = \DB::table('kelasmk')
+                                    ->join('users', 'kelasmk.dosen_id', '=', 'users.username')
+                                    ->select('kelasmk.*')
+                                    ->orderBy('name', 'asc')
+                                    ->first();
 
                 $sheet->mergeCells('H14:K14');
                 $sheet->mergeCells('A14:A15');
@@ -489,13 +530,13 @@ class AdminController extends Controller
                     'PROGRAM STUDI TEKNIK INFORMATIKA'
                 ));
                 $sheet->row(11, array(
-                    'DAFTAR KEHADIRAN DOSEN SEMESTER GANJIL TAHUN AKADEMIK 2013/2014'
+                    'DAFTAR KEHADIRAN DOSEN SEMESTER GANJIL TAHUN AKADEMIK '.substr($semester->semester, 0, 4).' / '.(substr($semester->semester, 0, 4) + 1).' '
                 ));
                 $sheet->row(12, array(
                     'FAKULTAS TEKNOLOGI INFORMASI UNIVERSITAS TARUMANAGARA'
                 ));
                 $sheet->row(13, array(
-                    '(Tanggal 15 Septermber - 09 Oktober 2013)'
+                    '(Tanggal '. $startFormat .' - '. $endFormat .')'
                 ));
 
                 $sheet->row(14, array(
@@ -524,10 +565,10 @@ class AdminController extends Controller
                 $no = 1;
                 foreach ($studentSubjects as $key => $value) {
 
-                    $pertemuan1 = $this->pertemuan($value->id, '1', $startmin1, $end);
-                    $pertemuan2 = $this->pertemuan($value->id, '2', $startmin1, $end);
-                    $pertemuan3 = $this->pertemuan($value->id, '3', $startmin1, $end);
-                    $pertemuan4 = $this->pertemuan($value->id, '4', $startmin1, $end);
+                    $pertemuan1 = $this->pertemuan($value->id, '1', $start, $end);
+                    $pertemuan2 = $this->pertemuan($value->id, '2', $start, $end);
+                    $pertemuan3 = $this->pertemuan($value->id, '3', $start, $end);
+                    $pertemuan4 = $this->pertemuan($value->id, '4', $start, $end);
                     $jmlhadir = $this->JmlHadirDosen($value->id, $value->dosen_id, $start, $end);
 
                     $matakuliah = Matakuliah::findOrFail($value->matakuliah_id);
@@ -559,7 +600,7 @@ class AdminController extends Controller
                     $dosen_id = $value->dosen_id;
 
                     $sheet->row(count($studentSubjects)+16, array(
-                        'Jakarta,   Oktober 2013'
+                        ' Jakarta, '.date('d').' '.$this->monthfilter(date('m')).' '.date('Y').' '
                     ));
                     $sheet->row(count($studentSubjects)+17, array(
                         'Mengetahui', '', '', '', '', '', 'Petugas'
@@ -617,12 +658,13 @@ class AdminController extends Controller
         })->export('xls');
     }
 
-    public function pertemuan($kelasmk_id, $pertemuan, $startmin1, $end)
+    public function pertemuan($kelasmk_id, $pertemuan, $start, $end)
     {
         $classes = \DB::table('presensidosen')
             ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
             ->select('keterangan')
-            ->whereBetween('presensidosen.waktu', [$startmin1, $end])
+            ->where('presensidosen.waktu', '>=', $start)
+            ->where('presensidosen.waktu', '<=', $end)
             ->where('kelasmk_id', $kelasmk_id)
             ->where('pertemuan', $pertemuan)
             ->first();
@@ -639,7 +681,8 @@ class AdminController extends Controller
         $classes = \DB::table('presensidosen')
             ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
             ->select('keterangan')
-            ->whereBetween('presensidosen.waktu', [$start, $end])
+            ->where('presensidosen.waktu', '>=', $start)
+            ->where('presensidosen.waktu', '<=', $end)
             ->where('keterangan', '1')
             ->where('kelasmk_id', $kelasmk_id)
             ->where('NIK', $dosen_id)
@@ -653,6 +696,37 @@ class AdminController extends Controller
             }
             return $classes;
         }
+    }
+
+    public function monthfilter($month)
+    {
+        Switch ($month){
+            case 1 : $month="Januari";
+                Break;
+            case 2 : $month="Februari";
+                Break;
+            case 3 : $month="Maret";
+                Break;
+            case 4 : $month="April";
+                Break;
+            case 5 : $month="Mei";
+                Break;
+            case 6 : $month="Juni";
+                Break;
+            case 7 : $month="Juli";
+                Break;
+            case 8 : $month="Agustus";
+                Break;
+            case 9 : $month="September";
+                Break;
+            case 10 : $month="Oktober";
+                Break;
+            case 11 : $month="November";
+                Break;
+            case 12 : $month="Desember";
+                Break;
+            }
+        return $month;
     }
 
 }

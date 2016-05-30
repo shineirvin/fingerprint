@@ -36,7 +36,7 @@
 					<li><a href="{!! url('jenisruangDataView') !!}" class="{!! set_active('jenisruangDataView') !!}"><span class="title">Jenis Ruang</span></a></li>
 				</ul>
 			</li>
-
+			
 			@if (Auth::user()->roles === 'Admin')
 			<li class="gui-folder">
 				<a>
@@ -49,8 +49,10 @@
 					<li><a href="{!! url('changepassmahasiswa') !!}" class="{!! set_active('changepassmahasiswa') !!}"><span class="title">Mahasiswa</span></a></li>
 				</ul>
 			</li>
+			{!! Form::hidden($datetime = Carbon\Carbon::now()) !!}
+        	{!! Form::hidden($currentsemesterDirty = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2')) !!}
 			<li class="{!! set_active('adminvalidation') !!}">
-				<a href="{!! url('adminvalidation') !!}">
+				<a href="{!! url('adminvalidation/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Attendance Validation</span>
 				</a>
@@ -79,7 +81,7 @@
             @endif
         @endforeach
 
-		{!! Form::hidden($mahasiswa_id = App\Asistenkelas::where('nim', Auth::user()->username)->get()) !!}
+		{!! Form::hidden($mahasiswa_id = App\Asistenkelas::where('nim', Auth::user()->username)->where('status', '1')->get()) !!}
         @foreach ($mahasiswa_id as $mahasiswa_nim)
             @if (!$mahasiswa_nim) 
                 {!! Form::hidden($mahasiswa_id = FALSE) !!}
@@ -128,13 +130,33 @@
 					<span class="title">Report Lab</span>
 				</a>
 			</li>											
-
 			@endif
+
+
+
 			@if (Auth::user()->roles === 'Admin')
-			<li class="{!! set_active('reportAdmin') !!}">
-				<a href="{!! url('reportAdmin') !!}">
+			<li class="{!! set_active('reportAdmin/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportAdmin/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
-					<span class="title">Report</span>
+					<span class="title">Report Dosen</span>
+				</a>
+			</li>
+			<li class="{!! set_active('reportAdminLab/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportAdminLab/'. $currentsemesterDirty) !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Dosen Lab</span>
+				</a>
+			</li>
+			<li class="{!! set_active('reportMhsAdmin/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportMhsAdmin/'. $currentsemesterDirty) !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Mahasiswa</span>
+				</a>
+			</li>
+			<li class="{!! set_active('reportMhsLabAdmin/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportMhsLabAdmin/'. $currentsemesterDirty) !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Mahasiswa Lab</span>
 				</a>
 			</li>
 			@endif

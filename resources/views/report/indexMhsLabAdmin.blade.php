@@ -5,7 +5,7 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Rekap Kehadiran Dosen</b> </h2> 
+				<h2 class="text-primary"> Rekap Kehadiran Mahasiswa</b> </h2> 
 			</div>
 			@include('partials.flash')
 			<div class="section-body">
@@ -18,8 +18,8 @@
 							<table id="datatable1" class="table table-striped table-hover table-bordered">
 						        <thead>
 						            <tr>
-						                <th rowspan="2" style="vertical-align: middle"> NIK </th>
-						                <th rowspan="2" style="vertical-align: middle"> NAMA DOSEN </th>
+						                <th rowspan="2" style="vertical-align: middle"> NIM </th>
+						                <th rowspan="2" style="vertical-align: middle"> NAMA MAHASISWA </th>
 						                <th rowspan="2" style="vertical-align: middle"> KODE MK </th>
 						                <th rowspan="2" style="vertical-align: middle"> NAMA MK </th>
 						                <th rowspan="2" style="vertical-align: middle"> SKS </th>
@@ -72,6 +72,33 @@
 		});
 		$('#datatable1').DataTable({
 			"dom": 'Blfrtip',
+		    "select": true,
+			"iDisplayLength": 100, 
+			"order": [[ 0, "asc" ]],
+	        ajax: '{!! url('reportMhsLabAdminData/'. $currentsemesterParams) !!}',
+	        columns: [
+	            { data: 'nim'},
+	            { data: 'nama_mahasiswa'},
+	            { data: 'matakuliah_id'},
+	            { data: 'nama_matakuliah'},
+	            { data: 'sks'},
+	            { data: 'kelas'},
+	            { data: '1'},
+	            { data: '2'},
+	            { data: '3'},
+	            { data: '4'},
+	            { data: '5'},
+	            { data: '6'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: '0'},
+	            { data: 'jml_hadir'},
+	        ],
 	        "buttons": [
 	        	{
 	                extend: 'pdfHtml5',
@@ -93,33 +120,6 @@
 	                
 	        	}
 		    ],
-		    "select": true,
-			"iDisplayLength": 100, 
-			"order": [[ 0, "asc" ]],
-	        ajax: '{!! url('reportAdminData/'. $currentsemesterParams) !!}',
-	        columns: [
-	            { data: 'dosen_id'},
-	            { data: 'nama_dosen'},
-	            { data: 'matakuliah_id'},
-	            { data: 'nama_matakuliah'},
-	            { data: 'sks'},
-	            { data: 'kelas'},
-	            { data: '1'},
-	            { data: '2'},
-	            { data: '3'},
-	            { data: '4'},
-	            { data: '5'},
-	            { data: '6'},
-	            { data: '7'},
-	            { data: '8'},
-	            { data: '9'},
-	            { data: '10'},
-	            { data: '11'},
-	            { data: '12'},
-	            { data: '13'},
-	            { data: '14'},
-	            { data: 'jml_hadir'},
-	        ],
 			"language": {
 				"lengthMenu": '_MENU_ entries per page',
 				"search": '<i class="fa fa-search"></i>',

@@ -12,7 +12,7 @@
 			<div class="card">
 				<div class="card-body">
 					@include ('errors.list')
-					{!! Form::model($matakuliah = new App\Kelaspengganti, ['url' => 'kelaspenggantiData', 'class' => 'form-horizontal', 'method' => 'POST']) !!}
+					{!! Form::model($kelaspengganti = new App\Kelaspengganti, ['url' => 'kelaspenggantiData', 'class' => 'form-horizontal', 'method' => 'POST']) !!}
 						@include ('admin/kelaspengganti.form', ['SubmitButtonText' => 'Tambah Kelas Pengganti'])
 					{!! Form::close() !!}
 				</div>
@@ -21,15 +21,8 @@
 	</section>
 </div><!--end #content-->
 <!-- END CONTENT -->
-	@section('intJS')
-		<script>
-		    $('#select1').select2({
-
-        	});
-		    $('#select2').select2({
-
-        	});
-        	
+	@section('clockpicker')
+		<script>        	
         	$('.clockpicker').clockpicker();
         </script>
     @endsection

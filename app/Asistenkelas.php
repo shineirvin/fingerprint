@@ -14,7 +14,7 @@ class Asistenkelas extends Model
         'id_kelas',
         'nim',
         'semester',
-        'recstatus',
+        'status',
     ];
 
     /**

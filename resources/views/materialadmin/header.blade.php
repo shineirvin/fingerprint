@@ -34,20 +34,12 @@
 					</a>
 					<ul class="dropdown-menu animation-dock">
 						<li class="dropdown-header">Config</li>
-						<li><a href="profile">My profile</a></li>
-						<li><a href="materialadmin/html/pages/blog/post.html">My blog <span class="badge style-danger pull-right">16</span></a></li>
+						<li><a href="{{!! url('profile') !!}}">My profile</a></li>
 						<li class="divider"></li>
 						<li><a href="{{ url('/logout') }}"><i class="fa fa-fw fa-power-off text-danger"></i> Logout</a></li>
 					</ul><!--end .dropdown-menu -->
 				</li><!--end .dropdown -->
 			</ul><!--end .header-nav-profile -->
-<!-- 			<ul class="header-nav header-nav-toggle">
-				<li>
-					<a class="btn btn-icon-toggle btn-default" href="#offcanvas-search" data-toggle="offcanvas" data-backdrop="false">
-						<i class="fa fa-ellipsis-v"></i>
-					</a>
-				</li>
-			</ul> -->
 		</div><!--end #header-navbar-collapse -->
 	</div>
 </header>

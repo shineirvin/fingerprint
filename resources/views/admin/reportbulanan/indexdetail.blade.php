@@ -5,7 +5,7 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Rekap Bulanan Kehadiran Dosen</b> </h2> 
+				<h2 class="text-primary"> Rekap Bulanan Kehadiran Dosen ( {!! $start !!} - {!! $end !!} )</b> </h2> 
 			</div>
 			@include('partials.flash')
 			<div class="section-body">

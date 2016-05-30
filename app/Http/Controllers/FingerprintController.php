@@ -230,7 +230,6 @@ class FingerprintController extends Controller
 		$updateStatusKP->status = '0';
 		$updateStatusKP->save();
 
-		/*$this->matchfingerprint($ip_address);*/
 		$this->cleardata($ip_address);
 
 		return redirect('presensi');
@@ -269,6 +268,43 @@ class FingerprintController extends Controller
         		->orderBy('time_start', 'desc')
         		->where('semester', $semester)
         		->first();
+        $kelaspengganti = Kelaspenggantilab::select('id', 'jadwalkelas_id', 'waktu', 'hari_id', 'status')
+        				  ->where('jadwalkelas_id', $data->id_kelas)
+        				  ->where('ruang_id', $ruang->ruang_id)
+        				  ->where('status', '1')
+        				  ->where('hari_id', $hari)
+        				  ->orderBy('id', 'desc')
+        				  ->first();
+
+        if ($kelaspenggati) {
+        	return;
+        }
+
+        $kelaspengganti = kelaspenggantilab::select('id', 'jadwalkelas_id', 'waktu', 'hari_id', 'status')
+						  ->where('waktu', '<=', Carbon::now())
+        				  ->where('jadwalkelas_id', $data->id_kelas)
+        				  ->where('ruang_id', $ruang->ruang_id)
+        				  ->where('status', '1')
+        				  ->where('hari_id', $hari)
+        				  ->orderBy('id', 'desc')
+        				  ->first();
+
+        if (!$kelaspenggati) {
+	        $data = Jadwalkelas::select('id', 'waktu', 'ruang_id', 'dosen_id', 'semester')
+	        		->where('waktu', '<=', Carbon::now())
+	        		->where('hari_id', $hari)
+	        		->where('ruang_id', $ruang->ruang_id)
+	        		->where('semester', $semester)
+	        		->orderBy('waktu', 'desc')
+	        		->first();
+	        
+	        $time = $data->waktu;
+        } else { 
+	        $data = Jadwalkelas::select('id', 'waktu', 'ruang_id', 'dosen_id', 'semester')
+	        		->where('id', $kelaspengganti->jadwalkelas_id)
+	        		->first();
+       		$time = $kelaspengganti->waktu;
+       	}
 
         $timeStart = $data->time_start;
 		$nim = array();
@@ -433,6 +469,10 @@ class FingerprintController extends Controller
 	    \DB::table('presensilab')->insert($absensi);
 	    \DB::table('presensiasdos')->insert($absensiAsdos);
 		\DB::table('presensidosenlab')->insert($absensiDosen);
+
+		$updateStatusKP = Kelaspenggantilab::find($jadwal_kelas_id);
+		$updateStatusKP->status = '0';
+		$updateStatusKP->save();
 
 		$this->cleardata($ip_address);
 

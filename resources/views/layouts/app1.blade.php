@@ -50,7 +50,7 @@
 		<script src="{!! url('materialadmin/assets/js/libs/moment/moment.min.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/bootstrap-datepicker/bootstrap-datepicker.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/select2/select2.js')!!}"></script>
-		<script src="{!! url('materialadmin/assets/js/libs/spin.js/spin.min.js')!!}"></script>
+		<!-- <script src="{!! url('materialadmin/assets/js/libs/spin.js/spin.min.js')!!}"></script> -->
 		<script src="{!! url('materialadmin/assets/js/libs/autosize/jquery.autosize.min.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/DataTables/jquery.dataTables.min.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/libs/DataTables/extensions/Button/js/dataTables.buttons.min.js')!!}"></script>
@@ -67,14 +67,20 @@
 		<script src="{!! url('materialadmin/assets/js/core/source/AppNavSearch.js')!!}"></script>
 		<script src="{!! url('materialadmin/assets/js/core/source/AppVendor.js')!!}"></script>
 
-		@yield('intJS')
+		@yield('clockpicker')
 
 		@include('flash')
 
 		<script>
 			$('#datepicker').datepicker({ 
 				format: 'dd/mm/yyyy'
-			}) 
+			}); 
+			$('#select1').select2({
+
+        	});
+		    $('#select2').select2({
+
+        	});
 		</script>
 
 	</body>
