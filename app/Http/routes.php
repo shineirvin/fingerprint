@@ -30,11 +30,16 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('presensilab/{id}/{encounter}', 'PresensiLabController@validasi');
 	Route::get('getDataPresensiMahasiswaLab/{id}/{encounter}', 'PresensiLabController@getDataPresensiMahasiswa');
 
-	Route::get('reportDosen', 'ReportController@indexDosen');
-	Route::get('reportDosenData', 'ReportController@reportDosenData');
 
-	Route::get('reportMahasiswa', 'ReportController@indexMahasiswa');
-	Route::get('reportMahasiswaData', 'ReportController@reportMahasiswaData');
+
+	/**
+	 * All report kelas
+	 */
+	Route::get('reportDosen/{semester}', 'ReportController@indexDosen');
+	Route::get('reportDosenData/{semester}', 'ReportController@reportDosenData');
+
+	Route::get('reportMahasiswa/{semester}', 'ReportController@indexMahasiswa');
+	Route::get('reportMahasiswaData/{semester}', 'ReportController@reportMahasiswaData');
 
 	Route::get('reportAdmin/{semester}', 'ReportController@indexAdmin');
 	Route::get('reportAdminData/{semester}', 'ReportController@reportAdminData');
@@ -42,21 +47,23 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('reportMhsAdmin/{semester}', 'ReportController@indexMhsAdmin');
 	Route::get('reportMhsAdminData/{semester}', 'ReportController@reportMhsAdminData');
 
+	Route::get('reportMhsAdmin/{semester}', 'ReportController@indexMhsAdmin');
+	Route::get('reportMhsAdminData/{semester}', 'ReportController@reportMhsAdminData');
 
 
 
 
-	Route::get('reportDosenLab', 'ReportLabController@indexDosen');
-	Route::get('reportDosenLabData', 'ReportLabController@reportDosenData');
+	/**
+	 * All report lab
+	 */
+	Route::get('reportDosenLab/{semester}', 'ReportLabController@indexDosen');
+	Route::get('reportDosenLabData/{semester}', 'ReportLabController@reportDosenData');
 
-	Route::get('reportMahasiswaLab', 'ReportLabController@indexMahasiswa');
-	Route::get('reportMahasiswaLabData', 'ReportLabController@reportMahasiswaData');
+	Route::get('reportMahasiswaLab/{semester}', 'ReportLabController@indexMahasiswa');
+	Route::get('reportMahasiswaLabData/{semester}', 'ReportLabController@reportMahasiswaData');
 
-	Route::get('reportMahasiswaLab', 'ReportLabController@indexMahasiswa');
-	Route::get('reportMahasiswaLabData', 'ReportLabController@reportMahasiswaData');
-
-	Route::get('reportAsdos', 'ReportLabController@indexAsdos');
-	Route::get('reportAsdosData', 'ReportLabController@reportAsdosData');
+	Route::get('reportAsdos/{semester}', 'ReportLabController@indexAsdos');
+	Route::get('reportAsdosData/{semester}', 'ReportLabController@reportAsdosData');
 
 	Route::get('reportAdminLab/{semester}', 'ReportLabController@indexAdminLab');
 	Route::get('reportAdminLabData/{semester}', 'ReportLabController@reportAdminLabData');
@@ -64,10 +71,15 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('reportMhsLabAdmin/{semester}', 'ReportLabController@indexMhsLabAdmin');
 	Route::get('reportMhsLabAdminData/{semester}', 'ReportLabController@reportMhsLabAdminData');
 
+	Route::get('reportAllAsdos/{semester}', 'ReportLabController@indexAllAsdos');
+	Route::get('reportAllAsdosData/{semester}', 'ReportLabController@reportAllAsdosData');
 
 
 
-//-------------------------------------------------MASTERTABLE----------------------------------------------------//
+
+	/**
+	 * Master Table
+	 */
 	Route::get('matakuliahDataView', 'MasterController@index_matakuliah');
 	Route::get('getDatamatakuliah', 'MasterController@getDataMatakuliah');
 	Route::get('matakuliahData', 'MasterController@registermatakuliah');
@@ -135,7 +147,36 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('reportBulanan/{dateS}/{dateE}', 'AdminController@reportBulananDetail_index');
 	Route::get('getDataReportBulanan/{dateS}/{dateE}', 'AdminController@getDataReportBulanan');
 
+
+
+
+
+
+	/** excel report */
 	Route::get('monthlyreportexcel/{dateS}/{dateE}', 'AdminController@monthlyreportexcel');
+
+
+	Route::get('reportDosenExcel/{semester}', 'ReportController@reportDosenExcel');
+	Route::get('reportMahasiswaExcel/{semester}', 'ReportController@reportMahasiswaExcel');
+
+
+	Route::get('reportDosenLabExcel/{semester}', 'ReportLabController@reportDosenLabExcel');
+	Route::get('reportMahasiswaLabExcel/{semester}', 'ReportLabController@reportMahasiswaLabExcel');
+	Route::get('reportAsdosExcel/{semester}', 'ReportLabController@reportAsdosExcel');
+	
+
+
+
+
+	Route::get('reportAllDosenExcel/{semester}', 'ReportController@reportAllDosenExcel');
+	Route::get('reportAllMahasiswaExcel/{semester}', 'ReportController@reportAllMahasiswaExcel');
+
+	Route::get('reportAllDosenLabExcel/{semester}', 'ReportLabController@reportAllDosenLabExcel');
+	Route::get('reportAllMahasiswaLabExcel/{semester}', 'ReportLabController@reportAllMahasiswaLabExcel');
+	Route::get('reportAllAsdosLabExcel/{semester}', 'ReportLabController@reportAllAsdosLabExcel');
+
+
+
 
 
 

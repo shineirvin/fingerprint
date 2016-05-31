@@ -5,12 +5,12 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Rekap Bulanan Kehadiran Dosen ( {!! $start !!} - {!! $end !!} )</b> </h2> 
+				<h2 class="text-primary"> Rekap Bulanan Kehadiran Dosen ( {!! $start !!}   -   {!! $end !!} )</b> </h2> 
 			</div>
 			@include('partials.flash')
 			<div class="section-body">
 
-				<a href="{!! url('monthlyreportexcel/'. $datestart . '/'. $dateend) !!}" class="btn btn-success"> EXCEL </a>
+				<a href="{!! url('monthlyreportexcel/'. $datestart . '/'. $dateend) !!}" class="btn btn-success"> <i class="fa fa-file-excel-o"> </i> EXCEL </a>
 				<!-- BEGIN DATATABLE 1 -->
 				<div class="row">
 					<div class="col-lg-12">

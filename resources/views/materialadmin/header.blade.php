@@ -34,9 +34,9 @@
 					</a>
 					<ul class="dropdown-menu animation-dock">
 						<li class="dropdown-header">Config</li>
-						<li><a href="{{!! url('profile') !!}}">My profile</a></li>
+						<li><a href="{!! url('profile') !!}">My profile</a></li>
 						<li class="divider"></li>
-						<li><a href="{{ url('/logout') }}"><i class="fa fa-fw fa-power-off text-danger"></i> Logout</a></li>
+						<li><a href="{!! url('/logout') !!}"><i class="fa fa-fw fa-power-off text-danger"></i> Logout</a></li>
 					</ul><!--end .dropdown-menu -->
 				</li><!--end .dropdown -->
 			</ul><!--end .header-nav-profile -->

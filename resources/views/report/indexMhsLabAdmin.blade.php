@@ -5,7 +5,7 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Rekap Kehadiran Mahasiswa</b> </h2> 
+				<h2 class="text-primary"> Rekap Kehadiran Mahasiswa Semester {!! $currentsemesterParamsFilter !!}</b> </h2> 
 			</div>
 			@include('partials.flash')
 			<div class="section-body">
@@ -14,6 +14,7 @@
 				</div>
 				<div class="row">
 					<div class="col-lg-12">
+					<a href="{!! url('reportAllMahasiswaLabExcel/'. $currentsemesterParams) !!}" class="btn btn-success"> <i class="fa fa-file-excel-o"> </i> EXCEL </a>
 						<div class="table-responsive">
 							<table id="datatable1" class="table table-striped table-hover table-bordered">
 						        <thead>
@@ -89,14 +90,14 @@
 	            { data: '4'},
 	            { data: '5'},
 	            { data: '6'},
-	            { data: '0'},
-	            { data: '0'},
-	            { data: '0'},
-	            { data: '0'},
-	            { data: '0'},
-	            { data: '0'},
-	            { data: '0'},
-	            { data: '0'},
+	            { data: '7'},
+	            { data: '8'},
+	            { data: '9'},
+	            { data: '10'},
+	            { data: '11'},
+	            { data: '12'},
+	            { data: '13'},
+	            { data: '14'},
 	            { data: 'jml_hadir'},
 	        ],
 	        "buttons": [

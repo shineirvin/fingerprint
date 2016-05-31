@@ -5,7 +5,7 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Rekap Kehadiran Dosen</b> </h2> 
+				<h2 class="text-primary"> Rekap Kehadiran Dosen Semester {!! $currentsemesterParamsFilter !!} </b> </h2> 
 			</div>
 			@include('partials.flash')
 			<div class="section-body">
@@ -14,6 +14,7 @@
 				</div>
 				<div class="row">
 					<div class="col-lg-12">
+					<a href="{!! url('reportAllDosenExcel/'. $currentsemesterParams) !!}" class="btn btn-success"> <i class="fa fa-file-excel-o"> </i> EXCEL </a>
 						<div class="table-responsive">
 							<table id="datatable1" class="table table-striped table-hover table-bordered">
 						        <thead>

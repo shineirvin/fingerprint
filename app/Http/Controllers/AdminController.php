@@ -326,145 +326,6 @@ class AdminController extends Controller
     }
 
 
-    /**
-     * Monthly Report for Lecturer
-     */
-    public function reportBulanan_index()
-    {
-        return view('admin/reportbulanan.index');
-    }
-
-    public function getDataReportBulanan($datestart, $dateend)
-    {
-        $startday = substr($datestart, 0, 2);
-        $startmonth = substr($datestart, 2, 2);
-        $startyear = substr($datestart, 4);
-        $start = $startyear . '-' . $startmonth . '-' . $startday;
-
-        $endday = substr($dateend, 0, 2);
-        $endmonth = substr($dateend, 2, 2);
-        $endyear = substr($dateend, 4);
-        $end = $endyear . '-' . $endmonth . '-' . $endday;
-        $endmin1 = Carbon::create($endyear, $endmonth, $endday, 0);
-
-        $lecturerSchedules = \DB::table('kelasmk')
-                            ->join('users', 'kelasmk.dosen_id', '=', 'users.username')
-                            ->select('kelasmk.*')
-                            ->orderBy('name', 'asc')
-                            ->get();
-        $lecturerSchedules = collect($lecturerSchedules);
-
-        return Datatables::of($lecturerSchedules)
-            ->editColumn('nama_dosen', function ($lecturerSchedules) {
-                $LecturerNames = User::select('name')->where('username', $lecturerSchedules->dosen_id)->first();
-                return $LecturerNames->name;
-            })
-            ->editColumn('nama_matakuliah', function ($lecturerSchedules) {
-                $Matakuliah = Matakuliah::findOrFail($lecturerSchedules->matakuliah_id);
-                return $Matakuliah->nama_matakuliah;
-            })
-            ->editColumn('matakuliah_id', function ($lecturerSchedules) {
-                return $lecturerSchedules->matakuliah_id;
-            })
-            ->editColumn('kelas', function ($lecturerSchedules) {
-                return $lecturerSchedules->kelas;
-            })
-            ->editColumn('sks', function ($lecturerSchedules) {
-                $sks = Matakuliah::findOrFail($lecturerSchedules->matakuliah_id);
-                return $sks->sks;
-            })
-            ->editColumn('0', function ($lecturerSchedules) {
-                return '';
-            })
-            ->editColumn('jml_hadir', function ($lecturerSchedules) use($start, $end) {
-                $classes = \DB::table('presensidosen')
-                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
-                    ->select('keterangan')
-                    ->where('presensidosen.waktu', '>=', $start)
-                    ->where('presensidosen.waktu', '<=', $end)
-                    ->where('keterangan', '1')
-                    ->where('kelasmk_id', $lecturerSchedules->id)
-                    ->where('NIK', $lecturerSchedules->dosen_id)
-                    ->count('pertemuan');  
-                if (!$classes) {
-                    return '';
-                }
-                else {
-                    if ($classes >= 4) {
-                        return '4';
-                    }
-                    return $classes;
-                }
-            })
-            ->editColumn('1', function ($lecturerSchedules) use($start, $end) {
-                $classes = \DB::table('presensidosen')
-                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
-                    ->select('keterangan')
-                    ->where('presensidosen.waktu', '>=', $start)
-                    ->where('presensidosen.waktu', '<=', $end)
-                    ->where('kelasmk_id', $lecturerSchedules->id)
-                    ->where('pertemuan', '1')
-                    ->first();
-                if (!$classes) {
-                    return '';
-                }
-                else {
-                    return $classes->keterangan;
-                }
-            })
-            ->editColumn('2', function ($lecturerSchedules) use($start, $end) {
-
-                $classes = \DB::table('presensidosen')
-                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
-                    ->select('keterangan')
-                    ->where('presensidosen.waktu', '>=', $start)
-                    ->where('presensidosen.waktu', '<=', $end)
-                    ->where('kelasmk_id', $lecturerSchedules->id)
-                    ->where('pertemuan', '2')
-                    ->first();
-                if (!$classes) {
-                    return '';
-                }
-                else {
-                    return $classes->keterangan;
-                }
-            })
-            ->editColumn('3', function ($lecturerSchedules) use($start, $end) {
-                $classes = \DB::table('presensidosen')
-                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
-                    ->select('keterangan')
-                    ->where('presensidosen.waktu', '>=', $start)
-                    ->where('presensidosen.waktu', '<=', $end)
-                    ->where('kelasmk_id', $lecturerSchedules->id)
-                    ->where('pertemuan', '3')
-                    ->first();
-                if (!$classes) {
-                    return '';
-                }
-                else {
-                    return $classes->keterangan;
-                }
-            })
-            ->editColumn('4', function ($lecturerSchedules) use($start, $end) {
-                $classes = \DB::table('presensidosen')
-                    ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
-                    ->select('keterangan')
-                    ->where('presensidosen.waktu', '>=', $start)
-                    ->where('presensidosen.waktu', '<=', $end)
-                    ->where('kelasmk_id', $lecturerSchedules->id)
-                    ->where('pertemuan', '4')
-                    ->first();
-                if (!$classes) {
-                    return '';
-                }
-                else {
-                    return $classes->keterangan;
-                }
-            })
-            ->make(true);     
-    }
-
-
     public function reportBulananDetail_index($datestart, $dateend)
     {       
         $startday = substr($datestart, 0, 2);
@@ -485,6 +346,12 @@ class AdminController extends Controller
         $startyear = substr($datestart, 4);
         $start = $startyear . '-' . $startmonth . '-' . $startday;
         $startFormat = $startday . '-' . $this->monthfilter($startmonth) . '-' . $startyear;
+        if ($startmonth < 6) {
+            $semesterString = 'GANJIL';
+        }
+        else {
+            $semesterString = 'GENAP';
+        }
 
         $endday = substr($dateend, 0, 2);
         $endmonth = substr($dateend, 2, 2);
@@ -493,8 +360,8 @@ class AdminController extends Controller
         $endFormat = $endday . '-' . $this->monthfilter($endmonth) . '-' . $endyear;
         $endmin1 = Carbon::create($endyear, $endmonth, $endday, 0);
 
-        Excel::create('LAPORAN BULANAN', function($excel) use ($start, $end, $startFormat, $endFormat) { 
-            $excel->sheet('LAPORAN BULANAN', function($sheet) use($start, $end, $startFormat, $endFormat) {
+        Excel::create('LAPORAN BULANAN', function($excel) use ($start, $end, $startFormat, $endFormat, $semesterString) { 
+            $excel->sheet('LAPORAN BULANAN', function($sheet) use($start, $end, $startFormat, $endFormat, $semesterString) {
                 $dosen_id = array();
                 $dosen_id2 = array();
                 $objDrawing = new PHPExcel_Worksheet_Drawing;
@@ -530,7 +397,7 @@ class AdminController extends Controller
                     'PROGRAM STUDI TEKNIK INFORMATIKA'
                 ));
                 $sheet->row(11, array(
-                    'DAFTAR KEHADIRAN DOSEN SEMESTER GANJIL TAHUN AKADEMIK '.substr($semester->semester, 0, 4).' / '.(substr($semester->semester, 0, 4) + 1).' '
+                    'DAFTAR KEHADIRAN DOSEN SEMESTER '.$semesterString.' TAHUN AKADEMIK '.substr($semester->semester, 0, 4).' / '.(substr($semester->semester, 0, 4) + 1).' '
                 ));
                 $sheet->row(12, array(
                     'FAKULTAS TEKNOLOGI INFORMASI UNIVERSITAS TARUMANAGARA'
@@ -688,7 +555,7 @@ class AdminController extends Controller
             ->where('NIK', $dosen_id)
             ->count('keterangan');  
         if (!$classes) {
-            return '';
+            return '0';
         }
         else {
             if ($classes >= 4) {
@@ -729,4 +596,141 @@ class AdminController extends Controller
         return $month;
     }
 
+
+    /**
+     * Monthly Report for Lecturer
+     */
+    public function reportBulanan_index()
+    {
+        return view('admin/reportbulanan.index');
+    }
+
+    public function getDataReportBulanan($datestart, $dateend)
+    {
+        $startday = substr($datestart, 0, 2);
+        $startmonth = substr($datestart, 2, 2);
+        $startyear = substr($datestart, 4);
+        $start = $startyear . '-' . $startmonth . '-' . $startday;
+
+        $endday = substr($dateend, 0, 2);
+        $endmonth = substr($dateend, 2, 2);
+        $endyear = substr($dateend, 4);
+        $end = $endyear . '-' . $endmonth . '-' . $endday;
+        $endmin1 = Carbon::create($endyear, $endmonth, $endday, 0);
+
+        $lecturerSchedules = \DB::table('kelasmk')
+                            ->join('users', 'kelasmk.dosen_id', '=', 'users.username')
+                            ->select('kelasmk.*')
+                            ->orderBy('name', 'asc')
+                            ->get();
+        $lecturerSchedules = collect($lecturerSchedules);
+
+        return Datatables::of($lecturerSchedules)
+            ->editColumn('nama_dosen', function ($lecturerSchedules) {
+                $LecturerNames = User::select('name')->where('username', $lecturerSchedules->dosen_id)->first();
+                return $LecturerNames->name;
+            })
+            ->editColumn('nama_matakuliah', function ($lecturerSchedules) {
+                $Matakuliah = Matakuliah::findOrFail($lecturerSchedules->matakuliah_id);
+                return $Matakuliah->nama_matakuliah;
+            })
+            ->editColumn('matakuliah_id', function ($lecturerSchedules) {
+                return $lecturerSchedules->matakuliah_id;
+            })
+            ->editColumn('kelas', function ($lecturerSchedules) {
+                return $lecturerSchedules->kelas;
+            })
+            ->editColumn('sks', function ($lecturerSchedules) {
+                $sks = Matakuliah::findOrFail($lecturerSchedules->matakuliah_id);
+                return $sks->sks;
+            })
+            ->editColumn('jml_hadir', function ($lecturerSchedules) use($start, $end) {
+                return $this->jumlahHadirDosenBulanan($lecturerSchedules, $start, $end);
+            })
+            ->editColumn('1', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '1');
+            })
+            ->editColumn('2', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '2');
+            })
+            ->editColumn('3', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '3');
+            })
+            ->editColumn('4', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '4');
+            })
+            ->editColumn('5', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '5');
+            })
+            ->editColumn('6', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '6');
+            })
+            ->editColumn('7', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '7');
+            })
+            ->editColumn('8', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '8');
+            })
+            ->editColumn('9', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '9');
+            })
+            ->editColumn('10', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '10');
+            })
+            ->editColumn('11', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '11');
+            })
+            ->editColumn('12', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '12');
+            })
+            ->editColumn('13', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '13');
+            })
+            ->editColumn('14', function ($lecturerSchedules) use($start, $end) {
+                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '14');
+            })
+            ->make(true);     
+    }
+
+
+    public function jumlahHadirDosenBulanan($lecturerSchedules, $start, $end)
+    {
+        $classes = \DB::table('presensidosen')
+            ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
+            ->select('keterangan')
+            ->where('presensidosen.waktu', '>=', $start)
+            ->where('presensidosen.waktu', '<=', $end)
+            ->where('keterangan', '1')
+            ->where('kelasmk_id', $lecturerSchedules->id)
+            ->where('nik', $lecturerSchedules->dosen_id)
+            ->count('pertemuan');  
+        if (!$classes) {
+            return '0';
+        }
+        else {
+            if ($classes >= 4) {
+                return '4';
+            }
+            return $classes;
+        }
+    }
+
+    public function pertemuanDosenBulanan($lecturerSchedules, $start, $end, $pertemuan)
+    {
+        $classes = \DB::table('presensidosen')
+            ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
+            ->select('keterangan')
+            ->where('presensidosen.waktu', '>=', $start)
+            ->where('presensidosen.waktu', '<=', $end)
+            ->where('kelasmk_id', $lecturerSchedules->id)
+            ->where('nik', $lecturerSchedules->dosen_id)
+            ->where('pertemuan', '1')
+            ->first();
+        if (!$classes) {
+            return '';
+        }
+        else {
+            return $classes->keterangan;
+        }
+    }
 }

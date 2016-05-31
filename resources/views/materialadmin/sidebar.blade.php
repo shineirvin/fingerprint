@@ -1,3 +1,5 @@
+{!! Form::hidden($datetime = Carbon\Carbon::now()) !!}
+{!! Form::hidden($currentsemesterDirty = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2')) !!}
 <div id="menubar" class="menubar-inverse ">
 	<div class="menubar-fixed-panel">
 		<div>
@@ -49,8 +51,6 @@
 					<li><a href="{!! url('changepassmahasiswa') !!}" class="{!! set_active('changepassmahasiswa') !!}"><span class="title">Mahasiswa</span></a></li>
 				</ul>
 			</li>
-			{!! Form::hidden($datetime = Carbon\Carbon::now()) !!}
-        	{!! Form::hidden($currentsemesterDirty = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2')) !!}
 			<li class="{!! set_active('adminvalidation') !!}">
 				<a href="{!! url('adminvalidation/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
@@ -109,8 +109,8 @@
 
 
 			@if (Auth::user()->roles === 'Dosen')
-			<li class="{!! set_active('reportDosen') !!}">
-				<a href="{!! url('reportDosen') !!}">
+			<li class="{!! set_active('reportDosen/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportDosen/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report</span>
 				</a>
@@ -118,14 +118,14 @@
 
 			@endif
 			@if (Auth::user()->roles === 'Mahasiswa')
-			<li class="{!! set_active('reportMahasiswa') !!}">
-				<a href="{!! url('reportMahasiswa') !!}">
+			<li class="{!! set_active('reportMahasiswa/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportMahasiswa/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report</span>
 				</a>
 			</li>
-			<li class="{!! set_active('reportMahasiswaLab') !!}">
-				<a href="{!! url('reportMahasiswaLab') !!}">
+			<li class="{!! set_active('reportMahasiswaLab/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportMahasiswaLab/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report Lab</span>
 				</a>
@@ -159,19 +159,25 @@
 					<span class="title">Report Mahasiswa Lab</span>
 				</a>
 			</li>
+			<li class="{!! set_active('reportAllAsdos/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportAllAsdos/'. $currentsemesterDirty) !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Asdos Lab</span>
+				</a>
+			</li>
 			@endif
 
 			@if (Auth::user()->roles === 'Dosen' && Auth::user()->username == $dosen_id)
-			<li class="{!! set_active('reportDosenLab') !!}">
-				<a href="{!! url('reportDosenLab') !!}">
+			<li class="{!! set_active('reportDosenLab/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportDosenLab/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report Lab</span>
 				</a>
 			</li>
 			@endif
 			@if (Auth::user()->roles === 'Mahasiswa' && Auth::user()->username == $mahasiswa_id)
-			<li class="{!! set_active('reportAsdos') !!}">
-				<a href="{!! url('reportAsdos') !!}">
+			<li class="{!! set_active('reportAsdos/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportAsdos/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report Asdos</span>
 				</a>

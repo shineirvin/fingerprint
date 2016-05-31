@@ -5,7 +5,7 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Rekap Kehadiran Mahasiswa Semester {!! $currentsemesterParamsFilter !!}</b> </h2> 
+				<h2 class="text-primary"> Rekap Kehadiran Asdos Semester {!! $currentsemesterParamsFilter !!}</b> </h2> 
 			</div>
 			@include('partials.flash')
 			<div class="section-body">
@@ -14,7 +14,7 @@
 				</div>
 				<div class="row">
 					<div class="col-lg-12">
-					<a href="{!! url('reportAllMahasiswaExcel/'. $currentsemesterParams) !!}" class="btn btn-success"> <i class="fa fa-file-excel-o"> </i> EXCEL </a>
+					<a href="{!! url('reportAllAsdosLabExcel/'. $currentsemesterParams) !!}" class="btn btn-success"> <i class="fa fa-file-excel-o"> </i> EXCEL </a>
 						<div class="table-responsive">
 							<table id="datatable1" class="table table-striped table-hover table-bordered">
 						        <thead>
@@ -71,28 +71,16 @@
 				}
 				window.location = TrueSelected;
 		});
-		$( "#select2" ).change(function() {
-				var selected = $('#select2 option:selected').text();
-				var tahun = selected.slice(0,4);
-				var filteredSelect = selected.slice(5,11);
-				if (filteredSelect == 'GANJIL') {
-					TrueSelected = tahun+'1';
-				}
-				else {
-					TrueSelected = tahun+'2';
-				}
-				window.location = TrueSelected;
-		});
 		$('#datatable1').DataTable({
 			"dom": 'Blfrtip',
 		    "select": true,
 			"iDisplayLength": 100, 
 			"order": [[ 0, "asc" ]],
-	        ajax: '{!! url('reportMhsAdminData/'. $currentsemesterParams) !!}',
+	        ajax: '{!! url('reportAllAsdosData/'. $currentsemesterParams) !!}',
 	        columns: [
 	            { data: 'nim'},
 	            { data: 'nama_mahasiswa'},
-	            { data: 'matakuliah_id'},
+	            { data: 'id_matakuliah'},
 	            { data: 'nama_matakuliah'},
 	            { data: 'sks'},
 	            { data: 'kelas'},
