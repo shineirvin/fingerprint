@@ -1,5 +1,5 @@
 {!! Form::hidden($datetime = Carbon\Carbon::now()) !!}
-{!! Form::hidden($currentsemesterDirty = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2')) !!}
+{!! Form::hidden($currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2') )!!}
 <div id="menubar" class="menubar-inverse ">
 	<div class="menubar-fixed-panel">
 		<div>
@@ -91,16 +91,16 @@
         @endforeach
 
 			@if (Auth::user()->roles === 'Dosen' )
-			<li class="{!! set_active('presensi') !!}">
-				<a href="{!! url('presensi') !!}">
+			<li class="{!! set_active('presensi/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('presensi/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Presensi</span>
 				</a>
 			</li>
 			@endif
 			@if (Auth::user()->roles === 'Dosen' && Auth::user()->username == $dosen_id)
-			<li class="{!! set_active('presensilab') !!}">
-				<a href="{!! url('presensilab') !!}">
+			<li class="{!! set_active('presensilab/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('presensilab/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Presensi Lab</span>
 				</a>
@@ -165,6 +165,18 @@
 					<span class="title">Report Asdos Lab</span>
 				</a>
 			</li>
+			<li class="{!! set_active('reportAdminDosenDetail/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportAdminDosenDetail/'. $currentsemesterDirty. '/0/0/0') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Dosen Detail</span>
+				</a>
+			</li>
+			<li class="{!! set_active('reportAdminDosenDetailLab/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportAdminDosenDetailLab/'. $currentsemesterDirty. '/0/0/0') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Dosen Lab Detail</span>
+				</a>
+			</li>
 			@endif
 
 			@if (Auth::user()->roles === 'Dosen' && Auth::user()->username == $dosen_id)
@@ -172,6 +184,18 @@
 				<a href="{!! url('reportDosenLab/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report Lab</span>
+				</a>
+			</li>
+			<li class="{!! set_active('reportDosenDetail/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportDosenDetail/'. $currentsemesterDirty. '/0/0') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Mahasiswa</span>
+				</a>
+			</li>
+			<li class="{!! set_active('reportDosenDetailLab/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportDosenDetailLab/'. $currentsemesterDirty. '/0/0') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Mahasiswa Lab</span>
 				</a>
 			</li>
 			@endif

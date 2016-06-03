@@ -27,18 +27,30 @@ class PresensiController extends Controller
     {
         $this->middleware('auth');
     }
-    public function index()
+    public function index($currentsemesterParams)
     {
     	$datas = Kelasmk::select('*')->where('dosen_id', Auth::user()->username)->get();
-    	return view('presensi.index', compact('datas'));
+        $datetime = Carbon::now();
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
+        $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
+        $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
+        $allSemester = Kelasmk::lists('semester');
+        foreach ($allSemester as $semester) {
+            $smst[] = substr($semester, 0, 4).' '.(substr($semester, -1) == 1 ? 'GANJIL' : 'GENAP');
+        }
+        $smstDirty = collect($smst);
+        $semester = $smstDirty->unique();
+        $semester->prepend('PILIH SEMESTER');
+
+        return view('presensi.index', compact('datas', 'semester', 'currentsemester', 'currentsemesterDirty', 'currentsemesterParams', 'currentsemesterParamsFilter'));
     }
 
-    public function getDataJadwalDosen()
+    public function getDataJadwalDosen($semester)
     {
-        $lecturerSchedules = Kelasmk::select('*')->where('dosen_id', Auth::user()->username)->get();
+        $lecturerSchedules = Kelasmk::select('*')->where('semester', $semester)->where('dosen_id', Auth::user()->username)->get();
         return Datatables::of($lecturerSchedules)
             ->addColumn('action', function ($lecturerSchedules) {
-                return '<a href="presensi/'.$lecturerSchedules->id.'/0" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
+                return '<a href="../presensi/'.$lecturerSchedules->id.'/0" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
             })
             ->editColumn('recstatus', function ($lecturerSchedules) {
                 return ($lecturerSchedules->recstatus == '1' ? 'Active' : 'Non Active');
@@ -67,7 +79,7 @@ class PresensiController extends Controller
 
         return Datatables::of($presensikelas)
             ->addColumn('action', function ($presensikelas) {
-                return '<a href="presensi/'.$presensikelas->id.'" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
+                return '<a href="../presensi/'.$presensikelas->id.'" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
             })
             ->editColumn('name', function ($presensikelas) {
                 $nama = User::where('username', $presensikelas->nim)->first();

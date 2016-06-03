@@ -5,7 +5,7 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Rekap Kehadiran Dosen Semester {!! $currentsemesterParamsFilter !!} </b> </h2> 
+				<h2 class="text-primary"> Rekap Kehadiran Dosen Semester {!! $currentsemesterParamsFilter !!} </h2> 
 			</div>
 			@include('partials.flash')
 			<div class="section-body">
@@ -27,6 +27,7 @@
 						                <th rowspan="2" style="vertical-align: middle"> KELAS </th>
 						                <th colspan="14" style="text-align: center"> PERTEMUAN KE - </th>
 						                <th rowspan="2" style="vertical-align: middle"> JML HADIR </th>
+						                <th rowspan="2" style="vertical-align: middle"> PRESENTASE </th>
 
 
 						            </tr>
@@ -120,6 +121,7 @@
 	            { data: '13'},
 	            { data: '14'},
 	            { data: 'jml_hadir'},
+	            { data: 'presentase'},
 	        ],
 			"language": {
 				"lengthMenu": '_MENU_ entries per page',

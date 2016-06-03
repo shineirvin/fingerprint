@@ -140,7 +140,7 @@ class AdminController extends Controller
     public function validate_index($currentsemesterParams)
     {
         $datetime = Carbon::now();
-        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2');
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
         $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
         $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
         $allSemester = Kelasmk::lists('semester');
@@ -389,6 +389,7 @@ class AdminController extends Controller
                 $sheet->mergeCells('F14:F15');
                 $sheet->mergeCells('G14:G15');
                 $sheet->mergeCells('L14:L15');
+                $sheet->mergeCells('M14:M15');
 
                 $sheet->row(8, array(
                     '', '', '', 'LAPORAN BULANAN'
@@ -407,7 +408,7 @@ class AdminController extends Controller
                 ));
 
                 $sheet->row(14, array(
-                    'NO','NIK','NAMA DOSEN', 'KODE MK', 'NAMA MATAKULIAH', 'SKS', 'KELAS', 'MINGGU KE -', '', '', '', 'JML HADIR'
+                    'NO','NIK','NAMA DOSEN', 'KODE MK', 'NAMA MATAKULIAH', 'SKS', 'KELAS', 'MINGGU KE -', '', '', '', 'JML HADIR', 'PRESENTASE'
                 ));
                 $sheet->row(15, array(
                     '', '', '', '', '', '', '', '1', '2', '3', '4',
@@ -426,6 +427,7 @@ class AdminController extends Controller
                     'J'     =>  4,
                     'K'     =>  4,
                     'L'     =>  10,
+                    'M'     =>  12,
 
                 ));
 
@@ -436,6 +438,7 @@ class AdminController extends Controller
                     $pertemuan2 = $this->pertemuan($value->id, '2', $start, $end);
                     $pertemuan3 = $this->pertemuan($value->id, '3', $start, $end);
                     $pertemuan4 = $this->pertemuan($value->id, '4', $start, $end);
+                    $presentase = round(($this->JmlHadirDosen($value->id, $value->dosen_id, $start, $end)/14 * 100), 2). '%';
                     $jmlhadir = $this->JmlHadirDosen($value->id, $value->dosen_id, $start, $end);
 
                     $matakuliah = Matakuliah::findOrFail($value->matakuliah_id);
@@ -452,7 +455,8 @@ class AdminController extends Controller
                          $pertemuan2, 
                          $pertemuan3,   
                          $pertemuan4, 
-                         $jmlhadir
+                         $jmlhadir,
+                         $presentase
                     ));
 
                     if ($dosen_id) {
@@ -490,9 +494,9 @@ class AdminController extends Controller
                 });
 
 
-                $sheet->setBorder('A14:L'.(count($studentSubjects) + 15), 'thin');
+                $sheet->setBorder('A14:M'.(count($studentSubjects) + 15), 'thin');
                 // NO
-                $sheet->cells('A14:L'.(count($studentSubjects) + 15), function($cells) {
+                $sheet->cells('A14:M'.(count($studentSubjects) + 15), function($cells) {
                     $cells->setValignment('center');
                     $cells->setAlignment('center');
                 });
@@ -659,35 +663,9 @@ class AdminController extends Controller
             ->editColumn('4', function ($lecturerSchedules) use($start, $end) {
                 return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '4');
             })
-            ->editColumn('5', function ($lecturerSchedules) use($start, $end) {
-                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '5');
-            })
-            ->editColumn('6', function ($lecturerSchedules) use($start, $end) {
-                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '6');
-            })
-            ->editColumn('7', function ($lecturerSchedules) use($start, $end) {
-                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '7');
-            })
-            ->editColumn('8', function ($lecturerSchedules) use($start, $end) {
-                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '8');
-            })
-            ->editColumn('9', function ($lecturerSchedules) use($start, $end) {
-                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '9');
-            })
-            ->editColumn('10', function ($lecturerSchedules) use($start, $end) {
-                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '10');
-            })
-            ->editColumn('11', function ($lecturerSchedules) use($start, $end) {
-                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '11');
-            })
-            ->editColumn('12', function ($lecturerSchedules) use($start, $end) {
-                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '12');
-            })
-            ->editColumn('13', function ($lecturerSchedules) use($start, $end) {
-                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '13');
-            })
-            ->editColumn('14', function ($lecturerSchedules) use($start, $end) {
-                return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '14');
+            ->editColumn('presentase', function ($lecturerSchedules) use($start, $end) {
+                $presentase = round(($this->jumlahHadirDosenBulanan($lecturerSchedules, $start, $end)/14 * 100), 2). '%';
+                return $presentase;
             })
             ->make(true);     
     }

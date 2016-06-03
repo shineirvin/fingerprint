@@ -32,7 +32,7 @@ class ReportController extends Controller
     public function indexDosen($currentsemesterParams)
     {
         $datetime = Carbon::now();
-        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2');
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
         $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
         $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
         $allSemester = Kelasmk::lists('semester');
@@ -49,7 +49,7 @@ class ReportController extends Controller
     public function indexMahasiswa($currentsemesterParams)
     {
         $datetime = Carbon::now();
-        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2');
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
         $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
         $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
         $allSemester = Kelasmk::lists('semester');
@@ -66,7 +66,7 @@ class ReportController extends Controller
     public function indexAdmin($currentsemesterParams)
     {
         $datetime = Carbon::now();
-        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2');
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
         $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
         $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
         $allSemester = Kelasmk::lists('semester');
@@ -84,7 +84,7 @@ class ReportController extends Controller
     public function indexMhsAdmin($currentsemesterParams)
     {
         $datetime = Carbon::now();
-        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2');
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
         $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
         $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
         $allSemester = Kelasmk::lists('semester');
@@ -96,6 +96,98 @@ class ReportController extends Controller
         $semester->prepend('PILIH SEMESTER');
 
         return view('report.indexMhsAdmin', compact('semester', 'currentsemester', 'currentsemesterDirty', 'currentsemesterParams', 'currentsemesterParamsFilter'));
+    }
+
+    public function reportDosenDetail($currentsemesterParams, $currentMatakuliah, $currentKelas)
+    {
+        $datetime = Carbon::now();
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
+        $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
+        $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
+        $allSemester = Kelasmk::lists('semester');
+        foreach ($allSemester as $semester) {
+            $smst[] = substr($semester, 0, 4).' '.(substr($semester, -1) == 1 ? 'GANJIL' : 'GENAP');
+        }
+
+        $smstDirty = collect($smst);
+        $semester = $smstDirty->unique();
+        $semester->prepend('PILIH SEMESTER');
+
+        $allMatkul = \DB::table('kelasmk') 
+                    ->join('matakuliah', 'kelasmk.matakuliah_id', '=', 'matakuliah.kode_matakuliah')
+                    ->select('id', 'matakuliah_id', 'matakuliah.nama_matakuliah', 'matakuliah.kode_matakuliah')
+                    ->where('dosen_id', Auth::user()->username)
+                    ->where('semester', $currentsemesterParams)
+                    ->lists('matakuliah.nama_matakuliah', 'matakuliah.kode_matakuliah');
+
+        $mtklDirty = collect($allMatkul);
+        $matakuliah = $mtklDirty->unique();
+
+        $allKelas = \DB::table('kelasmk') 
+                    ->join('matakuliah', 'kelasmk.matakuliah_id', '=', 'matakuliah.kode_matakuliah')
+                    ->select('kelasmk.*')
+                    ->where('dosen_id', Auth::user()->username)
+                    ->where('semester', $currentsemesterParams)
+                    ->where('matakuliah_id', $currentMatakuliah)
+                    ->orderBy('kelas')
+                    ->lists('kelas', 'kelas');
+
+        $klsDirty = collect($allKelas);
+        $kelas = $klsDirty->unique();
+        $kelas->prepend('PILIH KELAS', '');
+
+        return view('report.reportDosenDetail', compact('semester', 'currentsemester', 'currentsemesterDirty', 'currentsemesterParams', 'currentsemesterParamsFilter', 'matakuliah', 'allMatkul', 'currentMatakuliah', 'kelas', 'currentKelas'));
+    }
+
+    public function reportAdminDosenDetail($currentsemesterParams, $currentDosen, $currentMatakuliah, $currentKelas)
+    {
+        $datetime = Carbon::now();
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
+        $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
+        $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
+        $allSemester = Kelasmk::lists('semester');
+        foreach ($allSemester as $semester) {
+            $smst[] = substr($semester, 0, 4).' '.(substr($semester, -1) == 1 ? 'GANJIL' : 'GENAP');
+        }
+
+        $smstDirty = collect($smst);
+        $semester = $smstDirty->unique();
+        $semester->prepend('PILIH SEMESTER');
+
+        $allMatkul = \DB::table('kelasmk') 
+                    ->join('matakuliah', 'kelasmk.matakuliah_id', '=', 'matakuliah.kode_matakuliah')
+                    ->select('id', 'matakuliah_id', 'matakuliah.nama_matakuliah', 'matakuliah.kode_matakuliah')
+                    ->where('dosen_id', $currentDosen)
+                    ->where('semester', $currentsemesterParams)
+                    ->lists('matakuliah.nama_matakuliah', 'matakuliah.kode_matakuliah');
+        $mtklDirty = collect($allMatkul);
+        $matakuliah = $mtklDirty->unique();
+        $matakuliah->prepend('PILIH MATAKULIAH', '0');
+
+        $allDosen = \DB::table('kelasmk') 
+                    ->join('users', 'kelasmk.dosen_id', '=', 'users.username')
+                    ->select('kelasmk.id', 'kelasmk.dosen_id', 'kelasmk.semester', 'users.name', 'users.username')
+                    ->where('kelasmk.semester', $currentsemesterParams)
+                    ->lists('users.name', 'users.username');
+
+        $dsnDirty = collect($allDosen);
+        $dosen = $dsnDirty->unique();
+        $dosen->prepend('PILIH DOSEN', '0');
+
+        $allKelas = \DB::table('kelasmk') 
+                    ->join('matakuliah', 'kelasmk.matakuliah_id', '=', 'matakuliah.kode_matakuliah')
+                    ->select('kelasmk.*')
+                    ->where('dosen_id', $currentDosen)
+                    ->where('semester', $currentsemesterParams)
+                    ->where('matakuliah_id', $currentMatakuliah)
+                    ->orderBy('kelas')
+                    ->lists('kelas', 'kelas');
+
+        $klsDirty = collect($allKelas);
+        $kelas = $klsDirty->unique();
+        $kelas->prepend('PILIH KELAS', '');
+
+        return view('report.reportAdminDosenDetail', compact('semester', 'currentsemester', 'currentsemesterDirty', 'currentsemesterParams', 'currentsemesterParamsFilter', 'matakuliah', 'allMatkul', 'currentMatakuliah', 'kelas', 'currentKelas', 'allDosen', 'dosen', 'currentDosen'));
     }
 
     public function reportMahasiswaData($semester)
@@ -110,6 +202,9 @@ class ReportController extends Controller
         return Datatables::of($studentSubjects)
             ->editColumn('nama_matakuliah', function ($studentSubjects) {
                 $Matakuliah = Matakuliah::findOrFail($studentSubjects->matakuliah_id);
+                if (round(($this->jumlahHadirMahasiswa($studentSubjects)/14 * 100), 2) <= 70) {
+                    return '<p style="color:red">'.$Matakuliah->nama_matakuliah.'</p>';
+                }
                 return $Matakuliah->nama_matakuliah;
             })
             ->editColumn('matakuliah_id', function ($studentSubjects) {
@@ -167,7 +262,10 @@ class ReportController extends Controller
             ->editColumn('14', function ($studentSubjects) {
                 return $this->pertemuanMahasiswa($studentSubjects, '14');
             })
-
+            ->editColumn('presentase', function ($lecturerSchedules) {
+                $presentase = round(($this->jumlahHadirMahasiswa($lecturerSchedules)/14 * 100), 2). '%';
+                return $presentase;
+            })
             ->make(true);   
     }
 
@@ -177,6 +275,9 @@ class ReportController extends Controller
         return Datatables::of($studentSubjects)
             ->editColumn('nama_dosen', function ($studentSubjects) {
                 $LecturerNames = User::select('name')->where('username', $studentSubjects->dosen_id)->first();
+                if (round(($this->jumlahHadirSemuaDosen($studentSubjects)/14 * 100), 2) <= 70) {
+                    return '<p style="color:red">'.$LecturerNames->name.'</p>';                    
+                }
                 return $LecturerNames->name;
             })
             ->editColumn('nama_matakuliah', function ($studentSubjects) {
@@ -238,6 +339,10 @@ class ReportController extends Controller
             ->editColumn('14', function ($studentSubjects) {
                 return $this->pertemuanSemuaDosen($studentSubjects, '14');
             })
+            ->editColumn('presentase', function ($lecturerSchedules) {
+                $presentase = round(($this->jumlahHadirSemuaDosen($lecturerSchedules)/14 * 100), 2). '%';
+                return $presentase;
+            })
 
             ->make(true);   
     }
@@ -258,6 +363,9 @@ class ReportController extends Controller
             })
             ->editColumn('nama_mahasiswa', function ($studentSubjects) {
                 $nama = User::where('username', $studentSubjects->nim)->first();
+                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2) <= 70) {
+                    return '<p style="color:red">'.$nama->name.'</p>';                    
+                }
                 return $nama->name;
             })
             ->editColumn('matakuliah_id', function ($studentSubjects) {
@@ -315,10 +423,189 @@ class ReportController extends Controller
             ->editColumn('14', function ($studentSubjects) {
                 return $this->pertemuanSemuaMahasiswa($studentSubjects, '14');
             })
-
+            ->editColumn('presentase', function ($studentSubjects) {
+                $presentase = round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2). '%';
+                return $presentase;
+            })
             ->make(true);   
     }
 
+
+    public function reportAdminDosenDetailData($semester, $dosen, $matakuliah, $kelas)
+    {
+        if ($semester == '0' || $dosen == '0' || $matakuliah == '0' || $kelas == '0') {
+            return json_encode(array('data'=>''));
+        }
+        $studentSubjects =  \DB::table('dpmk')
+                            ->join('kelasmk', 'dpmk.kelasmk_id', '=', 'kelasmk.id')
+                            ->select('kelasmk.*', 'dpmk.nim')
+                            ->where('semester', $semester)
+                            ->where('kelasmk.dosen_id', $dosen)
+                            ->where('matakuliah_id', $matakuliah)
+                            ->where('kelas', $kelas)
+                            ->get();
+        $studentSubjects = collect($studentSubjects);
+
+        return Datatables::of($studentSubjects)
+            ->editColumn('nama_matakuliah', function ($studentSubjects) {
+                $Matakuliah = Matakuliah::findOrFail($studentSubjects->matakuliah_id);
+                return $Matakuliah->nama_matakuliah;
+            })
+            ->editColumn('nama_mahasiswa', function ($studentSubjects) {
+                $nama = User::where('username', $studentSubjects->nim)->first();
+                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2) <= 70) {
+                    return '<p style="color:red">'.$nama->name.'</p>';                    
+                }
+                return $nama->name;
+            })
+            ->editColumn('matakuliah_id', function ($studentSubjects) {
+                return $studentSubjects->matakuliah_id;
+            })
+            ->editColumn('kelas', function ($studentSubjects) {
+                return $studentSubjects->kelas;
+            })
+            ->editColumn('sks', function ($studentSubjects) {
+                $sks = Matakuliah::findOrFail($studentSubjects->matakuliah_id);
+                return $sks->sks;
+            })
+            ->editColumn('jml_hadir', function ($studentSubjects) {
+                return $this->jumlahHadirSemuaMahasiswa($studentSubjects);
+            })
+            ->editColumn('1', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '1');
+            })
+            ->editColumn('2', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '2');
+            })
+            ->editColumn('3', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '3');
+            })
+            ->editColumn('4', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '4');
+            })
+            ->editColumn('5', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '5');
+            })
+            ->editColumn('6', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '6');
+            })
+            ->editColumn('7', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '7');
+            })
+            ->editColumn('8', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '8');
+            })
+            ->editColumn('9', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '9');
+            })
+            ->editColumn('10', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '10');
+            })
+            ->editColumn('11', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '11');
+            })
+            ->editColumn('12', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '12');
+            })
+            ->editColumn('13', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '13');
+            })
+            ->editColumn('14', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '14');
+            })
+            ->editColumn('presentase', function ($studentSubjects) {
+                $presentase = round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2). '%';
+                return $presentase;
+            })
+            ->make(true);   
+    }
+
+
+    public function reportDosenDetailData($semester, $matakuliah, $kelas)
+    {
+        $studentSubjects =  \DB::table('dpmk')
+                            ->join('kelasmk', 'dpmk.kelasmk_id', '=', 'kelasmk.id')
+                            ->select('kelasmk.*', 'dpmk.nim')
+                            ->where('semester', $semester)
+                            ->where('matakuliah_id', $matakuliah)
+                            ->where('kelas', $kelas)
+                            ->where('dosen_id', Auth::user()->username)
+                            ->get();
+        $studentSubjects = collect($studentSubjects);
+
+        return Datatables::of($studentSubjects)
+            ->editColumn('nama_matakuliah', function ($studentSubjects) {
+                $Matakuliah = Matakuliah::findOrFail($studentSubjects->matakuliah_id);
+                return $Matakuliah->nama_matakuliah;
+            })
+            ->editColumn('nama_mahasiswa', function ($studentSubjects) {
+                $nama = User::where('username', $studentSubjects->nim)->first();
+                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2) <= 70) {
+                    return '<p style="color:red">'.$nama->name.'</p>';                    
+                }
+                return $nama->name;
+            })
+            ->editColumn('matakuliah_id', function ($studentSubjects) {
+                return $studentSubjects->matakuliah_id;
+            })
+            ->editColumn('kelas', function ($studentSubjects) {
+                return $studentSubjects->kelas;
+            })
+            ->editColumn('sks', function ($studentSubjects) {
+                $sks = Matakuliah::findOrFail($studentSubjects->matakuliah_id);
+                return $sks->sks;
+            })
+            ->editColumn('jml_hadir', function ($studentSubjects) {
+                return $this->jumlahHadirSemuaMahasiswa($studentSubjects);
+            })
+            ->editColumn('1', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '1');
+            })
+            ->editColumn('2', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '2');
+            })
+            ->editColumn('3', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '3');
+            })
+            ->editColumn('4', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '4');
+            })
+            ->editColumn('5', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '5');
+            })
+            ->editColumn('6', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '6');
+            })
+            ->editColumn('7', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '7');
+            })
+            ->editColumn('8', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '8');
+            })
+            ->editColumn('9', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '9');
+            })
+            ->editColumn('10', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '10');
+            })
+            ->editColumn('11', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '11');
+            })
+            ->editColumn('12', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '12');
+            })
+            ->editColumn('13', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '13');
+            })
+            ->editColumn('14', function ($studentSubjects) {
+                return $this->pertemuanSemuaMahasiswa($studentSubjects, '14');
+            })
+            ->editColumn('presentase', function ($studentSubjects) {
+                $presentase = round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2). '%';
+                return $presentase;
+            })
+            ->make(true);   
+    }
 
     public function reportDosenData($semester)
     {
@@ -326,6 +613,9 @@ class ReportController extends Controller
         return Datatables::of($lecturerSchedules)
             ->editColumn('nama_matakuliah', function ($lecturerSchedules) {
                 $Matakuliah = Matakuliah::findOrFail($lecturerSchedules->matakuliah_id);
+                if (round(($this->jumlahHadirDosen($lecturerSchedules)/14 * 100), 2) <= 70) {
+                    return '<p style="color:red">'.$Matakuliah->nama_matakuliah.'</p>';
+                }
                 return $Matakuliah->nama_matakuliah;
             })
             ->editColumn('sks', function ($lecturerSchedules) {
@@ -377,6 +667,10 @@ class ReportController extends Controller
             ->editColumn('14', function ($lecturerSchedules) {
                 return $this->pertemuanDosen($lecturerSchedules, '14');
             })
+            ->editColumn('presentase', function ($studentSubjects) {
+                $presentase = round(($this->jumlahHadirDosen($studentSubjects)/14 * 100), 2). '%';
+                return $presentase;
+            })
             ->make(true);   
     }
 
@@ -405,6 +699,16 @@ class ReportController extends Controller
     public function reportMahasiswaExcel($currentsemesterParams)
     {
         return $this->excelformat($currentsemesterParams, $katakunci = "mahasiswa");
+    }
+
+    public function reportDosenDetailExcel($currentsemesterParams, $currentMatakuliah, $currentKelas)
+    {
+        return $this->excelformatDosen($currentsemesterParams, $currentMatakuliah, $currentKelas, $katakunci = "detaildosen");
+    }
+
+    public function reportAdminDosenDetailExcel($currentsemesterParams, $currentDosen, $currentMatakuliah, $currentKelas)
+    {
+        return $this->excelformatDosenDetail($currentsemesterParams, $currentDosen, $currentMatakuliah, $currentKelas, $katakunci = "semuadetaildosen");
     }
 
 
@@ -481,6 +785,7 @@ class ReportController extends Controller
                 $sheet->mergeCells('F14:F15');
                 $sheet->mergeCells('G14:G15');
                 $sheet->mergeCells('V14:V15');
+                $sheet->mergeCells('W14:W15');
 
                 $sheet->row(8, array(
                     '', '', '', 'LAPORAN SEMESTER'
@@ -496,7 +801,7 @@ class ReportController extends Controller
                 ));
 
                 $sheet->row(14, array(
-                    'NO',' '.$nikOrNim.' ',' '.$roles.' ', 'KODE MK', 'NAMA MATAKULIAH', 'SKS', 'KELAS', 'MINGGU KE -', '', '', '', '', '', '', '', '', '', '', '', '', '', 'JML HADIR'
+                    'NO',' '.$nikOrNim.' ',' '.$roles.' ', 'KODE MK', 'NAMA MATAKULIAH', 'SKS', 'KELAS', 'MINGGU KE -', '', '', '', '', '', '', '', '', '', '', '', '', '', 'JML HADIR', 'PRESENTASE'
                 ));
                 $sheet->row(15, array(
                     '', '', '', '', '', '', '', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'
@@ -525,6 +830,7 @@ class ReportController extends Controller
                     'T'     =>  4,
                     'U'     =>  4,
                     'V'     =>  10,
+                    'W'     =>  12,
 
                 ));
 
@@ -545,6 +851,8 @@ class ReportController extends Controller
                         $pertemuan12 = $this->pertemuanSemuaDosen($value, '12');
                         $pertemuan13 = $this->pertemuanSemuaDosen($value, '13');
                         $pertemuan14 = $this->pertemuanSemuaDosen($value, '14');
+                        $presentase = round(($this->jumlahHadirSemuaDosen($value)/14 * 100), 2). '%';
+                        $presentaseV = round(($this->jumlahHadirSemuaDosen($value)/14 * 100), 2);
                         $jmlhadir = $this->jumlahHadirSemuaDosen($value);
                     }
                     elseif($katakunci == 'SemuaMahasiswa') {
@@ -562,6 +870,8 @@ class ReportController extends Controller
                         $pertemuan12 = $this->pertemuanSemuaMahasiswa($value, '12');
                         $pertemuan13 = $this->pertemuanSemuaMahasiswa($value, '13');
                         $pertemuan14 = $this->pertemuanSemuaMahasiswa($value, '14');
+                        $presentase = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 2). '%';
+                        $presentaseV = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 2);
                         $jmlhadir = $this->jumlahHadirSemuaMahasiswa($value);
                     }
                     elseif($katakunci == 'dosen') {
@@ -579,6 +889,8 @@ class ReportController extends Controller
                         $pertemuan12 = $this->pertemuanDosen($value, '12');
                         $pertemuan13 = $this->pertemuanDosen($value, '13');
                         $pertemuan14 = $this->pertemuanDosen($value, '14');
+                        $presentase = round(($this->jumlahHadirDosen($value)/14 * 100), 2). '%';
+                        $presentaseV = round(($this->jumlahHadirDosen($value)/14 * 100), 2);
                         $jmlhadir = $this->jumlahHadirDosen($value);
                     }
                     elseif($katakunci == 'mahasiswa') {
@@ -596,6 +908,8 @@ class ReportController extends Controller
                         $pertemuan12 = $this->pertemuanMahasiswa($value, '12');
                         $pertemuan13 = $this->pertemuanMahasiswa($value, '13');
                         $pertemuan14 = $this->pertemuanMahasiswa($value, '14');
+                        $presentase = round(($this->jumlahHadirMahasiswa($value)/14 * 100), 2). '%';
+                        $presentaseV = round(($this->jumlahHadirMahasiswa($value)/14 * 100), 2);
                         $jmlhadir = $this->jumlahHadirMahasiswa($value); 
                     }
 
@@ -630,7 +944,8 @@ class ReportController extends Controller
                          $pertemuan12,
                          $pertemuan13,
                          $pertemuan14,
-                         $jmlhadir
+                         $jmlhadir,
+                         $presentase
                     ));
 
                     if ($induk1) {
@@ -643,6 +958,12 @@ class ReportController extends Controller
                         }
                     }
                     $induk1 = $induk;
+
+                    $sheet->cells('W'.($key+16), function($cells) use ($presentaseV) {
+                        if($presentaseV <= 70) {
+                            $cells->setFontColor('#FF0000');
+                        }
+                    });
                 }
                         
                 $sheet->cells('D8', function($cells) {
@@ -655,9 +976,9 @@ class ReportController extends Controller
                 });
 
 
-                $sheet->setBorder('A14:V'.(count($studentSubjects) + 15), 'thin');
+                $sheet->setBorder('A14:W'.(count($studentSubjects) + 15), 'thin');
 
-                $sheet->cells('A14:V'.(count($studentSubjects) + 15), function($cells) {
+                $sheet->cells('A14:W'.(count($studentSubjects) + 15), function($cells) {
                     $cells->setValignment('center');
                     $cells->setAlignment('center');
                 });
@@ -685,6 +1006,416 @@ class ReportController extends Controller
                     $cells->setAlignment('left');
                 });
 
+
+        });
+        })->export('xls');
+    }
+
+    /**
+     * Excel format dosen detail
+     */
+    public function excelformatDosen($currentsemesterParams, $currentMatakuliah, $currentKelas, $katakunci)
+    {
+        $semesterString = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
+        Excel::create('LAPORAN SEMESTER DOSEN', function($excel) use ($semesterString, $currentsemesterParams, $currentMatakuliah, $currentKelas, $katakunci) {
+            $excel->sheet('LAPORAN SEMESTER DOSEN', function($sheet) use($semesterString, $currentsemesterParams, $currentMatakuliah, $currentKelas, $katakunci) {
+
+                $induk1 = array();
+                $induk2 = array();
+                $objDrawing = new PHPExcel_Worksheet_Drawing;
+                $objDrawing->setPath(public_path('assets/images/img.png')); //your image path
+                $objDrawing->setCoordinates('A1');
+                $objDrawing->setWorksheet($sheet);
+
+                if ($katakunci == 'detaildosen') {
+                    $nikOrNim = 'NIM';
+                    $roles = 'NAMA';
+                    $studentSubjects = \DB::table('dpmk')
+                            ->join('kelasmk', 'dpmk.kelasmk_id', '=', 'kelasmk.id')
+                            ->join('users', 'dpmk.nim', '=', 'users.username')
+                            ->select('kelasmk.*', 'dpmk.nim', 'users.name')
+                            ->orderBy('users.name', 'asc')
+                            ->where('semester', $currentsemesterParams)
+                            ->where('matakuliah_id', $currentMatakuliah)
+                            ->where('kelas', $currentKelas)
+                            ->where('dosen_id', Auth::user()->username)
+                            ->get();
+
+                    $namadosen = \DB::table('dpmk')
+                            ->join('kelasmk', 'dpmk.kelasmk_id', '=', 'kelasmk.id')
+                            ->join('users', 'kelasmk.dosen_id', '=', 'users.username')
+                            ->select('kelasmk.*', 'users.name')
+                            ->orderBy('users.name', 'asc')
+                            ->where('semester', $currentsemesterParams)
+                            ->where('matakuliah_id', $currentMatakuliah)
+                            ->where('kelas', $currentKelas)
+                            ->where('dosen_id', Auth::user()->username)
+                            ->first();
+
+                }
+
+
+                $sheet->mergeCells('F14:S14');
+                $sheet->mergeCells('A14:A15');
+                $sheet->mergeCells('B14:B15');
+                $sheet->mergeCells('C14:C15');
+                $sheet->mergeCells('D14:D15');
+                $sheet->mergeCells('E14:E15');
+                $sheet->mergeCells('T14:T15');
+                $sheet->mergeCells('U14:U15');
+
+                $sheet->row(9, array(
+                    'REKAPITULASI ABSENSI MAHASISWA SEMESTER GENAP TAHUN AKADEMIK '.substr($currentsemesterParams, 0, 4).'/'.(substr($currentsemesterParams, 0, 4)+1).'    ', '', '', ''
+                ));
+                $sheet->row(10, array(
+                    'Kode/sks', '', $currentMatakuliah
+                ));
+                $sheet->row(11, array(
+                    'Nama Matakuliah', '', ''.Matakuliah::find($currentMatakuliah)->nama_matakuliah.''
+                ));
+                $sheet->row(12, array(
+                    'Kelas', '', $currentKelas
+                ));
+                $sheet->row(13, array(
+                    'Nama Dosen', '', $namadosen->name
+                ));
+                $sheet->row(14, array(
+                    'NO',' '.$nikOrNim.' ',' '.$roles.' ', 'SKS', 'KELAS', 'MINGGU KE -', '', '', '', '', '', '', '', '','', '', '', '', '', 'JML HADIR', 'PRESENTASE'
+                ));
+                $sheet->row(15, array(
+                    '', '', '', '', '', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'
+                ));
+
+                $sheet->setWidth(array(
+                    'A'     =>  4,
+                    'B'     =>  15,
+                    'C'     =>  35,
+                    'D'     =>  4,
+                    'E'     =>  6,
+                    'F'     =>  4,
+                    'G'     =>  4,
+                    'H'     =>  4,
+                    'I'     =>  4,
+                    'J'     =>  4,
+                    'K'     =>  4,
+                    'L'     =>  4,
+                    'M'     =>  4,
+                    'N'     =>  4,
+                    'O'     =>  4,
+                    'P'     =>  4,
+                    'Q'     =>  4,
+                    'R'     =>  4,
+                    'S'     =>  4,
+                    'T'     =>  10,
+                    'U'     =>  12,
+                ));
+
+                $no = 1;
+                $noinc = 1;
+                foreach ($studentSubjects as $key => $value) {
+                    if($katakunci == 'detaildosen') {
+                        $pertemuan1 = $this->pertemuanSemuaMahasiswa($value, '1');
+                        $pertemuan2 = $this->pertemuanSemuaMahasiswa($value, '2');
+                        $pertemuan3 = $this->pertemuanSemuaMahasiswa($value, '3');
+                        $pertemuan4 = $this->pertemuanSemuaMahasiswa($value, '4');
+                        $pertemuan5 = $this->pertemuanSemuaMahasiswa($value, '5');
+                        $pertemuan6 = $this->pertemuanSemuaMahasiswa($value, '6');
+                        $pertemuan7 = $this->pertemuanSemuaMahasiswa($value, '7');
+                        $pertemuan8 = $this->pertemuanSemuaMahasiswa($value, '8');
+                        $pertemuan9 = $this->pertemuanSemuaMahasiswa($value, '9');
+                        $pertemuan10 = $this->pertemuanSemuaMahasiswa($value, '10');
+                        $pertemuan11 = $this->pertemuanSemuaMahasiswa($value, '11');
+                        $pertemuan12 = $this->pertemuanSemuaMahasiswa($value, '12');
+                        $pertemuan13 = $this->pertemuanSemuaMahasiswa($value, '13');
+                        $pertemuan14 = $this->pertemuanSemuaMahasiswa($value, '14');
+                        $presentase = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 2). '%';
+                        $presentaseV = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 2);
+                        $jmlhadir = $this->jumlahHadirSemuaMahasiswa($value);
+                    }
+
+                    if ($katakunci == 'detaildosen') {
+                        $nama = User::where('username', $value->nim)->first();
+                        $induk = $value->nim;
+                    }
+                    $matakuliah = Matakuliah::findOrFail($value->matakuliah_id);
+                    $sheet->row($key+16, array(
+                         $key+1,
+                         $induk, 
+                         $nama->name, 
+                         $matakuliah->sks, 
+                         $value->kelas, 
+                         $pertemuan1, 
+                         $pertemuan2, 
+                         $pertemuan3,   
+                         $pertemuan4,
+                         $pertemuan5,
+                         $pertemuan6,
+                         $pertemuan7,
+                         $pertemuan8,
+                         $pertemuan9,
+                         $pertemuan10,
+                         $pertemuan11,
+                         $pertemuan12,
+                         $pertemuan13,
+                         $pertemuan14,
+                         $jmlhadir,
+                         $presentase
+                    ));
+
+                    if ($induk1) {
+                        $induk2 = $induk;
+                        $noinc = $key+1;
+                        if ($induk2 == $induk1) {
+                            $sheet->mergeCells('A'.($key+15).':A'.($key+16));
+                            $sheet->mergeCells('B'.($key+15).':B'.($key+16));
+                            $sheet->mergeCells('C'.($key+15).':C'.($key+16));
+                            $no = $key+1;
+                        }
+                    }
+                    $induk1 = $induk;
+
+                    $sheet->row(count($studentSubjects)+16, array(
+                        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',' Jakarta, '.date('d').' '.$this->monthfilter(date('m')).' '.date('Y').' '
+                    ));
+                    $sheet->row(count($studentSubjects)+17, array(
+                        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Petugas'
+                    ));
+                    $sheet->row(count($studentSubjects)+21, array(
+                        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Bekti Riyanto'
+                    ));
+                    $sheet->cells('C'.($key+16), function($cells) use ($presentaseV) {
+                        if($presentaseV <= 70) {
+                            $cells->setFontColor('#FF0000');
+                        }
+                    });
+                }
+                        
+                $sheet->cells('A9', function($cells) {
+                    $cells->setFontWeight('bold');
+                    $cells->setFontSize(16);
+                });
+
+                $sheet->setBorder('A14:U'.(count($studentSubjects) + 15), 'thin');
+
+                $sheet->cells('A14:U'.(count($studentSubjects) + 15), function($cells) {
+                    $cells->setValignment('center');
+                    $cells->setAlignment('center');
+                });
+                $sheet->cells('A15:A'.(count($studentSubjects) + 15), function($cells) {
+                    $cells->setValignment('top');
+                });
+                $sheet->cells('B15:B'.(count($studentSubjects) + 15), function($cells) {
+                    $cells->setValignment('top');
+                });
+                // NAMA DOSEN
+                $sheet->cells('C15:C'.(count($studentSubjects) + 15), function($cells) {
+                    $cells->setValignment('left');
+                    $cells->setValignment('top');
+                    $cells->setAlignment('left');
+                    $cells->setAlignment('top');
+                });
+
+        });
+        })->export('xls');
+    }
+
+
+    /**
+     * Excel format dosen detail untuk admin
+     */
+    public function excelformatDosenDetail($currentsemesterParams, $currentDosen, $currentMatakuliah, $currentKelas, $katakunci)
+    {
+        $semesterString = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
+        Excel::create('LAPORAN SEMESTER DOSEN', function($excel) use ($semesterString, $currentsemesterParams, $currentDosen, $currentMatakuliah, $currentKelas, $katakunci) {
+            $excel->sheet('LAPORAN SEMESTER DOSEN', function($sheet) use($semesterString, $currentsemesterParams, $currentDosen, $currentMatakuliah, $currentKelas, $katakunci) {
+                $induk1 = array();
+                $induk2 = array();
+                $objDrawing = new PHPExcel_Worksheet_Drawing;
+                $objDrawing->setPath(public_path('assets/images/img.png')); //your image path
+                $objDrawing->setCoordinates('A1');
+                $objDrawing->setWorksheet($sheet);
+
+                if ($katakunci == 'semuadetaildosen') {
+                    $nikOrNim = 'NIM';
+                    $roles = 'NAMA';
+                    $studentSubjects = \DB::table('dpmk')
+                            ->join('kelasmk', 'dpmk.kelasmk_id', '=', 'kelasmk.id')
+                            ->join('users', 'dpmk.nim', '=', 'users.username')
+                            ->select('kelasmk.*', 'dpmk.nim', 'users.name')
+                            ->orderBy('users.name', 'asc')
+                            ->where('semester', $currentsemesterParams)
+                            ->where('matakuliah_id', $currentMatakuliah)
+                            ->where('kelas', $currentKelas)
+                            ->where('dosen_id', $currentDosen)
+                            ->get();
+
+                    $namadosen = \DB::table('users')
+                            ->select('users.name')
+                            ->where('username', $currentDosen)
+                            ->first();
+
+                }
+
+
+                $sheet->mergeCells('F14:S14');
+                $sheet->mergeCells('A14:A15');
+                $sheet->mergeCells('B14:B15');
+                $sheet->mergeCells('C14:C15');
+                $sheet->mergeCells('D14:D15');
+                $sheet->mergeCells('E14:E15');
+                $sheet->mergeCells('T14:T15');
+                $sheet->mergeCells('U14:U15');
+
+                $sheet->row(9, array(
+                    'REKAPITULASI ABSENSI MAHASISWA SEMESTER GENAP TAHUN AKADEMIK '.substr($currentsemesterParams, 0, 4).'/'.(substr($currentsemesterParams, 0, 4)+1).'    ', '', '', ''
+                ));
+                $sheet->row(10, array(
+                    'Kode/sks', '', $currentMatakuliah
+                ));
+                $sheet->row(11, array(
+                    'Nama Matakuliah', '', ''.Matakuliah::find($currentMatakuliah)->nama_matakuliah.''
+                ));
+                $sheet->row(12, array(
+                    'Kelas', '', $currentKelas
+                ));
+                $sheet->row(13, array(
+                    'Nama Dosen', '', $namadosen->name
+                ));
+                $sheet->row(14, array(
+                    'NO',' '.$nikOrNim.' ',' '.$roles.' ', 'SKS', 'KELAS', 'MINGGU KE -', '', '', '', '', '', '', '', '','', '', '', '', '', 'JML HADIR', 'PRESENTASE'
+                ));
+                $sheet->row(15, array(
+                    '', '', '', '', '', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'
+                ));
+
+                $sheet->setWidth(array(
+                    'A'     =>  4,
+                    'B'     =>  15,
+                    'C'     =>  35,
+                    'D'     =>  4,
+                    'E'     =>  6,
+                    'F'     =>  4,
+                    'G'     =>  4,
+                    'H'     =>  4,
+                    'I'     =>  4,
+                    'J'     =>  4,
+                    'K'     =>  4,
+                    'L'     =>  4,
+                    'M'     =>  4,
+                    'N'     =>  4,
+                    'O'     =>  4,
+                    'P'     =>  4,
+                    'Q'     =>  4,
+                    'R'     =>  4,
+                    'S'     =>  4,
+                    'T'     =>  10,
+                    'U'     =>  12,
+                ));
+
+                $no = 1;
+                $noinc = 1;
+                foreach ($studentSubjects as $key => $value) {
+                    if($katakunci == 'semuadetaildosen') {
+                        $pertemuan1 = $this->pertemuanSemuaMahasiswa($value, '1');
+                        $pertemuan2 = $this->pertemuanSemuaMahasiswa($value, '2');
+                        $pertemuan3 = $this->pertemuanSemuaMahasiswa($value, '3');
+                        $pertemuan4 = $this->pertemuanSemuaMahasiswa($value, '4');
+                        $pertemuan5 = $this->pertemuanSemuaMahasiswa($value, '5');
+                        $pertemuan6 = $this->pertemuanSemuaMahasiswa($value, '6');
+                        $pertemuan7 = $this->pertemuanSemuaMahasiswa($value, '7');
+                        $pertemuan8 = $this->pertemuanSemuaMahasiswa($value, '8');
+                        $pertemuan9 = $this->pertemuanSemuaMahasiswa($value, '9');
+                        $pertemuan10 = $this->pertemuanSemuaMahasiswa($value, '10');
+                        $pertemuan11 = $this->pertemuanSemuaMahasiswa($value, '11');
+                        $pertemuan12 = $this->pertemuanSemuaMahasiswa($value, '12');
+                        $pertemuan13 = $this->pertemuanSemuaMahasiswa($value, '13');
+                        $pertemuan14 = $this->pertemuanSemuaMahasiswa($value, '14');
+                        $presentase = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 2). '%';
+                        $presentaseV = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 2);
+                        $jmlhadir = $this->jumlahHadirSemuaMahasiswa($value);
+                    }
+
+                    if ($katakunci == 'semuadetaildosen') {
+                        $nama = User::where('username', $value->nim)->first();
+                        $induk = $value->nim;
+                    }
+                    $matakuliah = Matakuliah::findOrFail($value->matakuliah_id);
+                    $sheet->row($key+16, array(
+                         $key+1,
+                         $induk, 
+                         $nama->name, 
+                         $matakuliah->sks, 
+                         $value->kelas, 
+                         $pertemuan1, 
+                         $pertemuan2, 
+                         $pertemuan3,   
+                         $pertemuan4,
+                         $pertemuan5,
+                         $pertemuan6,
+                         $pertemuan7,
+                         $pertemuan8,
+                         $pertemuan9,
+                         $pertemuan10,
+                         $pertemuan11,
+                         $pertemuan12,
+                         $pertemuan13,
+                         $pertemuan14,
+                         $jmlhadir,
+                         $presentase
+                    ));
+
+                    if ($induk1) {
+                        $induk2 = $induk;
+                        $noinc = $key+1;
+                        if ($induk2 == $induk1) {
+                            $sheet->mergeCells('A'.($key+15).':A'.($key+16));
+                            $sheet->mergeCells('B'.($key+15).':B'.($key+16));
+                            $sheet->mergeCells('C'.($key+15).':C'.($key+16));
+                            $no = $key+1;
+                        }
+                    }
+                    $induk1 = $induk;
+
+                    $sheet->row(count($studentSubjects)+16, array(
+                        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',' Jakarta, '.date('d').' '.$this->monthfilter(date('m')).' '.date('Y').' '
+                    ));
+                    $sheet->row(count($studentSubjects)+17, array(
+                        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Petugas'
+                    ));
+                    $sheet->row(count($studentSubjects)+21, array(
+                        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Bekti Riyanto'
+                    ));
+                    $sheet->cells('C'.($key+16), function($cells) use ($presentaseV) {
+                        if($presentaseV <= 70) {
+                            $cells->setFontColor('#FF0000');
+                        }
+                    });
+                }
+                        
+                $sheet->cells('A9', function($cells) {
+                    $cells->setFontWeight('bold');
+                    $cells->setFontSize(16);
+                });
+
+                $sheet->setBorder('A14:U'.(count($studentSubjects) + 15), 'thin');
+
+                $sheet->cells('A14:U'.(count($studentSubjects) + 15), function($cells) {
+                    $cells->setValignment('center');
+                    $cells->setAlignment('center');
+                });
+                $sheet->cells('A15:A'.(count($studentSubjects) + 15), function($cells) {
+                    $cells->setValignment('top');
+                });
+                $sheet->cells('B15:B'.(count($studentSubjects) + 15), function($cells) {
+                    $cells->setValignment('top');
+                });
+                // NAMA DOSEN
+                $sheet->cells('C15:C'.(count($studentSubjects) + 15), function($cells) {
+                    $cells->setValignment('left');
+                    $cells->setValignment('top');
+                    $cells->setAlignment('left');
+                    $cells->setAlignment('top');
+                });
 
         });
         })->export('xls');
@@ -836,6 +1567,37 @@ class ReportController extends Controller
         else {
             return $classes->keterangan;
         }
+    }
+
+    public function monthfilter($month)
+    {
+        Switch ($month){
+            case 1 : $month="Januari";
+                Break;
+            case 2 : $month="Februari";
+                Break;
+            case 3 : $month="Maret";
+                Break;
+            case 4 : $month="April";
+                Break;
+            case 5 : $month="Mei";
+                Break;
+            case 6 : $month="Juni";
+                Break;
+            case 7 : $month="Juli";
+                Break;
+            case 8 : $month="Agustus";
+                Break;
+            case 9 : $month="September";
+                Break;
+            case 10 : $month="Oktober";
+                Break;
+            case 11 : $month="November";
+                Break;
+            case 12 : $month="Desember";
+                Break;
+            }
+        return $month;
     }
 
 }

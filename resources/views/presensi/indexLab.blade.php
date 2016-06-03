@@ -5,11 +5,13 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Jadwal Perkuliahan </h2> 
+				<h2 class="text-primary"> Jadwal Perkuliahan Semester {!! $currentsemesterParamsFilter !!} </h2> 
 			</div>
 			@include('partials.flash')
 			<div class="section-body">
-				<!-- BEGIN DATATABLE 1 -->
+				<div class="col-sm-3">
+					{!! Form::select('hari_id', $semester, null, ['id' => 'select2', 'class' => 'select2-container form-control input-lg selectpertemuan']) !!}
+				</div>
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="table-responsive">
@@ -38,11 +40,23 @@
 <script>
 	$(document).ready(function()
 	{
+		$( "#select2" ).change(function() {
+				var selected = $('#select2 option:selected').text();
+				var tahun = selected.slice(0,4);
+				var filteredSelect = selected.slice(5,11);
+				if (filteredSelect == 'GANJIL') {
+					TrueSelected = tahun+'1';
+				}
+				else {
+					TrueSelected = tahun+'2';
+				}
+				window.location = TrueSelected;
+		});
 		$('#datatable1').DataTable({
 			"dom": 'lCfrtip',
 			"iDisplayLength": 100, 
 			"order": [[ 0, "asc" ]],
-	        ajax: '{!! url('getDataJadwalDosenLab') !!}',
+	        ajax: '{!! url('getDataJadwalDosenLab/'. $currentsemesterParams) !!}',
 	        columns: [
 	            { data: 'hari_id', visible: false },
 	            { data: 'semester'},

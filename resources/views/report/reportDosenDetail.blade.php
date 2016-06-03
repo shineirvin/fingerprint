@@ -5,22 +5,34 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Rekap Kehadiran <b> {{ Auth::user()->name }} ( {{ Auth::user()->username }} ) Semester {!! $currentsemesterParamsFilter !!} </b> </h2> 
+				<h2 class="text-primary"> Report Presensi Mahasiswa Semester {!! $currentsemesterParamsFilter !!} 
+					@if($currentMatakuliah != '0') 
+					( {!! App\Matakuliah::find($currentMatakuliah)->nama_matakuliah !!} )
+					@endif
+					Kelas {!! $currentKelas !!}
 			</div>
 			@include('partials.flash')
 			<div class="section-body">
-				<div class="col-sm-3">
-					{!! Form::select('hari_id', $semester, null, ['id' => 'select2', 'class' => 'select2-container form-control input-lg selectpertemuan']) !!}
-				</div>
+			<div class="col-sm-3">
+				{!! Form::select('hari_id', $semester, null, ['id' => 'select2', 'class' => 'select2-container form-control input-lg selectpertemuan']) !!}
+			</div>
+			<div class="col-lg-4">
+				{!! Form::select('hari_id', array('0' => 'PILIH MATAKULIAH') + $allMatkul, $currentMatakuliah, ['id' => 'select1', 'class' => 'select2-container form-control input-lg selectpertemuan']) !!}
+			</div>
+			<div class="col-lg-2">
+				{!! Form::select('hari_id', $kelas, $currentKelas, ['id' => 'select3', 'class' => 'select2-container form-control input-lg selectpertemuan']) !!}
+			</div>
 				<div class="row">
 					<div class="col-lg-12">
-					<a href="{!! url('reportMahasiswaExcel/'. $currentsemesterParams) !!}" class="btn btn-success"> <i class="fa fa-file-excel-o"> </i> EXCEL </a>
+					<a href="{!! url('reportDosenDetailExcel/'. $currentsemesterParams . '/' . $currentMatakuliah . '/' . $currentKelas) !!}" class="btn btn-success"> <i class="fa fa-file-excel-o"> </i> EXCEL </a>
 						<div class="table-responsive">
 							<table id="datatable1" class="table table-striped table-hover table-bordered">
 						        <thead>
 						            <tr>
+						                <th rowspan="2" style="vertical-align: middle"> NIM </th>
+						                <th rowspan="2" style="vertical-align: middle"> NAMA MAHASISWA </th>
 						                <th rowspan="2" style="vertical-align: middle"> KODE MK </th>
-						                <th rowspan="2" style="vertical-align: middle"> NAMA MATAKULIAH </th>
+						                <th rowspan="2" style="vertical-align: middle"> NAMA MK </th>
 						                <th rowspan="2" style="vertical-align: middle"> SKS </th>
 						                <th rowspan="2" style="vertical-align: middle"> KELAS </th>
 						                <th colspan="14" style="text-align: center"> PERTEMUAN KE - </th>
@@ -56,8 +68,21 @@
 	</div>
 
 <script>
-	$(document).ready(function()
-	{
+	$(document).ready(function() {
+		// matakuliah
+		$( "#select1" ).change(function() {
+			var selected = $('#select1').val();
+			window.location.href = "{!! url('reportDosenDetail/') !!}/"+"{!!$currentsemesterParams!!}"+'/'+selected+"/0";
+		});
+		// kelas
+		$( "#select3" ).change(function() {
+			var selected = $('#select3 option:selected').text();
+				if (selected == 'PILIH KELAS') {
+					selected = 0;
+				}
+				window.location.href = "{!! url('reportDosenDetail/') !!}/"+"{!!$currentsemesterParams!!}"+'/'+"{!!$currentMatakuliah!!}/"+selected;
+		});
+		// semester
 		$( "#select2" ).change(function() {
 				var selected = $('#select2 option:selected').text();
 				var tahun = selected.slice(0,4);
@@ -68,14 +93,17 @@
 				else {
 					TrueSelected = tahun+'2';
 				}
-				window.location = TrueSelected;
+				window.location.href = "{!! url('reportDosenDetail/') !!}/"+TrueSelected+'/'+"0/"+"0";
 		});
 		$('#datatable1').DataTable({
 			"dom": 'lCfrtip',
-			"iDisplayLength": 100, 
-			"order": [[ 0, "asc" ]],
-	        ajax: '{!! url('reportMahasiswaData/'. $currentsemesterParams) !!}',
+			"iDisplayLength": 100,
+			"order": [[ 1, "asc" ]],
+	        ajax: '{!! url('reportDosenDetailData/'. $currentsemesterParams . '/' . $currentMatakuliah . '/' . $currentKelas) !!}',
+
 	        columns: [
+	            { data: 'nim'},
+	            { data: 'nama_mahasiswa'},
 	            { data: 'matakuliah_id'},
 	            { data: 'nama_matakuliah'},
 	            { data: 'sks'},
@@ -106,12 +134,6 @@
 				}
 			}
 		});
-
-/*		$('#datatable1 tbody').on('click', 'tr', function() {
-			$(this).toggleClass('selected');
-		});*/
-
-		$('div.alert-success').not('alert-important').delay(6000).slideUp(300);
 
 	});
 

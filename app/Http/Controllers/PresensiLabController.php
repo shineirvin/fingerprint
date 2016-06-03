@@ -30,10 +30,22 @@ class PresensiLabController extends Controller
     {
         $this->middleware('auth');
     }
-    public function index()
+    public function index($currentsemesterParams)
     {
-    	$datas = Jadwalkelas::select('*')->where('dosen_id', Auth::user()->username)->get();
-    	return view('presensi.indexLab', compact('datas'));
+        $datas = Jadwalkelas::select('*')->where('dosen_id', Auth::user()->username)->get();
+        $datetime = Carbon::now();
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
+        $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
+        $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
+        $allSemester = Kelasmk::lists('semester');
+        foreach ($allSemester as $semester) {
+            $smst[] = substr($semester, 0, 4).' '.(substr($semester, -1) == 1 ? 'GANJIL' : 'GENAP');
+        }
+        $smstDirty = collect($smst);
+        $semester = $smstDirty->unique();
+        $semester->prepend('PILIH SEMESTER');
+        return view('presensi.indexLab', compact('datas', 'semester', 'currentsemester', 'currentsemesterDirty', 'currentsemesterParams', 'currentsemesterParamsFilter'));
+
     }
 
     public function validasi($id, $encounter)
@@ -52,12 +64,12 @@ class PresensiLabController extends Controller
         return redirect()->back()->with('id');
     }
 
-    public function getDataJadwalDosen()
+    public function getDataJadwalDosen($semester)
     {
-        $lecturerSchedules = Jadwalkelas::select('*')->where('dosen_id', Auth::user()->username)->get();
+        $lecturerSchedules = Jadwalkelas::select('*')->where('semester', $semester)->where('dosen_id', Auth::user()->username)->get();
         return Datatables::of($lecturerSchedules)
             ->addColumn('action', function ($lecturerSchedules) {
-                return '<a href="presensilab/'.$lecturerSchedules->id_kelas.'/0" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
+                return '<a href="../presensilab/'.$lecturerSchedules->id_kelas.'/0" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
             })
             ->editColumn('semester', function ($lecturerSchedules) {
                 return strtoupper($lecturerSchedules->semester);
@@ -85,7 +97,7 @@ class PresensiLabController extends Controller
         $presensilab = Presensilab::select('*')->where('jadwal_kelas_id', $id)->where('pertemuan', $encounter)->get();
         return Datatables::of($presensilab)
             ->addColumn('action', function ($presensilab) {
-                return '<a href="presensilab/'.$presensilab->id.'" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
+                return '<a href="../presensilab/'.$presensilab->id.'" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
             })
             ->editColumn('name', function ($presensilab) {
                 $nama = User::where('username', $presensilab->nim)->first();

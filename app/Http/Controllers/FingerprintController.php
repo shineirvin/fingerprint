@@ -52,7 +52,7 @@ class FingerprintController extends Controller
 		$for_limit = count($this->connection($ip_address));
         $hari = $this->datefilter();
 		$datetime = Carbon::now();
-        $semester = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2');
+        $semester = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
 
 
         $ruang = Ipfingerprint::select('ruang_id')
@@ -256,7 +256,7 @@ class FingerprintController extends Controller
 		$for_limit = count($this->connection($ip_address));
         $hari = $this->datefilter();
 		$datetime = Carbon::now();
-        $semester = $datetime->format('Y') . ($datetime->month < 6 ? '1' : '2');
+        $semester = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
 
         $ruang = Ipfingerprint::select('ruang_id')
         		->where('ip_address', $ip_address)

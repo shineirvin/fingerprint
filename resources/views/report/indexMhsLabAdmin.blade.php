@@ -27,6 +27,7 @@
 						                <th rowspan="2" style="vertical-align: middle"> KELAS </th>
 						                <th colspan="14" style="text-align: center"> PERTEMUAN KE - </th>
 						                <th rowspan="2" style="vertical-align: middle"> JML HADIR </th>
+						                <th rowspan="2" style="vertical-align: middle"> PRESENTASE </th>
 
 
 						            </tr>
@@ -99,6 +100,7 @@
 	            { data: '13'},
 	            { data: '14'},
 	            { data: 'jml_hadir'},
+	            { data: 'presentase'},
 	        ],
 	        "buttons": [
 	        	{

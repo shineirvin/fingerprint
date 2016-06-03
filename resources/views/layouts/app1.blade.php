@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Material Admin - Layouts</title>
+		<title>Universitas Tarumangara</title>
 
+		<link rel="icon" type="image/png" href="{!! url('favicon.jpg')  !!}" />
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="keywords" content="your,keywords">
@@ -79,6 +80,12 @@
 
         	});
 		    $('#select2').select2({
+
+        	});
+		    $('#select3').select2({
+
+        	});
+		    $('#select4').select2({
 
         	});
 		</script>

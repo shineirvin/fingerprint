@@ -25,5 +25,4 @@ class Matakuliah extends Model
     {
         $this->belongsTo('App\Kelasmk');
     }
-
 }
