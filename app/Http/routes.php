@@ -7,14 +7,15 @@ Route::group(['middleware' => 'web'], function () {
 		return view('auth.login');
 	}]);
 
+	Route::get('cobaupdatedata', 'FingerprintController@cobaupdatedata');
+
 	Route::get('labfingerprint', 'FingerprintController@labfingerprint');
 	
-	Route::get('register', function () {
-	    return view('auth.register');
-	});
 	Route::get('registeradmin', 'AdminController@registeradmin');
 	Route::get('registerdosen', 'AdminController@registerdosen');
 	Route::get('registermahasiswa', 'AdminController@registermahasiswa');
+
+	Route::post('register', 'AdminController@store');
 
 
 	Route::post('studentvalidate', 'PresensiController@studentvalidate');
@@ -155,8 +156,14 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getAdminData/{admin_id}', 'AdminController@getAdminData');
     Route::post('newpassadmin', 'AdminController@newpassadmin');
 
+
     Route::get('adminvalidation/{semester}', 'AdminController@validate_index');
 	Route::get('getDataJadwalDosenAll/{semester}', 'AdminController@getDataJadwalDosenAll');
+
+    Route::get('adminvalidationLab/{semester}', 'AdminController@validateLab_index');
+	Route::get('getDataJadwalDosenLabAll/{semester}', 'AdminController@getDataJadwalDosenLabAll');
+
+
 
 
 	Route::get('kelaspenggantiDataView', 'AdminController@kelaspengganti_index');
@@ -168,6 +175,17 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('kelaspenggantiDataDelete/{id}', 'AdminController@destroy_kelaspengganti');
 	Route::get('listkelasmk', 'AdminController@listkelasmk');
 	Route::get('getDataListKelasmk', 'AdminController@getDataListKelasmk');
+
+	Route::get('kelaspenggantiLabDataView', 'AdminController@kelaspenggantiLab_index');
+	Route::get('getDataKelasPenggantiLab', 'AdminController@getDataKelasPenggantiLab');
+	Route::get('kelaspenggantiLabData/{id}', 'AdminController@registerkelaspenggantiLab');
+	Route::post('kelaspenggantiLabData', 'AdminController@store_kelaspenggantiLab');
+	Route::get('kelaspenggantiLabData/{id}/edit', 'AdminController@edit_kelaspenggantiLab');
+	Route::patch('kelaspenggantiLabData/{id}', 'AdminController@update_kelaspenggantiLab');
+	Route::get('kelaspenggantiLabDataDelete/{id}', 'AdminController@destroy_kelaspenggantiLab');
+	Route::get('listjadwalkelas', 'AdminController@listjadwalkelas');
+	Route::get('getDataListJadwalkelas', 'AdminController@getDataListJadwalkelas');
+
 
 
 	Route::get('reportBulanan', 'AdminController@reportBulanan_index');
@@ -190,7 +208,7 @@ Route::group(['middleware' => 'web'], function () {
 	
 	Route::get('reportDosenDetailExcel/{semester}/{matakuliah}/{kelas}', 'ReportController@reportDosenDetailExcel');
 	Route::get('reportDosenDetailLabExcel/{semester}/{matakuliah}/{kelas}', 'ReportLabController@reportDosenDetailLabExcel');
-	
+
 
 	Route::get('reportAdminDosenDetailExcel/{semester}/{dosen}/{matakuliah}/{kelas}', 'ReportController@reportAdminDosenDetailExcel');
 	Route::get('reportAdminDosenDetailLabExcel/{semester}/{dosen}/{matakuliah}/{kelas}', 'ReportLabController@reportAdminDosenDetailLabExcel');

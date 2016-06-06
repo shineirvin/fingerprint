@@ -82,8 +82,8 @@ class AuthController extends Controller
         ]);
     }
     
-/*    redirectTo my own route
-    public function postRegister(Request $request)
+    // redirectTo my own route
+/*    public function postRegister(Request $request)
      {
         $validator = $this->registrar->validator($request->all());
         if ($validator->fails())
@@ -94,7 +94,8 @@ class AuthController extends Controller
         }
         $this->auth->login($this->registrar->create($request->all()));     
         // Now you can redirect!
-        return redirect('/login');
+        $roles = $request->input('roles');
+        return redirect('/register'.$roles);
      }
 */
 }

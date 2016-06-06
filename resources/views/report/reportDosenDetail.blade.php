@@ -9,7 +9,10 @@
 					@if($currentMatakuliah != '0') 
 					( {!! App\Matakuliah::find($currentMatakuliah)->nama_matakuliah !!} )
 					@endif
-					Kelas {!! $currentKelas !!}
+					@if($currentKelas != '0')
+					Kelas 
+					{!! $currentKelas !!}
+					@endif
 			</div>
 			@include('partials.flash')
 			<div class="section-body">

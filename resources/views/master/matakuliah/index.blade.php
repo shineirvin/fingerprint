@@ -8,7 +8,7 @@
 			<div class="section-header">
 				<h2 class="text-primary">Data Master Matakuliah </h2> 
 			</div>
-			@include('partials.flash')
+
 			<a href="{!! url('matakuliahData') !!}" class="btn ink-reaction btn-raised btn-primary"><i class="fa fa-plus"></i> &nbsp Tambah Data Matakuliah</a>
 			<div class="section-body">
 

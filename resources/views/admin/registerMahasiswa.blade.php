@@ -10,10 +10,10 @@
 							<div class="col-lg-offset-2 col-md-8">
 								<form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
 			                        {!! csrf_field() !!}
-			                        <input name="roles" type="hidden" value="Mahasiswa">
+			                        {!! Form::hidden('roles', 'Mahasiswa') !!}
 								<div class="card">
 										<div class="card-head style-primary">
-											<header>Register new Mahasiswa</header>
+											<header>Daftar mahasiswa baru</header>
 										</div>
 									<div class="card-body">
 

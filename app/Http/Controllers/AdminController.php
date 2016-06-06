@@ -9,8 +9,11 @@ use App\Http\Requests\KelasPenggantiRequest;
 use App\Jenisruang;
 use App\Kelasmk;
 use App\Kelaspengganti;
+use App\KelaspenggantiLab;
+use App\Jadwalkelas;
 use App\Matakuliah;
 use App\Ruang;
+use App\Praktikum;
 use App\User;
 use Carbon\Carbon;
 use PHPExcel_Worksheet_Drawing;
@@ -18,6 +21,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -60,6 +64,36 @@ class AdminController extends Controller
     {
         return view('admin.registermahasiswa');
     }
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255|string',
+            'roles' => 'required|min:1',
+            'username' => 'required|max:255|unique:users|digits',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('registerdosen')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        $user = new User;
+        $user->name = $request->name;
+        $user->roles = $request->roles;
+        $user->username = $request->username;
+        $user->status = '1';
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->save();
+        flash()->success('Success!', 'Berhasil daftar '.strtolower($request->roles).' baru!');
+
+        return redirect('register'.strtolower($request->roles));
+    }
+
 
     public function changepassdosenData()
     {
@@ -154,6 +188,23 @@ class AdminController extends Controller
         return view('admin.attindex', compact('semester', 'currentsemester', 'currentsemesterDirty', 'currentsemesterParams', 'currentsemesterParamsFilter'));
     }
 
+    public function validateLab_index($currentsemesterParams)
+    {
+        $datetime = Carbon::now();
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
+        $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
+        $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
+        $allSemester = Kelasmk::lists('semester');
+        foreach ($allSemester as $semester) {
+            $smst[] = substr($semester, 0, 4).' '.(substr($semester, -1) == 1 ? 'GANJIL' : 'GENAP');
+        }
+        $smstDirty = collect($smst);
+        $semester = $smstDirty->unique();
+        $semester->prepend('PILIH SEMESTER');
+
+        return view('admin.attLabindex', compact('semester', 'currentsemester', 'currentsemesterDirty', 'currentsemesterParams', 'currentsemesterParamsFilter'));
+    }
+
     public function getDataJadwalDosenAll($semester)
     {
         $lecturerSchedules = Kelasmk::select('*')->where('semester', $semester)->get();
@@ -183,10 +234,47 @@ class AdminController extends Controller
             ->make(true);   
     }
 
+    public function getDataJadwalDosenLabAll($semester)
+    {
+        $lecturerSchedules = Jadwalkelas::select('*')->where('semester', $semester)->get();
+        return Datatables::of($lecturerSchedules)
+            ->addColumn('action', function ($lecturerSchedules) {
+                return '<a href="../presensilab/'.$lecturerSchedules->id_kelas.'/0" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
+            })
+            ->editColumn('semester', function ($lecturerSchedules) {
+                return strtoupper($lecturerSchedules->semester);
+            })
+            ->editColumn('hari_name', function ($lecturerSchedules) {
+                $hari = Hari::findOrFail($lecturerSchedules->hari_id);
+                return $hari->namahari;
+            })
+            ->editColumn('name', function ($lecturerSchedules) {
+                $nama = User::where('username', $lecturerSchedules->dosen_id)->first();
+                return $nama->name;
+            })
+            ->editColumn('matakuliah_id', function ($lecturerSchedules) {
+                $hari = Praktikum::findOrFail($lecturerSchedules->id_praktikum);
+                return $hari->nama;
+            })
+            ->editColumn('ruang_id', function ($lecturerSchedules) {
+                $ruang = Ruang::findOrFail($lecturerSchedules->ruang_id);
+                return $ruang->nama_ruang;
+            })
+            ->editColumn('waktu', function ($lecturerSchedules) {
+                return $lecturerSchedules->time_start;
+            })
+            ->make(true);   
+    }
+
 
     public function kelaspengganti_index()
     {
         return view('admin.kelaspengganti.index');
+    }
+
+    public function kelaspenggantiLab_index()
+    {
+        return view('admin.kelaspenggantilab.index');
     }
 
     public function getDataKelaspengganti()
@@ -232,11 +320,61 @@ class AdminController extends Controller
             ->make(true);   
     }
 
+    public function getDataKelaspenggantiLab()
+    {
+        $lecturerSchedules = Kelaspenggantilab::select('*')->where('status', '1')->get();
+        return Datatables::of($lecturerSchedules)
+            ->addColumn('action', function ($lecturerSchedules) {
+                return '<a href="kelaspenggantiLabData/'.$lecturerSchedules->jadwalkelas_id.'/edit" class="btn btn-warning"><i class="fa fa-pencil"></i> Edit </a> <a href="kelaspenggantiDataDelete/'.$lecturerSchedules->id.'" class="btn btn-danger"><i class="fa fa-trash"></i> Delete </a>';
+            })
+            ->editColumn('status', function ($lecturerSchedules) {
+                return ($lecturerSchedules->status == '1' ? 'Active' : 'Non Active');
+            })
+            ->editColumn('semester', function ($lecturerSchedules) {
+                $kelasmk = Jadwalkelas::find($lecturerSchedules->jadwalkelas_id);
+                return strtoupper($kelasmk->semester);
+            })
+            ->editColumn('hari_name', function ($lecturerSchedules) {
+                $hari = Hari::findOrFail($lecturerSchedules->hari_id);
+                return $hari->namahari;
+            })
+            ->editColumn('name', function ($lecturerSchedules) {
+                $kelasmk = Jadwalkelas::find($lecturerSchedules->jadwalkelas_id);
+                $nama = User::where('username', $kelasmk->dosen_id)->first();
+                return $nama->name;
+            })
+            ->editColumn('nim', function ($lecturerSchedules) {
+                $kelasmk = Jadwalkelas::find($lecturerSchedules->jadwalkelas_id);
+                return $kelasmk->dosen_id;
+            })
+            ->editColumn('matakuliah_id', function ($lecturerSchedules) {
+                $kelasmk = Jadwalkelas::find($lecturerSchedules->jadwalkelas_id);
+                $hari = Praktikum::findOrFail($kelasmk->id_praktikum);
+                return $hari->nama;
+            })
+            ->editColumn('ruang_id', function ($lecturerSchedules) {
+                $ruang = Ruang::findOrFail($lecturerSchedules->ruang_id);
+                return $ruang->nama_ruang;
+            })
+            ->editColumn('kelas', function ($lecturerSchedules) {
+                $kelasmk = Jadwalkelas::find($lecturerSchedules->jadwalkelas_id);
+                return $kelasmk->kelas;
+            })
+            ->make(true);   
+    }
+
+
 
     public function registerkelaspengganti($id)
     {
         $kelasmk = Kelasmk::find($id);
         return view('admin/kelaspengganti.create', compact('kelasmk'));
+    }
+
+    public function registerkelaspenggantilab($id)
+    {
+        $kelasmk = Jadwalkelas::find($id);
+        return view('admin/kelaspenggantiLab.create', compact('kelasmk'));
     }
 
     public function store_kelaspengganti(Request $request)
@@ -249,7 +387,20 @@ class AdminController extends Controller
         $kelaspengganti->status = $request->input('recstatus');
         $kelaspengganti->save();
 
-        return redirect('kelaspenggantiDataView');
+        return redirect('kelaspenggantiLabDataView');
+    }
+
+    public function store_kelaspenggantilab(Request $request)
+    {
+        $kelaspengganti = new Kelaspenggantilab;
+        $kelaspengganti->jadwalkelas_id = $request->input('kelasmk_id');
+        $kelaspengganti->waktu = $request->input('waktu');
+        $kelaspengganti->hari_id = $request->input('hari_id');
+        $kelaspengganti->ruang_id = $request->input('ruang_id');
+        $kelaspengganti->status = $request->input('status');
+        $kelaspengganti->save();
+
+        return redirect('kelaspenggantiLabDataView');
     }
 
     public function edit_kelaspengganti($id)
@@ -259,12 +410,27 @@ class AdminController extends Controller
         return view('admin/kelaspengganti.edit', compact('kelaspengganti', 'kelasmk'));
     }
 
+    public function edit_kelaspenggantiLab($id)
+    {
+        $kelasmk = Jadwalkelas::find($id);
+        $kelaspengganti = Kelaspenggantilab::where('jadwalkelas_id', $id_kelas)->first();
+        return view('admin/kelaspenggantilab.edit', compact('kelaspengganti', 'kelasmk'));
+    }
+
     public function update_kelaspengganti($id, KelasPenggantiRequest $request)
     {
         $kelaspengganti = Kelaspengganti::findOrFail($id);
         $kelaspengganti->update($request->All());
         flash()->success('Success!', 'Kelas pengganti berhasil diupdate!');
         return redirect('kelaspenggantiDataView');
+    }
+
+    public function update_kelaspenggantiLab($id, KelasPenggantiLabRequest $request)
+    {
+        $kelaspengganti = Kelaspenggantilab::findOrFail($id);
+        $kelaspengganti->update($request->All());
+        flash()->success('Success!', 'Kelas pengganti berhasil diupdate!');
+        return redirect('kelaspenggantiLabDataView');
     }
 
     public function destroy_kelaspengganti($id)
@@ -276,10 +442,25 @@ class AdminController extends Controller
         return redirect('kelaspenggantiDataView');
     }
 
+    public function destroy_kelaspenggantiLab($id)
+    {
+        $kelaspengganti = KelaspenggantiLab::findOrFail($id);
+        $kelaspengganti->status = '0';
+        $kelaspengganti->save();
+        flash()->success('Success!', 'Kelas pengganti berhasil dihapus!');
+        return redirect('kelaspenggantiLabDataView');
+    }
+
     public function listkelasmk()
     {
         return view('admin/kelaspengganti.listkelasmk');
     }
+
+   public function listjadwalkelas()
+    {
+        return view('admin/kelaspenggantilab.listjadwalkelas');
+    }
+
 
     public function getDataListKelasmk()
     {
@@ -318,6 +499,53 @@ class AdminController extends Controller
             ->editColumn('ruang_id', function ($lecturerSchedules) {
                 $ruang = Ruang::findOrFail($lecturerSchedules->ruang_id);
                 return $ruang->nama_ruang;
+            })
+            ->editColumn('kelas', function ($lecturerSchedules) {
+                return $lecturerSchedules->kelas;
+            })
+            ->make(true);   
+    }
+
+    public function getDataListJadwalkelas()
+    {
+        $kelaspengganti = Kelaspenggantilab::select('jadwalkelas_id')->get();
+
+        $lecturerSchedules = \DB::table('jadwal_kelas')
+                                  ->select('*')
+                                  ->whereNotIn('id_kelas', $kelaspengganti)
+                                  ->get();
+        $lecturerSchedules = collect($lecturerSchedules);
+        return Datatables::of($lecturerSchedules)
+            ->addColumn('action', function ($lecturerSchedules) {
+                return '<a href="kelaspenggantiLabData/'.$lecturerSchedules->id_kelas.'" class="btn btn-warning"><i class="fa fa-pencil"></i> Kelola KP </a>';
+            })
+            ->editColumn('recstatus', function ($lecturerSchedules) {
+                return ($lecturerSchedules->status == '1' ? 'Active' : 'Non Active');
+            })
+            ->editColumn('semester', function ($lecturerSchedules) {
+                return strtoupper($lecturerSchedules->semester);
+            })
+            ->editColumn('hari_name', function ($lecturerSchedules) {
+                $hari = Hari::findOrFail($lecturerSchedules->hari_id);
+                return $hari->namahari;
+            })
+            ->editColumn('name', function ($lecturerSchedules) {
+                $nama = User::where('username', $lecturerSchedules->dosen_id)->first();
+                return $nama->name;
+            })
+            ->editColumn('nim', function ($lecturerSchedules) {
+                return $lecturerSchedules->dosen_id;
+            })
+            ->editColumn('matakuliah_id', function ($lecturerSchedules) {
+                $matakuliah = Praktikum::findOrFail($lecturerSchedules->id_praktikum);
+                return $matakuliah->nama;
+            })
+            ->editColumn('ruang_id', function ($lecturerSchedules) {
+                $ruang = Ruang::findOrFail($lecturerSchedules->ruang_id);
+                return $ruang->nama_ruang;
+            })
+            ->editColumn('waktu', function ($lecturerSchedules) {
+                return $lecturerSchedules->time_start;
             })
             ->editColumn('kelas', function ($lecturerSchedules) {
                 return $lecturerSchedules->kelas;
@@ -678,7 +906,7 @@ class AdminController extends Controller
             ->select('keterangan')
             ->where('presensidosen.waktu', '>=', $start)
             ->where('presensidosen.waktu', '<=', $end)
-            ->where('keterangan', '1')
+            ->where('keterangan', '<', '4')
             ->where('kelasmk_id', $lecturerSchedules->id)
             ->where('nik', $lecturerSchedules->dosen_id)
             ->count('pertemuan');  

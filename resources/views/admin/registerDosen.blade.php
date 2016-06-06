@@ -10,17 +10,17 @@
 							<div class="col-lg-offset-2 col-md-8">
 								<form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
 			                        {!! csrf_field() !!}
-			                        <input name="roles" type="hidden" value="Dosen">
+			                        {!! Form::hidden('roles', 'Dosen') !!}
 								<div class="card">
 										<div class="card-head style-primary">
-											<header>Register new dosen</header>
+											<header>Daftar dosen baru</header>
 										</div>
 									<div class="card-body">
 
-			                            <div class="form-group">
-			                                <label class="col-sm-2 control-label" for="username">Name</label>
+			                            <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
+			                                <label class="col-sm-2 control-label" for="name">Name</label>
 			                                <div class="col-sm-10">
-			                                    <input type="text" class="form-control" id="username" name="name">         
+			                                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">         
 			                                    @if ($errors->has('name'))
 			                                        <p class="help-blockleft">
 			                                            <strong>{{ $errors->first('name') }}</strong>
@@ -28,10 +28,10 @@
 			                                    @endif
 			                                </div>
 			                            </div> <br>
-			                            <div class="form-group">
+			                            <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
 			                                <label for="username" class="col-sm-2 control-label">NIM / NIK</label>
 			                                <div class="col-sm-10">
-			                                    <input type="text" class="form-control" id="username" name="username">
+			                                    <input type="text" class="form-control" id="username" name="username" value="{{ old('username') }}">
 			                                    @if ($errors->has('username'))
 			                                        <p class="help-blockleft">
 			                                            <strong>{{ $errors->first('username') }}</strong>
@@ -39,10 +39,10 @@
 			                                    @endif
 			                                </div>
 			                            </div> <br>
-			                            <div class="form-group">
+			                            <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
 			                                <label for="email" class="col-sm-2 control-label">E-mail Address</label>
 			                                <div class="col-sm-10">
-			                                    <input type="text" class="form-control" id="email" name="email">
+			                                    <input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}">
 			                                    @if ($errors->has('email'))
 			                                        <p class="help-blockleft">
 			                                            <strong>{{ $errors->first('email') }}</strong>
@@ -50,10 +50,10 @@
 			                                    @endif
 			                                </div>
 			                            </div> <br>
-			                            <div class="form-group">
+			                            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
 			                                <label for="password" class="col-sm-2 control-label">Password</label>
 			                                <div class="col-sm-10">
-			                                    <input type="password" class="form-control" id="password" name="password">
+			                                    <input type="password" class="form-control" id="password" name="password" value="{{ old('password') }}">
 			                                    @if ($errors->has('password'))
 			                                        <p class="help-blockleft">
 			                                            <strong>{{ $errors->first('password') }}</strong>
@@ -61,10 +61,10 @@
 			                                    @endif
 			                                </div>
 			                            </div> <br>
-			                            <div class="form-group">
+			                            <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
 			                                <label for="password_confirmation" class="col-sm-2 control-label">Confirm Password</label>
 			                                <div class="col-sm-10">
-			                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
+			                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" value="{{ old('password_confirmation') }}">
 			                                    @if ($errors->has('password_confirmation'))
 			                                        <p class="help-blockleft">
 			                                            <strong>{{ $errors->first('password_confirmation') }}</strong>

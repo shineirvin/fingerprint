@@ -8,6 +8,7 @@ use App\Dami;
 use App\Hari;
 use App\Ipfingerprint;
 use App\Ruang;
+use App\Kelaspengganti;
 
 use Carbon\Carbon;
 
@@ -46,9 +47,17 @@ class GrabFingerprint extends Command
      */
     public function handle()
     {
-        $ips = Ipfingerprint::select('ip_address')->get();
+        $datetime = Carbon::now();
+
+        $ips = \DB::table('kelasmk')
+                  ->join('ipfingerprint', 'kelasmk.ruang_id', '=', 'ipfingerprint.ruang_id')
+                  ->select('ipfingerprint.ip_address')
+                  ->where('semester', $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2'))
+                  ->get();
         foreach ($ips as $ip) {
-                app('App\Http\Controllers\FingerprintController')->cobaupdatedata();       
+            app('App\Http\Controllers\FingerprintController')->cobaupdatedata($ip->ip_address);    
+            \Log::info(app('App\Http\Controllers\FingerprintController')->cobaupdatedata($ip->ip_address));
+            \Log::info('=================================================================================');
         }
     }
 }

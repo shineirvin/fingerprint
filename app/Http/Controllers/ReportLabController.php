@@ -1742,7 +1742,7 @@ class ReportLabController extends Controller
         $classes = \DB::table('presensidosenlab')
             ->join('jadwal_kelas', 'presensidosenlab.jadwal_kelas_id', '=', 'jadwal_kelas.id_kelas')
             ->select('keterangan')
-            ->where('keterangan', '1')
+            ->where('keterangan', '<', '4')
             ->where('jadwal_kelas_id', $studentSubjects->id_kelas)
             ->where('nik', $studentSubjects->dosen_id)
             ->count('keterangan');  
@@ -1807,7 +1807,7 @@ class ReportLabController extends Controller
         $classes = \DB::table('presensilab')
             ->join('jadwal_kelas', 'presensilab.jadwal_kelas_id', '=', 'jadwal_kelas.id_kelas')
             ->select('keterangan')
-            ->where('keterangan', '1')
+            ->where('keterangan', '<', '4')
             ->where('jadwal_kelas_id', $studentSubjects->id_kelas)
             ->where('nim', $studentSubjects->nim)
             ->count('keterangan');
@@ -1841,7 +1841,7 @@ class ReportLabController extends Controller
         $classes = \DB::table('presensidosenlab')
             ->join('jadwal_kelas', 'presensidosenlab.jadwal_kelas_id', '=', 'jadwal_kelas.id_kelas')
             ->select('keterangan')
-            ->where('keterangan', '1')
+            ->where('keterangan', '<', '4')
             ->where('jadwal_kelas_id', $lecturerSchedules->id_kelas)
             ->where('nik', Auth::user()->username)
             ->count('keterangan');  
@@ -1876,7 +1876,7 @@ class ReportLabController extends Controller
             ->join('jadwal_kelas', 'presensilab.jadwal_kelas_id', '=', 'jadwal_kelas.id_kelas')
             ->select('keterangan')
             ->where('jadwal_kelas_id', $studentSubjects->id_jadwal_kelas)
-            ->where('keterangan', '1')
+            ->where('keterangan', '<', '4')
             ->where('nim', Auth::user()->username)
             ->count('keterangan');  
         if ( !$classes ) {
@@ -1909,7 +1909,7 @@ class ReportLabController extends Controller
         $classes = \DB::table('presensiasdos')
             ->join('jadwal_kelas', 'presensiasdos.jadwal_kelas_id', '=', 'jadwal_kelas.id_kelas')
             ->select('keterangan')
-            ->where('keterangan', '1')
+            ->where('keterangan', '<', '4')
             ->where('jadwal_kelas_id', $lecturerSchedules->id_kelas)
             ->where('nim', Auth::user()->username)
             ->count('keterangan');  
@@ -1944,7 +1944,7 @@ class ReportLabController extends Controller
         $classes = \DB::table('presensiasdos')
             ->join('jadwal_kelas', 'presensiasdos.jadwal_kelas_id', '=', 'jadwal_kelas.id_kelas')
             ->select('keterangan')
-            ->where('keterangan', '1')
+            ->where('keterangan', '<', '4')
             ->where('jadwal_kelas_id', $studentSubjects->id_kelas)
             ->where('nim', $studentSubjects->nim)
             ->count('keterangan');  

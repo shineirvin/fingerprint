@@ -58,7 +58,8 @@ class MasterController extends Controller
     	$matakuliah->sks = $request->input('sks');
     	$matakuliah->recstatus = $request->input('recstatus');
     	$matakuliah->save();
-    	return redirect('matakuliahDataView')->with('flash_message', 'Your data has been created!');
+        flash()->success('Success!', 'Your data has been created!');
+    	return redirect('matakuliahDataView');
     }
 
     public function edit_matakuliah($id)
@@ -71,6 +72,7 @@ class MasterController extends Controller
     {
     	 $matakuliah = Matakuliah::findOrFail($id);
     	 $matakuliah->update($request->All());
+         flash()->success('Success!', 'Your data has been updated!');
     	 return redirect('matakuliahDataView');
     }
 
@@ -78,7 +80,8 @@ class MasterController extends Controller
     {
         $matakuliah = Matakuliah::findOrFail($id);
         $matakuliah->delete();
-        return redirect('matakuliahDataView')->with('flash_message', 'Deleted!');
+        flash()->success('Success!', 'Your data has been deleted!');
+        return redirect('matakuliahDataView');
     }
 
     /* =========================================RUANG=======================================================*/
@@ -102,7 +105,8 @@ class MasterController extends Controller
         $ruang->jenisruang_id = $request->input('jenisruang_id');
         $ruang->recstatus = $request->input('recstatus');
         $ruang->save();
-        return redirect('ruangDataView')->with('flash_message', 'Your data has been created!');
+        flash()->success('Success!', 'Your data has been created!');
+        return redirect('ruangDataView');
     }
 
     public function getDataruang()
@@ -131,6 +135,7 @@ class MasterController extends Controller
     {
         $ruang = Ruang::findOrFail($id);
         $ruang->update($request->All());
+        flash()->success('Success!', 'Your data has been updated!');
         return redirect('ruangDataView');
     }
 
@@ -138,7 +143,8 @@ class MasterController extends Controller
     {
         $ruang = Ruang::findOrFail($id);
         $ruang->delete();
-        return redirect('ruangDataView')->with('flash_message', 'Deleted!');
+        flash()->success('Success!', 'Your data has been deleted!');
+        return redirect('ruangDataView');
     }
 
 
@@ -160,7 +166,8 @@ class MasterController extends Controller
         $jenisruang->jenis_ruang = $request->input('jenis_ruang');
         $jenisruang->recstatus = $request->input('recstatus');
         $jenisruang->save();
-        return redirect('jenisruangDataView')->with('flash_message', 'Your data has been created!');
+        flash()->success('Success!', 'Your data has been created!');
+        return redirect('jenisruangDataView');
     }
 
     public function getDatajenisruang()
@@ -185,6 +192,7 @@ class MasterController extends Controller
     {
          $jenisruang = Jenisruang::findOrFail($id);
          $jenisruang->update($request->All());
+         flash()->success('Success!', 'Your data has been updated!');
          return redirect('jenisruangDataView');
     }
 
@@ -192,7 +200,8 @@ class MasterController extends Controller
     {
         $jenisruang = Jenisruang::findOrFail($id);
         $jenisruang->delete();
-        return redirect('jenisruangDataView')->with('flash_message', 'Deleted!');
+        flash()->success('Success!', 'Your data has been deleted!');
+        return redirect('jenisruangDataView');
     }
 
 }

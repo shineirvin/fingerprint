@@ -7,7 +7,7 @@
 			<div class="section-header">
 				<h2 class="text-primary">Data Master Jenis Ruang </h2> 
 			</div>
-			@include('partials.flash')
+
 			<a href="{!! url('jenisruangData') !!}" class="btn ink-reaction btn-raised btn-primary"><i class="fa fa-plus"></i> &nbsp Tambah Data Jenis Ruang</a>
 			<div class="section-body">
 

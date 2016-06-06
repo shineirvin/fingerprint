@@ -28,4 +28,5 @@ class Presensikelas extends Model
         return $this->belongsTo('App\Kelasmk');
     }
 
+
 }

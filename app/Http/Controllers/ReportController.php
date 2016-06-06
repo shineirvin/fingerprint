@@ -1445,7 +1445,7 @@ class ReportController extends Controller
         $classes = \DB::table('presensidosen')
             ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
             ->select('keterangan')
-            ->where('keterangan', '1')
+            ->where('keterangan', '<', '4')
             ->where('kelasmk_id', $studentSubjects->id)
             ->where('nik', $studentSubjects->dosen_id)
             ->count('keterangan');  
@@ -1490,7 +1490,7 @@ class ReportController extends Controller
         $classes = \DB::table('presensikelas')
             ->join('kelasmk', 'presensikelas.kelasmk_id', '=', 'kelasmk.id')
             ->select('keterangan')
-            ->where('keterangan', '1')
+            ->where('keterangan', '<', '4')
             ->where('kelasmk_id', $studentSubjects->id)
             ->where('nim', Auth::user()->username)
             ->count('keterangan');  
@@ -1524,7 +1524,7 @@ class ReportController extends Controller
         $classes = \DB::table('presensidosen')
             ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
             ->select('keterangan')
-            ->where('keterangan', '1')
+            ->where('keterangan', '<', '4')
             ->where('kelasmk_id', $lecturerSchedules->id)
             ->where('nik', Auth::user()->username)
             ->count('keterangan');  
@@ -1541,7 +1541,7 @@ class ReportController extends Controller
         $classes = \DB::table('presensikelas')
             ->join('kelasmk', 'presensikelas.kelasmk_id', '=', 'kelasmk.id')
             ->select('keterangan')
-            ->where('keterangan', '1')
+            ->where('keterangan', '<', '4')
             ->where('kelasmk_id', $studentSubjects->id)
             ->where('nim', $studentSubjects->nim)
             ->count('keterangan');  

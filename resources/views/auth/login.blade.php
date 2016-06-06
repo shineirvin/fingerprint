@@ -27,10 +27,14 @@
             <div class="card contain-sm style-transparent">
                 <div class="card-body">
                     <div class="row">
+                        <div class="col-sm-3">
+                        </div>
                         <div class="col-sm-6">
                             <br/>
-                            <span class="text-lg text-bold text-primary">MATERIAL ADMIN</span>
-                            <br/><br/>
+                            <span class="text-lg text-bold text-primary">UNIVERSITAS TARUMANAGARA</span>
+                            <h3 class="text-light">
+                                Log In
+                            </h3>
                             <form class="form default-label" role="form" method="POST" action="{{ url('/login') }}">
                             {!! csrf_field() !!}
                                 <div class="form-group">
@@ -67,18 +71,10 @@
                                 </div><!--end .row -->
                             </form>
                         </div><!--end .col -->
-                        <div class="col-sm-5 col-sm-offset-1 text-center">
-                            <br><br>
-                                <h3 class="text-light">
-                                    No account yet?
-                                </h3>
-                                <a class="btn btn-block btn-raised btn-primary" href="{{ url('/register') }}">Sign up here</a>
-                                <br><br>
-                                </div><!--end .col -->
-                            </div><!--end .row -->
-                        </div><!--end .card-body -->
-                    </div><!--end .card -->
-                </section>
+                    </div><!--end .row -->
+                </div><!--end .card-body -->
+            </div><!--end .card -->
+        </section>
                 <!-- END LOGIN SECTION -->
 
                 <!-- BEGIN JAVASCRIPT -->

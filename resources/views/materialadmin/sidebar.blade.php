@@ -43,7 +43,7 @@
 			<li class="gui-folder">
 				<a>
 					<div class="gui-icon"><i class="fa fa-puzzle-piece fa-fw"></i></div>
-					<span class="title">Users Settings</span>
+					<span class="title">Kelola Users</span>
 				</a>
 				<ul>
 					<li><a href="{!! url('changepassadmin') !!}" class="{!! set_active('changepassadmin') !!}"><span class="title">Admin</span></a></li>
@@ -51,16 +51,28 @@
 					<li><a href="{!! url('changepassmahasiswa') !!}" class="{!! set_active('changepassmahasiswa') !!}"><span class="title">Mahasiswa</span></a></li>
 				</ul>
 			</li>
-			<li class="{!! set_active('adminvalidation') !!}">
+			<li class="{!! set_active('adminvalidation/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('adminvalidation/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
-					<span class="title">Attendance Validation</span>
+					<span class="title">Validasi Absensi</span>
+				</a>
+			</li>
+			<li class="{!! set_active('adminvalidationLab') !!}">
+				<a href="{!! url('adminvalidationLab/'. $currentsemesterDirty) !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Validasi Absensi Lab</span>
 				</a>
 			</li>
 			<li class="{!! set_active('kelaspenggantiDataView') !!}">
 				<a href="{!! url('kelaspenggantiDataView') !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Kelas Pengganti</span>
+				</a>
+			</li>
+			<li class="{!! set_active('kelaspenggantiLabDataView') !!}">
+				<a href="{!! url('kelaspenggantiLabDataView') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Kelas Pengganti Lab</span>
 				</a>
 			</li>
 			<li class="{!! set_active('reportBulanan') !!}">
@@ -113,6 +125,18 @@
 				<a href="{!! url('reportDosen/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report</span>
+				</a>
+			</li>
+			<li class="{!! set_active('reportDosenDetail/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportDosenDetail/'. $currentsemesterDirty. '/0/0') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Mahasiswa</span>
+				</a>
+			</li>
+			<li class="{!! set_active('reportDosenDetailLab/'. $currentsemesterDirty) !!}">
+				<a href="{!! url('reportDosenDetailLab/'. $currentsemesterDirty. '/0/0') !!}">
+					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+					<span class="title">Report Mahasiswa Lab</span>
 				</a>
 			</li>
 
@@ -186,18 +210,7 @@
 					<span class="title">Report Lab</span>
 				</a>
 			</li>
-			<li class="{!! set_active('reportDosenDetail/'. $currentsemesterDirty) !!}">
-				<a href="{!! url('reportDosenDetail/'. $currentsemesterDirty. '/0/0') !!}">
-					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
-					<span class="title">Report Mahasiswa</span>
-				</a>
-			</li>
-			<li class="{!! set_active('reportDosenDetailLab/'. $currentsemesterDirty) !!}">
-				<a href="{!! url('reportDosenDetailLab/'. $currentsemesterDirty. '/0/0') !!}">
-					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
-					<span class="title">Report Mahasiswa Lab</span>
-				</a>
-			</li>
+
 			@endif
 			@if (Auth::user()->roles === 'Mahasiswa' && Auth::user()->username == $mahasiswa_id)
 			<li class="{!! set_active('reportAsdos/'. $currentsemesterDirty) !!}">
