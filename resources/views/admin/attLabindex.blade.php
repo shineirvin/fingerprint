@@ -5,7 +5,7 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Jadwal Perkuliahan Semester {!! $currentsemesterParamsFilter !!} </h2> 
+				<h2 class="text-primary"> Jadwal Praktikum Semester {!! $currentsemesterParamsFilter !!} </h2> 
 			</div>
 			<div class="section-body">
 				<div class="col-sm-3">

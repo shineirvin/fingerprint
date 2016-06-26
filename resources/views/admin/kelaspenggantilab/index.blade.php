@@ -43,6 +43,9 @@
 			"dom": 'lCfrtip',
 			"iDisplayLength": 100, 
 			"order": [[ 0, "asc" ]],
+			"oLanguage": {
+			"sEmptyTable": "Data Kosong!"
+			},
 	        ajax: '{!! url('getDataKelasPenggantiLab') !!}',
 	        columns: [
 	            { data: 'semester'},

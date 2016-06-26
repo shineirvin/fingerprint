@@ -6,7 +6,7 @@
 			<ul class="header-nav header-nav-options">
 				<li class="header-nav-brand" >
 					<div class="brand-holder">
-						<a href="materialadmin/html/dashboards/dashboard.html">
+						<a href="{!! url('/') !!}">
 							<span class="text-lg text-bold text-primary">Teknik Informatika</span>
 						</a>
 					</div>

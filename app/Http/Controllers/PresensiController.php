@@ -16,6 +16,7 @@ use App\Kelasmk;
 use App\Dami;
 use App\Hari;
 use App\Presensikelas;
+use Validator;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -45,12 +46,67 @@ class PresensiController extends Controller
         return view('presensi.index', compact('datas', 'semester', 'currentsemester', 'currentsemesterDirty', 'currentsemesterParams', 'currentsemesterParamsFilter'));
     }
 
+
+    public function indexJadwalDosen($currentsemesterParams)
+    {
+        $datas = Kelasmk::select('*')->where('dosen_id', Auth::user()->username)->get();
+        $datetime = Carbon::now();
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
+        $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
+        $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
+        $allSemester = Kelasmk::lists('semester');
+        foreach ($allSemester as $semester) {
+            $smst[] = substr($semester, 0, 4).' '.(substr($semester, -1) == 1 ? 'GANJIL' : 'GENAP');
+        }
+        $smstDirty = collect($smst);
+        $semester = $smstDirty->unique();
+        $semester->prepend('PILIH SEMESTER');
+
+        return view('presensi.indexJadwalDosen', compact('datas', 'semester', 'currentsemester', 'currentsemesterDirty', 'currentsemesterParams', 'currentsemesterParamsFilter'));
+    }
+
+    public function indexJadwalDosenCreate($id)
+    {
+        $kelasmk = Kelasmk::find($id);
+
+        return view('presensi.indexJadwalDosenCreate', compact('kelasmk'));
+    }
+
+    public function registerbatashadir(Request $request)
+    {
+        $messages = [
+            'required' => 'Field ini harus diisi!.',
+            'numeric' => 'Field ini harus diisi dengan nilai numerik!.',
+            'between' => 'Field ini hanya dapat diisi diantara 1 - 14!.',
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'batashadir' => 'required|numeric|between:1,14',
+        ], $messages);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                        ->withErrors($validator);
+        }
+        else {
+            $kelasmk = Kelasmk::find($request->kelasmk_id);
+            $kelasmk->batashadir = $request->batashadir;
+            $kelasmk->save();           
+        }
+
+
+        return redirect('listJadwalDosen/'.$request->kelasmk_id.'/create');
+    }
+
     public function getDataJadwalDosen($semester)
     {
         $lecturerSchedules = Kelasmk::select('*')->where('semester', $semester)->where('dosen_id', Auth::user()->username)->get();
         return Datatables::of($lecturerSchedules)
             ->addColumn('action', function ($lecturerSchedules) {
                 return '<a href="../presensi/'.$lecturerSchedules->id.'/0" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
+            })
+            ->addColumn('action1', function ($lecturerSchedules) {
+                return '<a href="../listJadwalDosen/'.$lecturerSchedules->id.'/create" class="btn btn-success"><i class="fa fa-check"></i> Set Batas Pertemuan </a>';
             })
             ->editColumn('recstatus', function ($lecturerSchedules) {
                 return ($lecturerSchedules->recstatus == '1' ? 'Active' : 'Non Active');

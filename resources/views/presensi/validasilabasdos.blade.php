@@ -5,7 +5,7 @@
 	<div id="content">
 		<section class="style-default-bright">
 			<div class="section-header">
-				<h2 class="text-primary"> Validasi Presensi Mahasiswa 
+				<h2 class="text-primary"> Validasi Presensi Asisten Dosen 
 				@if($encounter == 0)
 				( Silahkan Pilih Pertemuan )</h2>
 				@else 
@@ -34,15 +34,15 @@
 					   ], null,  array('class'=>'form-control input-lg', 'id' => 'selectpertemuan')) !!}
 				{!! Form::select('role', 
 					   [
-					   '1' => 'MAHASISWA', 
-					   '2' => 'ASISTEN DOSEN',
+					   '1' => 'ASISTEN DOSEN', 
+					   '2' => 'MAHASISWA',
 					   ], null,  array('class'=>'form-control input-lg', 'id' => 'role')) !!}
 				</div>
 				<!-- BEGIN DATATABLE 1 -->
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="table-responsive">
-						{!! Form::open(['url' => 'studentvalidateLab', 'method' => 'POST']) !!}
+						{!! Form::open(['url' => 'studentvalidateLabasdos', 'method' => 'POST']) !!}
 						<input name="idpage" type="hidden" value="{!! $id !!}">
 							<table id="datatable1" class="table table-striped table-hover">
 						        <thead>
@@ -87,10 +87,10 @@
 		});
 		$( "#role" ).change(function() {
 			var selected = $('#role').val();
-			if (selected == 1) {
+			if (selected == 2) {
 				window.location = '{!! url('presensilab/'.$id.'/'.$encounter) !!}';
 			}
-			if (selected == 2) {
+			if (selected == 1) {
 				window.location = '{!! url('presensilabasdos/'.$id.'/'.$encounter) !!}';
 			}
 		});
@@ -98,7 +98,7 @@
 			"dom": 'lCfrtip',
 			"iDisplayLength": 100,
 			"order": [[ 1, "asc" ]],
-	        ajax: '{!! url('getDataPresensiMahasiswaLab/'.$id.'/'.$encounter) !!}',
+	        ajax: '{!! url('getDataPresensiMahasiswaLabasdos/'.$id.'/'.$encounter) !!}',
 
 	        columns: [
 	            { data: 'nim'},

@@ -8,7 +8,7 @@
 						<h2 class="text-primary">DataTables</h2>
 					</div>
 					<div class="section-body">
-					<a href="registermahasiswa" class="btn btn-success"> <i class="fa fa-plus"> </i>  Register Mahasiswa Baru </a>
+					<a href="registermahasiswa" class="btn btn-success"> <i class="fa fa-plus"> </i>  Tambah Mahasiswa Baru </a>
 						<!-- BEGIN DATATABLE 1 -->
 						<div class="row">
 							<div class="col-lg-12">

@@ -14,7 +14,6 @@
 					{!! $currentKelas !!}
 					@endif
 			</div>
-			@include('partials.flash')
 			<div class="section-body">
 			<div class="col-sm-3">
 				{!! Form::select('hari_id', $semester, null, ['id' => 'select2', 'class' => 'select2-container form-control input-lg selectpertemuan']) !!}
@@ -28,6 +27,7 @@
 				<div class="row">
 					<div class="col-lg-12">
 					<a href="{!! url('reportDosenDetailExcel/'. $currentsemesterParams . '/' . $currentMatakuliah . '/' . $currentKelas) !!}" class="btn btn-success"> <i class="fa fa-file-excel-o"> </i> EXCEL </a>
+					<small> NB : 1 = Hadir   &nbsp&nbsp&nbsp   2 = Sakit  &nbsp&nbsp&nbsp    3 = Izin  &nbsp&nbsp&nbsp&nbsp    4 = Tidak Hadir </small>
 						<div class="table-responsive">
 							<table id="datatable1" class="table table-striped table-hover table-bordered">
 						        <thead>
@@ -40,7 +40,7 @@
 						                <th rowspan="2" style="vertical-align: middle"> KELAS </th>
 						                <th colspan="14" style="text-align: center"> PERTEMUAN KE - </th>
 						                <th rowspan="2" style="vertical-align: middle"> JML HADIR </th>
-						                <th rowspan="2" style="vertical-align: middle"> PRESENTASE </th>
+						                <th rowspan="2" style="vertical-align: middle"> PERSENTASE </th>
 
 
 						            </tr>

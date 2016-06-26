@@ -117,7 +117,7 @@ class FingerprintController extends Controller
 
 			foreach ( array_diff($listPeserta, $nim) as $notAttendUser) {
 				if ( $notAttendUser == $dosen_id ) {
-					/*$this->cleardata($ip_address);*/
+					$this->cleardata($ip_address);
 					return 'OPERATION ABORTED';
 				}
 			}
@@ -198,9 +198,7 @@ class FingerprintController extends Controller
 			$updateStatusKP->status = '0';
 			$updateStatusKP->save();			
 
-
-
-			/*$this->cleardata($ip_address);*/
+			$this->cleardata($ip_address);
 			return 'BERHASIL';
         } else {
 	        $data = Kelasmk::select('id', 'waktu', 'ruang_id', 'dosen_id', 'semester')
@@ -332,7 +330,6 @@ class FingerprintController extends Controller
 			\DB::table('presensikelas')->insert($absensi);
 			\DB::table('presensidosen')->insert($absensiDosen);
 
-
 			$this->cleardata($ip_address);
 			return 'BERHASIL';
         }
@@ -448,7 +445,7 @@ class FingerprintController extends Controller
 					    ];
 					}
 					if ( in_array($notAttendUser, $listAsdos)) {
-					    $tidakhadir[] = [
+					    $tidakhadirAsdos[] = [
 					        'nim'  			  => $notAttendUser,
 					        'waktu'			  => '',
 					        'keterangan'      => '4',
@@ -561,7 +558,6 @@ class FingerprintController extends Controller
 	        		->where('semester', $semester)
 	        		->first();
 	    	$timeStart = $data->time_start;
-	       	$time = $data->waktu;
 			$nim = array();
 			$datetime = array();
 	 		$jadwal_kelas_id = $data->id_kelas;
@@ -629,7 +625,7 @@ class FingerprintController extends Controller
 					    ];
 					}
 					if ( in_array($notAttendUser, $listAsdos)) {
-					    $tidakhadir[] = [
+					    $tidakhadirAsdos[] = [
 					        'nim'  			  => $notAttendUser,
 					        'waktu'			  => '',
 					        'keterangan'      => '4',

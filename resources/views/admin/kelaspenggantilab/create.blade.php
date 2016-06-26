@@ -6,9 +6,9 @@
 <div id="content">
 	<section>
 		<div class="section-header">
-			<h2 class="text-primary">Tambah Kelas Pengganti</h2>
+			<h2 class="text-primary">Tambah Kelas Pengganti Praktikum</h2>
 		</div>
-		<div class="section-body"> <br>
+		<div class="section-body">
 			<div class="card">
 				<div class="card-body">
 					@include ('errors.list')

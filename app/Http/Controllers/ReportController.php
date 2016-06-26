@@ -424,7 +424,7 @@ class ReportController extends Controller
                 return $this->pertemuanSemuaMahasiswa($studentSubjects, '14');
             })
             ->editColumn('presentase', function ($studentSubjects) {
-                $presentase = round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2). '%';
+                $presentase = round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/$studentSubjects->batashadir * 100), 2). '%';
                 return $presentase;
             })
             ->make(true);   
@@ -668,7 +668,7 @@ class ReportController extends Controller
                 return $this->pertemuanDosen($lecturerSchedules, '14');
             })
             ->editColumn('presentase', function ($studentSubjects) {
-                $presentase = round(($this->jumlahHadirDosen($studentSubjects)/14 * 100), 2). '%';
+                $presentase = round(($this->jumlahHadirDosen($studentSubjects)/$studentSubjects->batashadir * 100), 2). '%';
                 return $presentase;
             })
             ->make(true);   
@@ -922,6 +922,22 @@ class ReportController extends Controller
                         $induk = $value->nim;
                     }
                     $matakuliah = Matakuliah::findOrFail($value->matakuliah_id);
+
+                    if ($induk1) {
+                        $induk2 = $induk;
+                        if ($induk2 == $induk1) {
+                            $sheet->mergeCells('A'.($key+15).':A'.($key+16));
+                            $sheet->mergeCells('B'.($key+15).':B'.($key+16));
+                            $sheet->mergeCells('C'.($key+15).':C'.($key+16));
+                            //$no = $key+1;
+                        }
+                        else {
+                            
+                            $no = $no+1;
+                        }
+                    }
+                    $induk1 = $induk;
+
                     $sheet->row($key+16, array(
                          $no,
                          $induk, 
@@ -948,16 +964,7 @@ class ReportController extends Controller
                          $presentase
                     ));
 
-                    if ($induk1) {
-                        $induk2 = $induk;
-                        if ($induk2 == $induk1) {
-                            $sheet->mergeCells('A'.($key+15).':A'.($key+16));
-                            $sheet->mergeCells('B'.($key+15).':B'.($key+16));
-                            $sheet->mergeCells('C'.($key+15).':C'.($key+16));
-                            $no = $key+1;
-                        }
-                    }
-                    $induk1 = $induk;
+
 
                     $sheet->cells('W'.($key+16), function($cells) use ($presentaseV) {
                         if($presentaseV <= 70) {
@@ -1111,7 +1118,6 @@ class ReportController extends Controller
                 ));
 
                 $no = 1;
-                $noinc = 1;
                 foreach ($studentSubjects as $key => $value) {
                     if($katakunci == 'detaildosen') {
                         $pertemuan1 = $this->pertemuanSemuaMahasiswa($value, '1');
@@ -1138,8 +1144,20 @@ class ReportController extends Controller
                         $induk = $value->nim;
                     }
                     $matakuliah = Matakuliah::findOrFail($value->matakuliah_id);
+                    if ($induk1) {
+                        $induk2 = $induk;
+                        if ($induk2 == $induk1) {
+                            $sheet->mergeCells('A'.($key+15).':A'.($key+16));
+                            $sheet->mergeCells('B'.($key+15).':B'.($key+16));
+                            $sheet->mergeCells('C'.($key+15).':C'.($key+16));
+                        }
+                        else {      
+                            $no = $no+1;
+                        }
+                    }
+                    $induk1 = $induk;
                     $sheet->row($key+16, array(
-                         $key+1,
+                         $no,
                          $induk, 
                          $nama->name, 
                          $matakuliah->sks, 
@@ -1162,17 +1180,6 @@ class ReportController extends Controller
                          $presentase
                     ));
 
-                    if ($induk1) {
-                        $induk2 = $induk;
-                        $noinc = $key+1;
-                        if ($induk2 == $induk1) {
-                            $sheet->mergeCells('A'.($key+15).':A'.($key+16));
-                            $sheet->mergeCells('B'.($key+15).':B'.($key+16));
-                            $sheet->mergeCells('C'.($key+15).':C'.($key+16));
-                            $no = $key+1;
-                        }
-                    }
-                    $induk1 = $induk;
 
                     $sheet->row(count($studentSubjects)+16, array(
                         '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',' Jakarta, '.date('d').' '.$this->monthfilter(date('m')).' '.date('Y').' '
@@ -1313,7 +1320,6 @@ class ReportController extends Controller
                 ));
 
                 $no = 1;
-                $noinc = 1;
                 foreach ($studentSubjects as $key => $value) {
                     if($katakunci == 'semuadetaildosen') {
                         $pertemuan1 = $this->pertemuanSemuaMahasiswa($value, '1');
@@ -1340,8 +1346,20 @@ class ReportController extends Controller
                         $induk = $value->nim;
                     }
                     $matakuliah = Matakuliah::findOrFail($value->matakuliah_id);
+                    if ($induk1) {
+                        $induk2 = $induk;
+                        if ($induk2 == $induk1) {
+                            $sheet->mergeCells('A'.($key+15).':A'.($key+16));
+                            $sheet->mergeCells('B'.($key+15).':B'.($key+16));
+                            $sheet->mergeCells('C'.($key+15).':C'.($key+16));
+                        }
+                        else {      
+                            $no = $no+1;
+                        }
+                    }
+                    $induk1 = $induk;
                     $sheet->row($key+16, array(
-                         $key+1,
+                         $no,
                          $induk, 
                          $nama->name, 
                          $matakuliah->sks, 
@@ -1363,18 +1381,6 @@ class ReportController extends Controller
                          $jmlhadir,
                          $presentase
                     ));
-
-                    if ($induk1) {
-                        $induk2 = $induk;
-                        $noinc = $key+1;
-                        if ($induk2 == $induk1) {
-                            $sheet->mergeCells('A'.($key+15).':A'.($key+16));
-                            $sheet->mergeCells('B'.($key+15).':B'.($key+16));
-                            $sheet->mergeCells('C'.($key+15).':C'.($key+16));
-                            $no = $key+1;
-                        }
-                    }
-                    $induk1 = $induk;
 
                     $sheet->row(count($studentSubjects)+16, array(
                         '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',' Jakarta, '.date('d').' '.$this->monthfilter(date('m')).' '.date('Y').' '

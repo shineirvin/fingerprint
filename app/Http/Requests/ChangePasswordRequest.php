@@ -34,7 +34,8 @@ class ChangePasswordRequest extends Request
     {
         return [
             'required' => 'Field ini harus di isi.',
-            'same' => 'Konfirmasi password harus sama.'
+            'same' => 'Konfirmasi password harus sama.',
+            'min' => 'Panjang Password minimal 6 karakter.'
         ];
     }
 

@@ -68,17 +68,38 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255|string',
+            'name' => 'required|max:255|regex:/^[(a-zA-Z\s)]+$/u',
             'roles' => 'required|min:1',
-            'username' => 'required|max:255|unique:users|digits',
+            'username' => 'required|max:255|unique:users|digits:9',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|confirmed|min:6',
         ]);
+        if ($request->roles == 'Dosen') {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|max:255|regex:/^[(a-zA-Z\s)]+$/u',
+                'roles' => 'required|min:1',
+                'username' => 'required|max:255|unique:users|digits:8',
+                'email' => 'required|email|max:255|unique:users',
+                'password' => 'required|confirmed|min:6',
+            ]);          
+        }
 
         if ($validator->fails()) {
-            return redirect('registerdosen')
-                        ->withErrors($validator)
-                        ->withInput();
+            if ($request->roles == 'Admin') {
+                return redirect('registeradmin')
+                            ->withErrors($validator)
+                            ->withInput();            
+            }
+            if ($request->roles == 'Dosen') {
+                return redirect('registerdosen')
+                            ->withErrors($validator)
+                            ->withInput();            
+            }
+            if ($request->roles == 'Mahasiswa') {
+                return redirect('registermahasiswa')
+                            ->withErrors($validator)
+                            ->withInput();            
+            }
         }
 
         $user = new User;
@@ -166,7 +187,7 @@ class AdminController extends Controller
     	$user = User::find($request->id);
     	$user->password = Hash::make($request->password);
     	$user->save();
-        flash()->success('Success!', 'Berhasil daftar dosen baru!');
+        flash()->success('Success!', 'Berhasil daftar admin baru!');
 
     	return redirect('changepassadmin');
     }
@@ -368,6 +389,7 @@ class AdminController extends Controller
     public function registerkelaspengganti($id)
     {
         $kelasmk = Kelasmk::find($id);
+
         return view('admin/kelaspengganti.create', compact('kelasmk'));
     }
 
@@ -379,6 +401,21 @@ class AdminController extends Controller
 
     public function store_kelaspengganti(Request $request)
     {
+        $kelasmk = Kelasmk::find($request->kelasmk_id);
+        $Alljadwal = \DB::table('kelasmk')
+                  ->join('matakuliah', 'kelasmk.matakuliah_id', '=', 'matakuliah.kode_matakuliah')
+                  ->select('waktu', 'matakuliah.sks', 'matakuliah.nama_matakuliah')
+                  ->where('semester', $kelasmk->semester)
+                  ->where('hari_id', $request->hari_id)
+                  ->get();
+        foreach($Alljadwal as $jadwal) {
+            if($request->waktu > $jadwal->waktu && $request->waktu < Carbon::parse($jadwal->waktu)->addHours($jadwal->sks)->toTimeString()) {
+                return redirect()->back()
+                    ->with('bentrok', 'Jadwal bentrok dengan matakuliah '.$jadwal->nama_matakuliah)
+                    ->withInput();   
+            }
+        }
+
         $kelaspengganti = new Kelaspengganti;
         $kelaspengganti->kelasmk_id = $request->input('kelasmk_id');
         $kelaspengganti->waktu = $request->input('waktu');
@@ -387,7 +424,7 @@ class AdminController extends Controller
         $kelaspengganti->status = $request->input('recstatus');
         $kelaspengganti->save();
 
-        return redirect('kelaspenggantiLabDataView');
+        return redirect('kelaspenggantiDataView');
     }
 
     public function store_kelaspenggantilab(Request $request)
@@ -464,11 +501,15 @@ class AdminController extends Controller
 
     public function getDataListKelasmk()
     {
-        $kelaspengganti = Kelaspengganti::select('kelasmk_id')->get();
+        $datetime = Carbon::now();
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
+        $kelaspengganti = Kelaspengganti::select('kelasmk_id')->where('status', 1)->get();
 
         $lecturerSchedules = \DB::table('kelasmk')
                                   ->select('*')
                                   ->whereNotIn('id', $kelaspengganti)
+                                  ->where('semester', $currentsemesterDirty)
+                                  ->where('recstatus', '1')
                                   ->get();
         $lecturerSchedules = collect($lecturerSchedules);
         return Datatables::of($lecturerSchedules)
@@ -508,11 +549,16 @@ class AdminController extends Controller
 
     public function getDataListJadwalkelas()
     {
-        $kelaspengganti = Kelaspenggantilab::select('jadwalkelas_id')->get();
+        $datetime = Carbon::now();
+        $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
+
+        $kelaspengganti = Kelaspenggantilab::select('jadwalkelas_id')->where('status', 1)->get();
 
         $lecturerSchedules = \DB::table('jadwal_kelas')
                                   ->select('*')
                                   ->whereNotIn('id_kelas', $kelaspengganti)
+                                  ->where('semester', $currentsemesterDirty)
+                                  ->where('status', '1')
                                   ->get();
         $lecturerSchedules = collect($lecturerSchedules);
         return Datatables::of($lecturerSchedules)
@@ -590,8 +636,8 @@ class AdminController extends Controller
 
         Excel::create('LAPORAN BULANAN', function($excel) use ($start, $end, $startFormat, $endFormat, $semesterString) { 
             $excel->sheet('LAPORAN BULANAN', function($sheet) use($start, $end, $startFormat, $endFormat, $semesterString) {
-                $dosen_id = array();
-                $dosen_id2 = array();
+                $induk1 = array();
+                $induk2 = array();
                 $objDrawing = new PHPExcel_Worksheet_Drawing;
                 $objDrawing->setPath(public_path('assets/images/img.png')); //your image path
                 $objDrawing->setCoordinates('A1');
@@ -668,9 +714,23 @@ class AdminController extends Controller
                     $pertemuan4 = $this->pertemuan($value->id, '4', $start, $end);
                     $presentase = round(($this->JmlHadirDosen($value->id, $value->dosen_id, $start, $end)/14 * 100), 2). '%';
                     $jmlhadir = $this->JmlHadirDosen($value->id, $value->dosen_id, $start, $end);
-
+                    $induk = $value->dosen_id;
                     $matakuliah = Matakuliah::findOrFail($value->matakuliah_id);
                     $LecturerNames = User::select('name')->where('username', $value->dosen_id)->first();
+                    if ($induk1) {
+                        $induk2 = $induk;
+                        if ($induk2 == $induk1) {
+                            $sheet->mergeCells('A'.($key+15).':A'.($key+16));
+                            $sheet->mergeCells('B'.($key+15).':B'.($key+16));
+                            $sheet->mergeCells('C'.($key+15).':C'.($key+16));
+                            //$no = $key+1;
+                        }
+                        else {
+                            
+                            $no = $no+1;
+                        }
+                    }
+                    $induk1 = $induk;
                     $sheet->row($key+16, array(
                          $no,
                          $value->dosen_id, 
@@ -687,16 +747,6 @@ class AdminController extends Controller
                          $presentase
                     ));
 
-                    if ($dosen_id) {
-                        $dosen_id2 = $value->dosen_id;
-                        if ($dosen_id2 == $dosen_id) {
-                            $sheet->mergeCells('A'.($key+15).':A'.($key+16));
-                            $sheet->mergeCells('B'.($key+15).':B'.($key+16));
-                            $sheet->mergeCells('C'.($key+15).':C'.($key+16));
-                            $no = $key+1;
-                        }
-                    }
-                    $dosen_id = $value->dosen_id;
 
                     $sheet->row(count($studentSubjects)+16, array(
                         ' Jakarta, '.date('d').' '.$this->monthfilter(date('m')).' '.date('Y').' '
@@ -923,14 +973,28 @@ class AdminController extends Controller
 
     public function pertemuanDosenBulanan($lecturerSchedules, $start, $end, $pertemuan)
     {
+        $pertemuan2 = \DB::table('presensidosen')
+                        ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
+                        ->select('pertemuan')
+                        ->where('presensidosen.waktu', '>=', $start)
+                        ->where('presensidosen.waktu', '<=', $end)
+                        ->where('kelasmk_id', $lecturerSchedules->id)
+                        ->where('nik', $lecturerSchedules->dosen_id)
+                        ->first();
+        if (!$pertemuan2) {
+            $pertemuanReal = '';
+        }
+        else {
+            $pertemuanReal = $pertemuan2->pertemuan+$pertemuan-1;
+        }
         $classes = \DB::table('presensidosen')
             ->join('kelasmk', 'presensidosen.kelasmk_id', '=', 'kelasmk.id')
-            ->select('keterangan')
+            ->select('keterangan', 'presensidosen.pertemuan')
             ->where('presensidosen.waktu', '>=', $start)
             ->where('presensidosen.waktu', '<=', $end)
             ->where('kelasmk_id', $lecturerSchedules->id)
             ->where('nik', $lecturerSchedules->dosen_id)
-            ->where('pertemuan', '1')
+            ->where('pertemuan', $pertemuanReal)
             ->first();
         if (!$classes) {
             return '';

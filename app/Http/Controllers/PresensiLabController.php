@@ -19,6 +19,7 @@ use App\Presensikelas;
 use App\Jadwalkelas;
 use App\Praktikum;
 use App\Presensilab;
+use App\Presensiasdos;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -53,11 +54,28 @@ class PresensiLabController extends Controller
         return view('presensi.validasilab', compact('id', 'encounter'));
     }
 
-    public function studentvalidate(Request $request)
+    public function validasiasdos($id, $encounter)
+    {
+        return view('presensi.validasilabasdos', compact('id', 'encounter'));
+    }
+
+
+    public function studentvalidateLab(Request $request)
     {
         $id = $request->input('idpage');
         foreach ($request['id'] as $id) {
-            $attendances = Presensikelas::findOrFail($id);
+            $attendances = Presensilab::findOrFail($id);
+            $attendances->keterangan = substr($request[$id], -1);
+            $attendances->save();
+        }
+        return redirect()->back()->with('id');
+    }
+
+    public function studentvalidateLabasdos(Request $request)
+    {
+        $id = $request->input('idpage');
+        foreach ($request['id'] as $id) {
+            $attendances = Presensiasdos::findOrFail($id);
             $attendances->keterangan = substr($request[$id], -1);
             $attendances->save();
         }
@@ -95,6 +113,46 @@ class PresensiLabController extends Controller
     public function getDataPresensiMahasiswa($id, $encounter)
     {
         $presensilab = Presensilab::select('*')->where('jadwal_kelas_id', $id)->where('pertemuan', $encounter)->get();
+        return Datatables::of($presensilab)
+            ->addColumn('action', function ($presensilab) {
+                return '<a href="../presensilab/'.$presensilab->id.'" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
+            })
+            ->editColumn('name', function ($presensilab) {
+                $nama = User::where('username', $presensilab->nim)->first();
+                return $nama->name;
+            })
+            ->addColumn('keterangan', function ($presensilab) {
+                return '<input name="id[]" type="hidden" value="'. $presensilab->id .'">
+                    <input name="datetime[]" type="hidden" value="'. $presensilab->waktu .'">
+                        <span style="padding-right: 15%;"> 
+                            <label class="radio-inline radio-styled radio-success">
+                                <input name="'. $presensilab->id .'" type="radio" value="'.$presensilab->id.'1" '. ($presensilab->keterangan == '1' ? 'checked' : '') .'>
+                                <span></span>
+                            </label>
+                        </span>                                     
+                        <span style="padding-right: 15%;">
+                            <label class="radio-inline radio-styled radio-success">
+                                <input name="'.$presensilab->id.'" type="radio" value="'.$presensilab->id.'2"  '. ($presensilab->keterangan == '2' ? 'checked' : '') .'>
+                                <span></span>
+                            </label>
+                        </span>
+                        <span style="padding-right: 16%;">
+                            <label class="radio-inline radio-styled radio-success">
+                                <input name="'.$presensilab->id.'" type="radio" value="'.$presensilab->id.'3" '. ($presensilab->keterangan == '3' ? 'checked' : '') .'>
+                                <span></span>
+                            </label>
+                        </span>
+                            <label class="radio-inline radio-styled radio-success">
+                                <input name="'.$presensilab->id.'" type="radio" value="'.$presensilab->id.'4" '. ($presensilab->keterangan == '4' ? 'checked' : '') .'>
+                                <span></span>
+                            </label>';
+            })
+            ->make(true);   
+    }
+
+    public function getDataPresensiMahasiswaasdos($id, $encounter)
+    {
+        $presensilab = Presensiasdos::select('*')->where('jadwal_kelas_id', $id)->where('pertemuan', $encounter)->get();
         return Datatables::of($presensilab)
             ->addColumn('action', function ($presensilab) {
                 return '<a href="../presensilab/'.$presensilab->id.'" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';

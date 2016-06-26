@@ -7,7 +7,7 @@
 		<div class="section-header">
 			<h2 class="text-primary">Edit Kelas Pengganti</h2>
 		</div>
-		<div class="section-body"> <br>
+		<div class="section-body">
 			<div class="card">
 				<div class="card-body">
 					@include ('errors.list')

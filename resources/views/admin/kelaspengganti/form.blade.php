@@ -1,3 +1,9 @@
+@if(session()->has('bentrok'))
+<div class="alert alert-danger alert-important">
+{!! session('bentrok') !!}
+</div>
+@endif
+
 <input type="hidden" value="{!! $kelasmk->id !!}" name="kelasmk_id">
 <div class="row">
 	<div class="form-group">
@@ -76,7 +82,7 @@
 		<label class="col-sm-1 control-label"><i class="fa fa-arrow-right"></i>Ubah ke Waktu</label>
 		<div class="col-sm-2">
 			<div class="input-group clockpicker" data-autoclose="true">
-				{!! Form::text('waktu', null, ['class' => 'form-control input-lg']) !!}
+				<input type="text" class="form-control input-lg" value="" name="waktu">
 				<span class="input-group-addon">
 					<span class="glyphicon glyphicon-time"></span>
 				</span>
@@ -84,9 +90,6 @@
 		</div>
 	</div>
 </div>
-
-
-
 
 <div class="form-group">
 	<label class="col-sm-2 control-label">Status</label>

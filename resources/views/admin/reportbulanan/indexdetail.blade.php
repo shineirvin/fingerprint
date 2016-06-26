@@ -11,6 +11,7 @@
 			<div class="section-body">
 
 				<a href="{!! url('monthlyreportexcel/'. $datestart . '/'. $dateend) !!}" class="btn btn-success"> <i class="fa fa-file-excel-o"> </i> EXCEL </a>
+					<small> NB : 1 = Hadir   &nbsp&nbsp&nbsp   2 = Sakit  &nbsp&nbsp&nbsp    3 = Izin  &nbsp&nbsp&nbsp&nbsp    4 = Tidak Hadir </small>
 				<!-- BEGIN DATATABLE 1 -->
 				<div class="row">
 					<div class="col-lg-12">
@@ -26,7 +27,7 @@
 						                <th rowspan="2" style="vertical-align: middle"> KELAS </th>
 						                <th colspan="4" style="text-align: center"> PERTEMUAN KE - </th>
 						                <th rowspan="2" style="vertical-align: middle"> JML HADIR </th>
-						                <th rowspan="2" style="vertical-align: middle"> PRESENTASE </th>
+						                <th rowspan="2" style="vertical-align: middle"> PERSENTASE </th>
 
 
 						            </tr>

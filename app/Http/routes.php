@@ -30,7 +30,16 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('getDataJadwalDosenLab/{semester}', 'PresensiLabController@getDataJadwalDosen');
 	Route::get('presensilab/{id}/{encounter}', 'PresensiLabController@validasi');
 	Route::get('getDataPresensiMahasiswaLab/{id}/{encounter}', 'PresensiLabController@getDataPresensiMahasiswa');
+	Route::get('presensilabasdos/{id}/{encounter}', 'PresensiLabController@validasiasdos');
+	Route::get('getDataPresensiMahasiswaLabasdos/{id}/{encounter}', 'PresensiLabController@getDataPresensiMahasiswaasdos');
+	Route::post('studentvalidateLab', 'PresensiLabController@studentvalidateLab');
+	Route::post('studentvalidateLabasdos', 'PresensiLabController@studentvalidateLabasdos');
 
+
+	Route::get('listJadwalDosen/{semester}', 'PresensiController@indexJadwalDosen');
+	Route::get('listJadwalDosen/{id}/create', 'PresensiController@indexJadwalDosenCreate');
+	Route::patch('registerbatashadir', 'PresensiController@registerbatashadir');
+	Route::get('bataspertemuan/{semester}', 'PresensiController@indexJadwalDosen');
 
 
 	/**

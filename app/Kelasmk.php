@@ -16,9 +16,10 @@ class Kelasmk extends Model
         'kelas',
         'dosen_id',
         'hari_id',
-        'ruangid',
+        'ruang_id',
         'waktu',
-    	'recstatus',
+        'recstatus',
+    	'batashadir',
     ];
 
     public function matakuliah()

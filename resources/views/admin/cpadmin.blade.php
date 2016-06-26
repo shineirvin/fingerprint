@@ -8,7 +8,7 @@
 						<h2 class="text-primary">DataTables</h2>
 					</div>
 					<div class="section-body">
-						<a href="registeradmin" class="btn btn-success"> <i class="fa fa-plus"> </i>  Register Admin Baru </a>
+						<a href="registeradmin" class="btn btn-success"> <i class="fa fa-plus"> </i>  Tambah Admin Baru </a>
 						<!-- BEGIN DATATABLE 1 -->
 						<div class="row">
 							<div class="col-lg-12">

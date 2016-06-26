@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Material Admin - Login</title>
+        <title>Universitas Tarumangara</title>
 
+        <link rel="icon" type="image/png" href="{!! url('favicon.jpg')  !!}" />
         <!-- BEGIN META -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,6 +32,7 @@
                         </div>
                         <div class="col-sm-6">
                             <br/>
+                            <img src="{!! url('materialadmin/assets/img/logo-bener.png') !!}" style="padding-left: 25px;">
                             <span class="text-lg text-bold text-primary">UNIVERSITAS TARUMANAGARA</span>
                             <h3 class="text-light">
                                 Log In

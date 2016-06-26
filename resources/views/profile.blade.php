@@ -84,7 +84,8 @@ input[type="file"]::-webkit-file-upload-button {
 }
 
 .img-backdrop {
-background-image: linear-gradient( rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4) ), url('materialadmin/assets/img/img16.jpg')
+background-image: linear-gradient( rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4) ), url('materialadmin/assets/img/tarumanagara.jpg');
+
 }
 </style>
 
