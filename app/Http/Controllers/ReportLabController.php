@@ -204,7 +204,7 @@ class ReportLabController extends Controller
         return Datatables::of($studentSubjects)
             ->editColumn('nama_dosen', function ($studentSubjects) {
                 $LecturerNames = User::select('name')->where('username', $studentSubjects->dosen_id)->first();
-                if (round(($this->jumlahHadirSemuaDosen($studentSubjects)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirSemuaDosen($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$LecturerNames->name.'</p>';                    
                 }
                 return $LecturerNames->name;
@@ -271,7 +271,7 @@ class ReportLabController extends Controller
                 return $this->pertemuanSemuaDosen($studentSubjects, '14');
             })
             ->editColumn('presentase', function ($studentSubjects) {
-                $presentase = round(($this->jumlahHadirSemuaDosen($studentSubjects)/14 * 100), 2). '%';
+                $presentase = round(($this->jumlahHadirSemuaDosen($studentSubjects)/14 * 100), 0). '%';
                 return $presentase;
             })
             ->make(true);   
@@ -298,7 +298,7 @@ class ReportLabController extends Controller
             })
             ->editColumn('nama_mahasiswa', function ($studentSubjects) {
                 $nama = User::where('username', $studentSubjects->nim)->first();
-                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$nama->name.'</p>';                    
                 }
                 return $nama->name;
@@ -388,7 +388,7 @@ class ReportLabController extends Controller
             })
             ->editColumn('nama_mahasiswa', function ($studentSubjects) {
                 $nama = User::where('username', $studentSubjects->nim)->first();
-                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$nama->name.'</p>';                    
                 }
                 return $nama->name;
@@ -476,7 +476,7 @@ class ReportLabController extends Controller
             })
             ->editColumn('nama_mahasiswa', function ($studentSubjects) {
                 $nama = User::where('username', $studentSubjects->nim)->first();
-                if (round(($this->jumlahHadirSemuaAsdos($studentSubjects)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirSemuaAsdos($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$nama->name.'</p>';                    
                 }
             })
@@ -554,7 +554,7 @@ class ReportLabController extends Controller
         return Datatables::of($studentSubjects)
             ->editColumn('nama_mahasiswa', function ($studentSubjects) {
                 $nama = User::where('username', $studentSubjects->nim)->first();
-                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$nama->name.'</p>';                    
                 }
                 return $nama->name;
@@ -640,7 +640,7 @@ class ReportLabController extends Controller
             })
             ->editColumn('nama_matakuliah', function ($lecturerSchedules) {
                 $Matakuliah = Praktikum::findOrFail($lecturerSchedules->id_praktikum);
-                if (round(($this->jumlahHadirDosen($lecturerSchedules)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirDosen($lecturerSchedules)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$Matakuliah->nama.'</p>';
                 }
                 return $Matakuliah->nama;
@@ -716,7 +716,7 @@ class ReportLabController extends Controller
         return Datatables::of($studentSubjects)
             ->editColumn('nama_matakuliah', function ($studentSubjects) {
                 $matakuliah = Praktikum::findOrFail($studentSubjects->id_praktikum);
-                if (round(($this->jumlahHadirMahasiswa($studentSubjects)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirMahasiswa($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$matakuliah->nama.'</p>';
                 }
                 return $matakuliah->nama;
@@ -856,7 +856,7 @@ class ReportLabController extends Controller
             })
             ->editColumn('nama_matakuliah', function ($lecturerSchedules) {
                 $praktikum = Praktikum::findOrFail($lecturerSchedules->id_praktikum);
-                if (round(($this->jumlahHadirAsdos($lecturerSchedules)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirAsdos($lecturerSchedules)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$praktikum->nama.'</p>';
                 }
                 return $praktikum->nama;
@@ -1277,7 +1277,7 @@ class ReportLabController extends Controller
 
 
                     $sheet->cells('W'.($key+16), function($cells) use ($presentaseV) {
-                        if($presentaseV <= 70) {
+                        if($presentaseV <= 75) {
                             $cells->setFontColor('#FF0000');
                         }
                     });
@@ -1503,7 +1503,7 @@ class ReportLabController extends Controller
                         '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Bekti Riyanto'
                     ));
                     $sheet->cells('C'.($key+16), function($cells) use ($presentaseV) {
-                        if($presentaseV <= 70) {
+                        if($presentaseV <= 75) {
                             $cells->setFontColor('#FF0000');
                         }
                     });
@@ -1705,7 +1705,7 @@ class ReportLabController extends Controller
                         '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Bekti Riyanto'
                     ));
                     $sheet->cells('C'.($key+16), function($cells) use ($presentaseV) {
-                        if($presentaseV <= 70) {
+                        if($presentaseV <= 75) {
                             $cells->setFontColor('#FF0000');
                         }
                     });

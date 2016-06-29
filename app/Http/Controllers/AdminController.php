@@ -411,7 +411,7 @@ class AdminController extends Controller
         foreach($Alljadwal as $jadwal) {
             if($request->waktu > $jadwal->waktu && $request->waktu < Carbon::parse($jadwal->waktu)->addHours($jadwal->sks)->toTimeString()) {
                 return redirect()->back()
-                    ->with('bentrok', 'Jadwal bentrok dengan matakuliah '.$jadwal->nama_matakuliah)
+                    ->with('bentrok', 'Jadwal bentrok dengan matakuliah '.$jadwal->nama_matakuliah. ' ('.$jadwal->waktu.'-'. Carbon::parse($jadwal->waktu)->addHours($jadwal->sks)->toTimeString().')')
                     ->withInput();   
             }
         }
@@ -712,7 +712,7 @@ class AdminController extends Controller
                     $pertemuan2 = $this->pertemuan($value->id, '2', $start, $end);
                     $pertemuan3 = $this->pertemuan($value->id, '3', $start, $end);
                     $pertemuan4 = $this->pertemuan($value->id, '4', $start, $end);
-                    $presentase = round(($this->JmlHadirDosen($value->id, $value->dosen_id, $start, $end)/14 * 100), 2). '%';
+                    $presentase = round(($this->JmlHadirDosen($value->id, $value->dosen_id, $start, $end)/4 * 100), 0). '%';
                     $jmlhadir = $this->JmlHadirDosen($value->id, $value->dosen_id, $start, $end);
                     $induk = $value->dosen_id;
                     $matakuliah = Matakuliah::findOrFail($value->matakuliah_id);
@@ -942,7 +942,7 @@ class AdminController extends Controller
                 return $this->pertemuanDosenBulanan($lecturerSchedules, $start, $end, '4');
             })
             ->editColumn('presentase', function ($lecturerSchedules) use($start, $end) {
-                $presentase = round(($this->jumlahHadirDosenBulanan($lecturerSchedules, $start, $end)/14 * 100), 2). '%';
+                $presentase = round(($this->jumlahHadirDosenBulanan($lecturerSchedules, $start, $end)/4 * 100), 0). '%';
                 return $presentase;
             })
             ->make(true);     

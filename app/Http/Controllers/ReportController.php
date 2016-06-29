@@ -202,7 +202,7 @@ class ReportController extends Controller
         return Datatables::of($studentSubjects)
             ->editColumn('nama_matakuliah', function ($studentSubjects) {
                 $Matakuliah = Matakuliah::findOrFail($studentSubjects->matakuliah_id);
-                if (round(($this->jumlahHadirMahasiswa($studentSubjects)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirMahasiswa($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$Matakuliah->nama_matakuliah.'</p>';
                 }
                 return $Matakuliah->nama_matakuliah;
@@ -263,7 +263,7 @@ class ReportController extends Controller
                 return $this->pertemuanMahasiswa($studentSubjects, '14');
             })
             ->editColumn('presentase', function ($lecturerSchedules) {
-                $presentase = round(($this->jumlahHadirMahasiswa($lecturerSchedules)/14 * 100), 2). '%';
+                $presentase = round(($this->jumlahHadirMahasiswa($lecturerSchedules)/14 * 100), 0). '%';
                 return $presentase;
             })
             ->make(true);   
@@ -275,7 +275,7 @@ class ReportController extends Controller
         return Datatables::of($studentSubjects)
             ->editColumn('nama_dosen', function ($studentSubjects) {
                 $LecturerNames = User::select('name')->where('username', $studentSubjects->dosen_id)->first();
-                if (round(($this->jumlahHadirSemuaDosen($studentSubjects)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirSemuaDosen($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$LecturerNames->name.'</p>';                    
                 }
                 return $LecturerNames->name;
@@ -340,7 +340,7 @@ class ReportController extends Controller
                 return $this->pertemuanSemuaDosen($studentSubjects, '14');
             })
             ->editColumn('presentase', function ($lecturerSchedules) {
-                $presentase = round(($this->jumlahHadirSemuaDosen($lecturerSchedules)/14 * 100), 2). '%';
+                $presentase = round(($this->jumlahHadirSemuaDosen($lecturerSchedules)/14 * 100), 0). '%';
                 return $presentase;
             })
 
@@ -363,7 +363,7 @@ class ReportController extends Controller
             })
             ->editColumn('nama_mahasiswa', function ($studentSubjects) {
                 $nama = User::where('username', $studentSubjects->nim)->first();
-                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$nama->name.'</p>';                    
                 }
                 return $nama->name;
@@ -424,7 +424,7 @@ class ReportController extends Controller
                 return $this->pertemuanSemuaMahasiswa($studentSubjects, '14');
             })
             ->editColumn('presentase', function ($studentSubjects) {
-                $presentase = round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/$studentSubjects->batashadir * 100), 2). '%';
+                $presentase = round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/$studentSubjects->batashadir * 100), 0). '%';
                 return $presentase;
             })
             ->make(true);   
@@ -453,7 +453,7 @@ class ReportController extends Controller
             })
             ->editColumn('nama_mahasiswa', function ($studentSubjects) {
                 $nama = User::where('username', $studentSubjects->nim)->first();
-                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$nama->name.'</p>';                    
                 }
                 return $nama->name;
@@ -514,7 +514,7 @@ class ReportController extends Controller
                 return $this->pertemuanSemuaMahasiswa($studentSubjects, '14');
             })
             ->editColumn('presentase', function ($studentSubjects) {
-                $presentase = round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2). '%';
+                $presentase = round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 0). '%';
                 return $presentase;
             })
             ->make(true);   
@@ -540,7 +540,7 @@ class ReportController extends Controller
             })
             ->editColumn('nama_mahasiswa', function ($studentSubjects) {
                 $nama = User::where('username', $studentSubjects->nim)->first();
-                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$nama->name.'</p>';                    
                 }
                 return $nama->name;
@@ -601,7 +601,7 @@ class ReportController extends Controller
                 return $this->pertemuanSemuaMahasiswa($studentSubjects, '14');
             })
             ->editColumn('presentase', function ($studentSubjects) {
-                $presentase = round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 2). '%';
+                $presentase = round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/$studentSubjects->batashadir * 100), 0). '%';
                 return $presentase;
             })
             ->make(true);   
@@ -613,7 +613,7 @@ class ReportController extends Controller
         return Datatables::of($lecturerSchedules)
             ->editColumn('nama_matakuliah', function ($lecturerSchedules) {
                 $Matakuliah = Matakuliah::findOrFail($lecturerSchedules->matakuliah_id);
-                if (round(($this->jumlahHadirDosen($lecturerSchedules)/14 * 100), 2) <= 70) {
+                if (round(($this->jumlahHadirDosen($lecturerSchedules)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$Matakuliah->nama_matakuliah.'</p>';
                 }
                 return $Matakuliah->nama_matakuliah;
@@ -851,8 +851,8 @@ class ReportController extends Controller
                         $pertemuan12 = $this->pertemuanSemuaDosen($value, '12');
                         $pertemuan13 = $this->pertemuanSemuaDosen($value, '13');
                         $pertemuan14 = $this->pertemuanSemuaDosen($value, '14');
-                        $presentase = round(($this->jumlahHadirSemuaDosen($value)/14 * 100), 2). '%';
-                        $presentaseV = round(($this->jumlahHadirSemuaDosen($value)/14 * 100), 2);
+                        $presentase = round(($this->jumlahHadirSemuaDosen($value)/14 * 100), 0). '%';
+                        $presentaseV = round(($this->jumlahHadirSemuaDosen($value)/14 * 100), 0);
                         $jmlhadir = $this->jumlahHadirSemuaDosen($value);
                     }
                     elseif($katakunci == 'SemuaMahasiswa') {
@@ -870,8 +870,8 @@ class ReportController extends Controller
                         $pertemuan12 = $this->pertemuanSemuaMahasiswa($value, '12');
                         $pertemuan13 = $this->pertemuanSemuaMahasiswa($value, '13');
                         $pertemuan14 = $this->pertemuanSemuaMahasiswa($value, '14');
-                        $presentase = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 2). '%';
-                        $presentaseV = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 2);
+                        $presentase = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 0). '%';
+                        $presentaseV = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 0);
                         $jmlhadir = $this->jumlahHadirSemuaMahasiswa($value);
                     }
                     elseif($katakunci == 'dosen') {
@@ -889,8 +889,8 @@ class ReportController extends Controller
                         $pertemuan12 = $this->pertemuanDosen($value, '12');
                         $pertemuan13 = $this->pertemuanDosen($value, '13');
                         $pertemuan14 = $this->pertemuanDosen($value, '14');
-                        $presentase = round(($this->jumlahHadirDosen($value)/14 * 100), 2). '%';
-                        $presentaseV = round(($this->jumlahHadirDosen($value)/14 * 100), 2);
+                        $presentase = round(($this->jumlahHadirDosen($value)/14 * 100), 0). '%';
+                        $presentaseV = round(($this->jumlahHadirDosen($value)/14 * 100), 0);
                         $jmlhadir = $this->jumlahHadirDosen($value);
                     }
                     elseif($katakunci == 'mahasiswa') {
@@ -908,8 +908,8 @@ class ReportController extends Controller
                         $pertemuan12 = $this->pertemuanMahasiswa($value, '12');
                         $pertemuan13 = $this->pertemuanMahasiswa($value, '13');
                         $pertemuan14 = $this->pertemuanMahasiswa($value, '14');
-                        $presentase = round(($this->jumlahHadirMahasiswa($value)/14 * 100), 2). '%';
-                        $presentaseV = round(($this->jumlahHadirMahasiswa($value)/14 * 100), 2);
+                        $presentase = round(($this->jumlahHadirMahasiswa($value)/14 * 100), 0). '%';
+                        $presentaseV = round(($this->jumlahHadirMahasiswa($value)/14 * 100), 0);
                         $jmlhadir = $this->jumlahHadirMahasiswa($value); 
                     }
 
@@ -967,7 +967,7 @@ class ReportController extends Controller
 
 
                     $sheet->cells('W'.($key+16), function($cells) use ($presentaseV) {
-                        if($presentaseV <= 70) {
+                        if($presentaseV <= 75) {
                             $cells->setFontColor('#FF0000');
                         }
                     });
@@ -1134,8 +1134,8 @@ class ReportController extends Controller
                         $pertemuan12 = $this->pertemuanSemuaMahasiswa($value, '12');
                         $pertemuan13 = $this->pertemuanSemuaMahasiswa($value, '13');
                         $pertemuan14 = $this->pertemuanSemuaMahasiswa($value, '14');
-                        $presentase = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 2). '%';
-                        $presentaseV = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 2);
+                        $presentase = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 0). '%';
+                        $presentaseV = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 0);
                         $jmlhadir = $this->jumlahHadirSemuaMahasiswa($value);
                     }
 
@@ -1191,7 +1191,7 @@ class ReportController extends Controller
                         '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Bekti Riyanto'
                     ));
                     $sheet->cells('C'.($key+16), function($cells) use ($presentaseV) {
-                        if($presentaseV <= 70) {
+                        if($presentaseV <= 75) {
                             $cells->setFontColor('#FF0000');
                         }
                     });
@@ -1336,8 +1336,8 @@ class ReportController extends Controller
                         $pertemuan12 = $this->pertemuanSemuaMahasiswa($value, '12');
                         $pertemuan13 = $this->pertemuanSemuaMahasiswa($value, '13');
                         $pertemuan14 = $this->pertemuanSemuaMahasiswa($value, '14');
-                        $presentase = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 2). '%';
-                        $presentaseV = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 2);
+                        $presentase = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 0). '%';
+                        $presentaseV = round(($this->jumlahHadirSemuaMahasiswa($value)/14 * 100), 0);
                         $jmlhadir = $this->jumlahHadirSemuaMahasiswa($value);
                     }
 
@@ -1392,7 +1392,7 @@ class ReportController extends Controller
                         '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Bekti Riyanto'
                     ));
                     $sheet->cells('C'.($key+16), function($cells) use ($presentaseV) {
-                        if($presentaseV <= 70) {
+                        if($presentaseV <= 75) {
                             $cells->setFontColor('#FF0000');
                         }
                     });
@@ -1464,15 +1464,6 @@ class ReportController extends Controller
             return $classes;
         }
     }
-
-
-
-
-
-
-
-
-
 
     public function pertemuanMahasiswa($studentSubjects, $pertemuan)
     {
