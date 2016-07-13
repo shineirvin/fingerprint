@@ -241,7 +241,7 @@ class AdminController extends Controller
                 return $hari->namahari;
             })
             ->editColumn('name', function ($lecturerSchedules) {
-                $nama = User::where('username', $lecturerSchedules->dosen_id)->first();
+                $nama = User::where('id', $lecturerSchedules->dosen_id)->first();
                 return $nama->name;
             })
             ->editColumn('matakuliah_id', function ($lecturerSchedules) {
@@ -259,6 +259,10 @@ class AdminController extends Controller
     {
         $lecturerSchedules = Jadwalkelas::select('*')->where('semester', $semester)->get();
         return Datatables::of($lecturerSchedules)
+            ->editColumn('dosen_id', function ($lecturerSchedules) {
+                $user = User::findOrFail($lecturerSchedules->dosen_id);
+                return $user->username;
+            })
             ->addColumn('action', function ($lecturerSchedules) {
                 return '<a href="../presensilab/'.$lecturerSchedules->id_kelas.'/0" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
             })
@@ -270,7 +274,7 @@ class AdminController extends Controller
                 return $hari->namahari;
             })
             ->editColumn('name', function ($lecturerSchedules) {
-                $nama = User::where('username', $lecturerSchedules->dosen_id)->first();
+                $nama = User::where('id', $lecturerSchedules->dosen_id)->first();
                 return $nama->name;
             })
             ->editColumn('matakuliah_id', function ($lecturerSchedules) {
@@ -318,7 +322,7 @@ class AdminController extends Controller
             })
             ->editColumn('name', function ($lecturerSchedules) {
                 $kelasmk = Kelasmk::find($lecturerSchedules->kelasmk_id);
-                $nama = User::where('username', $kelasmk->dosen_id)->first();
+                $nama = User::where('id', $kelasmk->dosen_id)->first();
                 return $nama->name;
             })
             ->editColumn('nim', function ($lecturerSchedules) {
@@ -361,7 +365,7 @@ class AdminController extends Controller
             })
             ->editColumn('name', function ($lecturerSchedules) {
                 $kelasmk = Jadwalkelas::find($lecturerSchedules->jadwalkelas_id);
-                $nama = User::where('username', $kelasmk->dosen_id)->first();
+                $nama = User::where('id', $kelasmk->dosen_id)->first();
                 return $nama->name;
             })
             ->editColumn('nim', function ($lecturerSchedules) {
@@ -527,7 +531,7 @@ class AdminController extends Controller
                 return $hari->namahari;
             })
             ->editColumn('name', function ($lecturerSchedules) {
-                $nama = User::where('username', $lecturerSchedules->dosen_id)->first();
+                $nama = User::where('id', $lecturerSchedules->dosen_id)->first();
                 return $nama->name;
             })
             ->editColumn('nim', function ($lecturerSchedules) {
@@ -576,7 +580,7 @@ class AdminController extends Controller
                 return $hari->namahari;
             })
             ->editColumn('name', function ($lecturerSchedules) {
-                $nama = User::where('username', $lecturerSchedules->dosen_id)->first();
+                $nama = User::where('id', $lecturerSchedules->dosen_id)->first();
                 return $nama->name;
             })
             ->editColumn('nim', function ($lecturerSchedules) {
@@ -644,12 +648,12 @@ class AdminController extends Controller
                 $objDrawing->setWorksheet($sheet);
 
                 $studentSubjects = \DB::table('kelasmk')
-                                    ->join('users', 'kelasmk.dosen_id', '=', 'users.username')
+                                    ->join('users', 'kelasmk.dosen_id', '=', 'users.id')
                                     ->select('kelasmk.*')
                                     ->orderBy('name', 'asc')
                                     ->get();
                 $semester = \DB::table('kelasmk')
-                                    ->join('users', 'kelasmk.dosen_id', '=', 'users.username')
+                                    ->join('users', 'kelasmk.dosen_id', '=', 'users.id')
                                     ->select('kelasmk.*')
                                     ->orderBy('name', 'asc')
                                     ->first();
@@ -716,7 +720,7 @@ class AdminController extends Controller
                     $jmlhadir = $this->JmlHadirDosen($value->id, $value->dosen_id, $start, $end);
                     $induk = $value->dosen_id;
                     $matakuliah = Matakuliah::findOrFail($value->matakuliah_id);
-                    $LecturerNames = User::select('name')->where('username', $value->dosen_id)->first();
+                    $LecturerNames = User::select('name')->where('id', $value->dosen_id)->first();
                     if ($induk1) {
                         $induk2 = $induk;
                         if ($induk2 == $induk1) {
@@ -901,7 +905,7 @@ class AdminController extends Controller
         $endmin1 = Carbon::create($endyear, $endmonth, $endday, 0);
 
         $lecturerSchedules = \DB::table('kelasmk')
-                            ->join('users', 'kelasmk.dosen_id', '=', 'users.username')
+                            ->join('users', 'kelasmk.dosen_id', '=', 'users.id')
                             ->select('kelasmk.*')
                             ->orderBy('name', 'asc')
                             ->get();
@@ -909,7 +913,7 @@ class AdminController extends Controller
 
         return Datatables::of($lecturerSchedules)
             ->editColumn('nama_dosen', function ($lecturerSchedules) {
-                $LecturerNames = User::select('name')->where('username', $lecturerSchedules->dosen_id)->first();
+                $LecturerNames = User::select('name')->where('id', $lecturerSchedules->dosen_id)->first();
                 return $LecturerNames->name;
             })
             ->editColumn('nama_matakuliah', function ($lecturerSchedules) {

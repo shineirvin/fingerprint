@@ -33,7 +33,7 @@ class PresensiLabController extends Controller
     }
     public function index($currentsemesterParams)
     {
-        $datas = Jadwalkelas::select('*')->where('dosen_id', Auth::user()->username)->get();
+        $datas = Jadwalkelas::select('*')->where('dosen_id', Auth::user()->id)->get();
         $datetime = Carbon::now();
         $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
         $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
@@ -84,7 +84,7 @@ class PresensiLabController extends Controller
 
     public function getDataJadwalDosen($semester)
     {
-        $lecturerSchedules = Jadwalkelas::select('*')->where('semester', $semester)->where('dosen_id', Auth::user()->username)->get();
+        $lecturerSchedules = Jadwalkelas::select('*')->where('semester', $semester)->where('dosen_id', Auth::user()->id)->get();
         return Datatables::of($lecturerSchedules)
             ->addColumn('action', function ($lecturerSchedules) {
                 return '<a href="../presensilab/'.$lecturerSchedules->id_kelas.'/0" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
@@ -114,11 +114,15 @@ class PresensiLabController extends Controller
     {
         $presensilab = Presensilab::select('*')->where('jadwal_kelas_id', $id)->where('pertemuan', $encounter)->get();
         return Datatables::of($presensilab)
+            ->editColumn('nim', function ($studentSubjects) {
+                $user = User::findOrFail($studentSubjects->nim);
+                return $user->username;
+            })
             ->addColumn('action', function ($presensilab) {
                 return '<a href="../presensilab/'.$presensilab->id.'" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
             })
             ->editColumn('name', function ($presensilab) {
-                $nama = User::where('username', $presensilab->nim)->first();
+                $nama = User::where('id', $presensilab->nim)->first();
                 return $nama->name;
             })
             ->addColumn('keterangan', function ($presensilab) {
@@ -154,11 +158,15 @@ class PresensiLabController extends Controller
     {
         $presensilab = Presensiasdos::select('*')->where('jadwal_kelas_id', $id)->where('pertemuan', $encounter)->get();
         return Datatables::of($presensilab)
+            ->editColumn('nim', function ($studentSubjects) {
+                $user = User::findOrFail($studentSubjects->nim);
+                return $user->username;
+            })
             ->addColumn('action', function ($presensilab) {
                 return '<a href="../presensilab/'.$presensilab->id.'" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
             })
             ->editColumn('name', function ($presensilab) {
-                $nama = User::where('username', $presensilab->nim)->first();
+                $nama = User::where('id', $presensilab->nim)->first();
                 return $nama->name;
             })
             ->addColumn('keterangan', function ($presensilab) {

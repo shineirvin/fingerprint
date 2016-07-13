@@ -70,7 +70,7 @@ class ReportLabController extends Controller
         $allMatkul = \DB::table('jadwal_kelas') 
                     ->join('praktikum', 'jadwal_kelas.id_praktikum', '=', 'praktikum.id')
                     ->select('id', 'id_praktikum', 'praktikum.nama', 'praktikum.id')
-                    ->where('dosen_id', Auth::user()->username)
+                    ->where('dosen_id', Auth::user()->id)
                     ->where('semester', $currentsemesterParams)
                     ->lists('praktikum.nama', 'praktikum.id');
 
@@ -202,8 +202,12 @@ class ReportLabController extends Controller
     {
         $studentSubjects = Jadwalkelas::select('*')->where('semester', $semester)->get();
         return Datatables::of($studentSubjects)
+            ->editColumn('dosen_id', function ($studentSubjects) {
+                $user = User::findOrFail($studentSubjects->dosen_id);
+                return $user->username;
+            })
             ->editColumn('nama_dosen', function ($studentSubjects) {
-                $LecturerNames = User::select('name')->where('username', $studentSubjects->dosen_id)->first();
+                $LecturerNames = User::select('name')->where('id', $studentSubjects->dosen_id)->first();
                 if (round(($this->jumlahHadirSemuaDosen($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$LecturerNames->name.'</p>';                    
                 }
@@ -287,17 +291,21 @@ class ReportLabController extends Controller
                             ->where('semester', $semester)
                             ->where('id_praktikum', $matakuliah)
                             ->where('kelas', $kelas)
-                            ->where('dosen_id', Auth::user()->username)
+                            ->where('dosen_id', Auth::user()->id)
                             ->get();
         $studentSubjects = collect($studentSubjects);
 
         return Datatables::of($studentSubjects)
+            ->editColumn('nim', function ($studentSubjects) {
+                $user = User::findOrFail($studentSubjects->nim);
+                return $user->username;
+            })
             ->editColumn('nama_matakuliah', function ($studentSubjects) {
                 $Matakuliah = Praktikum::findOrFail($studentSubjects->id_praktikum);
                 return $Matakuliah->nama;
             })
             ->editColumn('nama_mahasiswa', function ($studentSubjects) {
-                $nama = User::where('username', $studentSubjects->nim)->first();
+                $nama = User::where('id', $studentSubjects->nim)->first();
                 if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$nama->name.'</p>';                    
                 }
@@ -382,12 +390,16 @@ class ReportLabController extends Controller
         $studentSubjects = collect($studentSubjects);
 
         return Datatables::of($studentSubjects)
+            ->editColumn('nim', function ($studentSubjects) {
+                $user = User::findOrFail($studentSubjects->nim);
+                return $user->username;
+            })
             ->editColumn('nama_matakuliah', function ($studentSubjects) {
                 $Matakuliah = Praktikum::findOrFail($studentSubjects->id_praktikum);
                 return $Matakuliah->nama;
             })
             ->editColumn('nama_mahasiswa', function ($studentSubjects) {
-                $nama = User::where('username', $studentSubjects->nim)->first();
+                $nama = User::where('id', $studentSubjects->nim)->first();
                 if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$nama->name.'</p>';                    
                 }
@@ -466,6 +478,10 @@ class ReportLabController extends Controller
 
         $studentSubjects = collect($studentSubjects);
         return Datatables::of($studentSubjects)
+            ->editColumn('nim', function ($lecturerSchedules) {
+                $user = User::findOrFail($lecturerSchedules->nim);
+                return $user->username;
+            })
             ->editColumn('id_matakuliah', function ($lecturerSchedules) {
                 $praktikum = Praktikum::find($lecturerSchedules->id_praktikum);
                 return $praktikum->id_matakuliah;
@@ -475,7 +491,7 @@ class ReportLabController extends Controller
                 return $praktikum->nama;
             })
             ->editColumn('nama_mahasiswa', function ($studentSubjects) {
-                $nama = User::where('username', $studentSubjects->nim)->first();
+                $nama = User::where('id', $studentSubjects->nim)->first();
                 if (round(($this->jumlahHadirSemuaAsdos($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$nama->name.'</p>';                    
                 }
@@ -553,7 +569,7 @@ class ReportLabController extends Controller
 
         return Datatables::of($studentSubjects)
             ->editColumn('nama_mahasiswa', function ($studentSubjects) {
-                $nama = User::where('username', $studentSubjects->nim)->first();
+                $nama = User::where('id', $studentSubjects->nim)->first();
                 if (round(($this->jumlahHadirSemuaMahasiswa($studentSubjects)/14 * 100), 0) <= 75) {
                     return '<p style="color:red">'.$nama->name.'</p>';                    
                 }
@@ -632,7 +648,7 @@ class ReportLabController extends Controller
      */
     public function reportDosenData($semester)
     {
-        $lecturerSchedules = Jadwalkelas::select('*')->where('semester', $semester)->where('dosen_id', Auth::user()->username)->get();
+        $lecturerSchedules = Jadwalkelas::select('*')->where('semester', $semester)->where('dosen_id', Auth::user()->id)->get();
         return Datatables::of($lecturerSchedules)
             ->editColumn('id_matakuliah', function ($lecturerSchedules) {
                 $Matakuliah = Praktikum::findOrFail($lecturerSchedules->id_praktikum);
@@ -710,7 +726,7 @@ class ReportLabController extends Controller
         $studentSubjects = \DB::table('detail_kelas')
                     ->join('jadwal_kelas', 'detail_kelas.id_jadwal_kelas', '=', 'jadwal_kelas.id_kelas')
                     ->where('semester', $semester)
-                    ->where('nim', Auth::user()->username)
+                    ->where('nim', Auth::user()->id)
                     ->get();
         $studentSubjects = collect($studentSubjects);
         return Datatables::of($studentSubjects)
@@ -811,10 +827,10 @@ class ReportLabController extends Controller
         $matakuliah->prepend('PILIH PRAKTIKUM', '0');
 
         $allDosen = \DB::table('jadwal_kelas') 
-                    ->join('users', 'jadwal_kelas.dosen_id', '=', 'users.username')
-                    ->select('jadwal_kelas.dosen_id', 'jadwal_kelas.semester', 'users.name', 'users.username')
+                    ->join('users', 'jadwal_kelas.dosen_id', '=', 'users.id')
+                    ->select('jadwal_kelas.dosen_id', 'jadwal_kelas.semester', 'users.name', 'users.id')
                     ->where('jadwal_kelas.semester', $currentsemesterParams)
-                    ->lists('users.name', 'users.username');
+                    ->lists('users.name', 'users.id');
 
         $dsnDirty = collect($allDosen);
         $dosen = $dsnDirty->unique();
@@ -845,7 +861,7 @@ class ReportLabController extends Controller
             ->join('jadwal_kelas', 'asisten_kelas.id_kelas', '=', 'jadwal_kelas.id_kelas')
             ->select('jadwal_kelas.*', 'asisten_kelas.nim')
             ->where('jadwal_kelas.semester', $semester)
-            ->where('nim', Auth::user()->username)
+            ->where('nim', Auth::user()->id)
             ->get();
 
         $lecturerSchedules = collect($lecturerSchedules);
@@ -985,7 +1001,7 @@ class ReportLabController extends Controller
                     $nikOrNim = 'NIK';
                     $roles = 'NAMA DOSEN';
                     $studentSubjects = \DB::table('jadwal_kelas')
-                                        ->join('users', 'jadwal_kelas.dosen_id', '=', 'users.username')
+                                        ->join('users', 'jadwal_kelas.dosen_id', '=', 'users.id')
                                         ->select('jadwal_kelas.*')
                                         ->where('semester', $currentsemesterParams)
                                         ->orderBy('name', 'asc')
@@ -995,9 +1011,9 @@ class ReportLabController extends Controller
                     $nikOrNim = 'NIK';
                     $roles = 'NAMA DOSEN';
                     $studentSubjects = \DB::table('jadwal_kelas')
-                                        ->join('users', 'jadwal_kelas.dosen_id', '=', 'users.username')
+                                        ->join('users', 'jadwal_kelas.dosen_id', '=', 'users.id')
                                         ->select('jadwal_kelas.*')
-                                        ->where('dosen_id', Auth::user()->username)
+                                        ->where('dosen_id', Auth::user()->id)
                                         ->where('semester', $currentsemesterParams)
                                         ->orderBy('name', 'asc')
                                         ->get();
@@ -1007,7 +1023,7 @@ class ReportLabController extends Controller
                     $roles = 'NAMA MAHASISWA';
                     $studentSubjects = \DB::table('detail_kelas')
                             ->join('jadwal_kelas', 'detail_kelas.id_jadwal_kelas', '=', 'jadwal_kelas.id_kelas')
-                            ->join('users', 'detail_kelas.nim', '=', 'users.username')
+                            ->join('users', 'detail_kelas.nim', '=', 'users.id')
                             ->select('jadwal_kelas.*', 'detail_kelas.nim', 'users.name')
                             ->where('semester', $currentsemesterParams)
                             ->orderBy('users.name', 'asc')
@@ -1018,10 +1034,10 @@ class ReportLabController extends Controller
                     $roles = 'NAMA MAHASISWA';
                     $studentSubjects = \DB::table('detail_kelas')
                             ->join('jadwal_kelas', 'detail_kelas.id_jadwal_kelas', '=', 'jadwal_kelas.id_kelas')
-                            ->join('users', 'detail_kelas.nim', '=', 'users.username')
+                            ->join('users', 'detail_kelas.nim', '=', 'users.id')
                             ->select('jadwal_kelas.*', 'detail_kelas.nim', 'detail_kelas.id_jadwal_kelas', 'users.name')
                             ->where('semester', $currentsemesterParams)
-                            ->where('nim', Auth::user()->username)
+                            ->where('nim', Auth::user()->id)
                             ->orderBy('users.name', 'asc')
                             ->get();      
                 }
@@ -1030,10 +1046,10 @@ class ReportLabController extends Controller
                     $roles = 'NAMA ASDOS';
                     $studentSubjects = \DB::table('asisten_kelas')
                         ->join('jadwal_kelas', 'asisten_kelas.id_kelas', '=', 'jadwal_kelas.id_kelas')
-                        ->join('users', 'asisten_kelas.nim', '=', 'users.username')
+                        ->join('users', 'asisten_kelas.nim', '=', 'users.id')
                         ->select('jadwal_kelas.*', 'asisten_kelas.nim')
                         ->where('jadwal_kelas.semester', $currentsemesterParams)
-                        ->where('nim', Auth::user()->username)
+                        ->where('nim', Auth::user()->id)
                         ->orderBy('users.name', 'asc')
                         ->get();
                 }
@@ -1042,7 +1058,7 @@ class ReportLabController extends Controller
                     $roles = 'NAMA ASDOS';
                     $studentSubjects = \DB::table('asisten_kelas')
                         ->join('jadwal_kelas', 'asisten_kelas.id_kelas', '=', 'jadwal_kelas.id_kelas')
-                        ->join('users', 'asisten_kelas.nim', '=', 'users.username')
+                        ->join('users', 'asisten_kelas.nim', '=', 'users.id')
                         ->select('jadwal_kelas.*', 'asisten_kelas.nim')
                         ->where('jadwal_kelas.semester', $currentsemesterParams)
                         ->orderBy('users.name', 'asc')
@@ -1226,12 +1242,12 @@ class ReportLabController extends Controller
                     }
 
                     if ($katakunci == 'SemuaDosen' || $katakunci == 'dosen') {
-                        $nama = User::where('username', $value->dosen_id)->first();
-                        $induk = $value->dosen_id;
+                        $nama = User::where('id', $value->dosen_id)->first();
+                        $induk = User::find($value->dosen_id)->username;
                     }
                     elseif ($katakunci == 'SemuaMahasiswa' || $katakunci == 'mahasiswa' || $katakunci == 'asdos' || $katakunci == 'SemuaAsdos') {
-                        $nama = User::where('username', $value->nim)->first();
-                        $induk = $value->nim;
+                        $nama = User::where('id', $value->nim)->first();
+                        $induk = User::find($value->nim)->username;
                     }
                     $praktikum = Praktikum::find($value->id_praktikum);
                     $matakuliah = Matakuliah::findOrFail($praktikum->id_matakuliah);
@@ -1349,23 +1365,23 @@ class ReportLabController extends Controller
                     $roles = 'NAMA';
                     $studentSubjects = \DB::table('detail_kelas')
                             ->join('jadwal_kelas', 'detail_kelas.id_jadwal_kelas', '=', 'jadwal_kelas.id_kelas')
-                            ->join('users', 'detail_kelas.nim', '=', 'users.username')
+                            ->join('users', 'detail_kelas.nim', '=', 'users.id')
                             ->select('jadwal_kelas.*', 'detail_kelas.nim', 'users.name')
                             ->orderBy('users.name', 'asc')
                             ->where('semester', $currentsemesterParams)
                             ->where('id_praktikum', $currentMatakuliah)
                             ->where('kelas', $currentKelas)
-                            ->where('dosen_id', Auth::user()->username)
+                            ->where('dosen_id', Auth::user()->id)
                             ->get();
 
                     $namadosen = \DB::table('detail_kelas')
                             ->join('jadwal_kelas', 'detail_kelas.id_jadwal_kelas', '=', 'jadwal_kelas.id_kelas')
-                            ->join('users', 'jadwal_kelas.dosen_id', '=', 'users.username')
+                            ->join('users', 'jadwal_kelas.dosen_id', '=', 'users.id')
                             ->select('jadwal_kelas.*', 'users.name')
                             ->orderBy('users.name', 'asc')
                             ->where('semester', $currentsemesterParams)
                             ->where('id_praktikum', $currentMatakuliah)
-                            ->where('dosen_id', Auth::user()->username)
+                            ->where('dosen_id', Auth::user()->id)
                             ->where('kelas', $currentKelas)
                             ->first();
                 }
@@ -1450,8 +1466,8 @@ class ReportLabController extends Controller
                     }
 
                     if ($katakunci == 'detaildosen') {
-                        $nama = User::where('username', $value->nim)->first();
-                        $induk = $value->nim;
+                        $nama = User::where('id', $value->nim)->first();
+                        $induk = User::find($value->nim)->username;
                     }
                     $praktikum = Praktikum::findOrFail($value->id_praktikum);
                     $matakuliah = Matakuliah::findOrFail($praktikum->id_matakuliah);
@@ -1558,7 +1574,7 @@ class ReportLabController extends Controller
                     $roles = 'NAMA';
                     $studentSubjects = \DB::table('detail_kelas')
                             ->join('jadwal_kelas', 'detail_kelas.id_jadwal_kelas', '=', 'jadwal_kelas.id_kelas')
-                            ->join('users', 'detail_kelas.nim', '=', 'users.username')
+                            ->join('users', 'detail_kelas.nim', '=', 'users.id')
                             ->select('jadwal_kelas.*', 'detail_kelas.nim', 'users.name')
                             ->orderBy('users.name', 'asc')
                             ->where('semester', $currentsemesterParams)
@@ -1569,7 +1585,7 @@ class ReportLabController extends Controller
 
                     $namadosen = \DB::table('users')
                             ->select('users.name')
-                            ->where('username', $currentDosen)
+                            ->where('id', $currentDosen)
                             ->first();
                 }
 
@@ -1651,8 +1667,8 @@ class ReportLabController extends Controller
                     }
 
                     if ($katakunci == 'semuadetaildosen') {
-                        $nama = User::where('username', $value->nim)->first();
-                        $induk = $value->nim;
+                        $nama = User::where('id', $value->nim)->first();
+                        $induk = User::find($value->nim)->username;
                     }
                     $praktikum = Praktikum::findOrFail($value->id_praktikum);
                     $matakuliah = Matakuliah::findOrFail($praktikum->id_matakuliah);
@@ -1851,7 +1867,7 @@ class ReportLabController extends Controller
             ->select('keterangan')
             ->where('keterangan', '<', '4')
             ->where('jadwal_kelas_id', $lecturerSchedules->id_kelas)
-            ->where('nik', Auth::user()->username)
+            ->where('nik', Auth::user()->id)
             ->count('keterangan');  
         if (!$classes) {
             return '0';
@@ -1867,7 +1883,7 @@ class ReportLabController extends Controller
             ->join('jadwal_kelas', 'presensidosenlab.jadwal_kelas_id', '=', 'jadwal_kelas.id_kelas')
             ->select('keterangan')
             ->where('jadwal_kelas_id', $lecturerSchedules->id_kelas)
-            ->where('nik', Auth::user()->username)
+            ->where('nik', Auth::user()->id)
             ->where('pertemuan', $pertemuan)
             ->first();
         if (!$classes) {
@@ -1885,7 +1901,7 @@ class ReportLabController extends Controller
             ->select('keterangan')
             ->where('jadwal_kelas_id', $studentSubjects->id_jadwal_kelas)
             ->where('keterangan', '<', '4')
-            ->where('nim', Auth::user()->username)
+            ->where('nim', Auth::user()->id)
             ->count('keterangan');  
         if ( !$classes ) {
             return '0';
@@ -1901,7 +1917,7 @@ class ReportLabController extends Controller
             ->join('jadwal_kelas', 'presensilab.jadwal_kelas_id', '=', 'jadwal_kelas.id_kelas')
             ->select('keterangan')
             ->where('jadwal_kelas_id', $studentSubjects->id_jadwal_kelas)
-            ->where('nim', Auth::user()->username)
+            ->where('nim', Auth::user()->id)
             ->where('pertemuan', $pertemuan)
             ->first();
         if (!$classes) {
@@ -1919,7 +1935,7 @@ class ReportLabController extends Controller
             ->select('keterangan')
             ->where('keterangan', '<', '4')
             ->where('jadwal_kelas_id', $lecturerSchedules->id_kelas)
-            ->where('nim', Auth::user()->username)
+            ->where('nim', Auth::user()->id)
             ->count('keterangan');  
         if (!$classes) {
             return '0';
@@ -1935,7 +1951,7 @@ class ReportLabController extends Controller
             ->join('jadwal_kelas', 'presensiasdos.jadwal_kelas_id', '=', 'jadwal_kelas.id_kelas')
             ->select('keterangan')
             ->where('jadwal_kelas_id', $lecturerSchedules->id_kelas)
-            ->where('nim', Auth::user()->username)
+            ->where('nim', Auth::user()->id)
             ->where('pertemuan', $pertemuan)
             ->first();
         if (!$classes) {
