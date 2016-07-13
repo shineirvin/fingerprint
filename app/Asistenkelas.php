@@ -12,7 +12,7 @@ class Asistenkelas extends Model
 	
     protected $fillable = [
         'id_kelas',
-        'nim',
+        'user_id',
         'semester',
         'status',
     ];

@@ -13,7 +13,7 @@ class Detailkelas extends Model
 	
     protected $fillable = [
     	'id_jadwal_kelas',
-    	'nim',
+    	'user_id',
     ];
 
 }

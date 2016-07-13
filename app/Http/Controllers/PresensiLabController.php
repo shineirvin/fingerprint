@@ -33,7 +33,7 @@ class PresensiLabController extends Controller
     }
     public function index($currentsemesterParams)
     {
-        $datas = Jadwalkelas::select('*')->where('dosen_id', Auth::user()->id)->get();
+        $datas = Jadwalkelas::select('*')->where('user_id', Auth::user()->id)->get();
         $datetime = Carbon::now();
         $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
         $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
@@ -84,8 +84,12 @@ class PresensiLabController extends Controller
 
     public function getDataJadwalDosen($semester)
     {
-        $lecturerSchedules = Jadwalkelas::select('*')->where('semester', $semester)->where('dosen_id', Auth::user()->id)->get();
+        $lecturerSchedules = Jadwalkelas::select('*')->where('semester', $semester)->where('user_id', Auth::user()->id)->get();
         return Datatables::of($lecturerSchedules)
+            ->editColumn('dosen_id', function ($lecturerSchedules) {
+                $user = User::findOrFail($lecturerSchedules->user_id);
+                return $user->username;
+            })
             ->addColumn('action', function ($lecturerSchedules) {
                 return '<a href="../presensilab/'.$lecturerSchedules->id_kelas.'/0" class="btn btn-success"><i class="fa fa-check"></i> Validasi </a>';
             })

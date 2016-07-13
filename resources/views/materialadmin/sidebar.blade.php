@@ -86,21 +86,21 @@
 			@endif
 
 
-		{!! Form::hidden($dosen_id = App\Jadwalkelas::where('dosen_id', Auth::user()->id)->where('status', '1')->get()) !!}
+		{!! Form::hidden($dosen_id = App\Jadwalkelas::where('user_id', Auth::user()->id)->where('status', '1')->get()) !!}
         @foreach ($dosen_id as $dosen_nim)
             @if (!$dosen_nim)
-                {!! Form::hidden($dosen_id = FALSE) !!}
+                {!! Form::hidden($dosen_ids = FALSE) !!}
             @else
-                {!! Form::hidden($dosen_id = $dosen_nim->dosen_id) !!}
+                {!! Form::hidden($dosen_ids = $dosen_nim->user_id) !!}
             @endif
         @endforeach
 
-		{!! Form::hidden($mahasiswa_id = App\Asistenkelas::where('nim', Auth::user()->id)->where('status', '1')->get()) !!}
+		{!! Form::hidden($mahasiswa_id = App\Asistenkelas::where('user_id', Auth::user()->id)->where('status', '1')->get()) !!}
 	        @foreach ($mahasiswa_id as $mahasiswa_nim)
 	            @if (!$mahasiswa_nim) 
 	                {!! Form::hidden($mahasiswa_ids = FALSE) !!}
 				@else
-	                {!! Form::hidden($mahasiswa_ids = $mahasiswa_nim->nim) !!}
+	                {!! Form::hidden($mahasiswa_ids = $mahasiswa_nim->user_id) !!}
 	            @endif
 	        @endforeach
 
@@ -118,13 +118,15 @@
 				</a>
 			</li>
 			@endif
-			@if (Auth::user()->roles === 'Dosen' && Auth::user()->id == $dosen_id)
-			<li class="{!! set_active('presensilab/'. $currentsemesterDirty) !!}">
-				<a href="{!! url('presensilab/'. $currentsemesterDirty) !!}">
-					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
-					<span class="title"> Validasi Absensi Lab</span>
-				</a>
-			</li>
+			@if(isset($dosen_ids))
+				@if (Auth::user()->roles === 'Dosen' && Auth::user()->id == $dosen_ids)
+				<li class="{!! set_active('presensilab/'. $currentsemesterDirty) !!}">
+					<a href="{!! url('presensilab/'. $currentsemesterDirty) !!}">
+						<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+						<span class="title"> Validasi Absensi Lab</span>
+					</a>
+				</li>
+				@endif
 			@endif	
 
 
@@ -136,13 +138,15 @@
 				</a>
 			</li>
 			@endif 
-			@if (Auth::user()->roles === 'Dosen' && Auth::user()->id == $dosen_id)
-			<li class="{!! set_active('reportDosenLab/'. $currentsemesterDirty) !!}">
-				<a href="{!! url('reportDosenLab/'. $currentsemesterDirty) !!}">
-					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
-					<span class="title">Report Lab </span>
-				</a>
-			</li>
+			@if(isset($dosen_ids))
+				@if (Auth::user()->roles === 'Dosen' && Auth::user()->id == $dosen_ids)
+				<li class="{!! set_active('reportDosenLab/'. $currentsemesterDirty) !!}">
+					<a href="{!! url('reportDosenLab/'. $currentsemesterDirty) !!}">
+						<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
+						<span class="title">Report Lab </span>
+					</a>
+				</li>
+				@endif
 			@endif
 			@if (Auth::user()->roles === 'Dosen')
 			<li class="{!! set_active('reportDosenDetail/'. $currentsemesterDirty) !!}">

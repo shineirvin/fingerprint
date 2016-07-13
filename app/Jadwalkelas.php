@@ -16,7 +16,7 @@ class Jadwalkelas extends Model
         'semester',
         'id_praktikum',
         'kelas',
-        'dosen_id',
+        'user_id',
         'hari_id',
         'ruang_id',
         'time_start',

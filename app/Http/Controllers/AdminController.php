@@ -260,7 +260,7 @@ class AdminController extends Controller
         $lecturerSchedules = Jadwalkelas::select('*')->where('semester', $semester)->get();
         return Datatables::of($lecturerSchedules)
             ->editColumn('dosen_id', function ($lecturerSchedules) {
-                $user = User::findOrFail($lecturerSchedules->dosen_id);
+                $user = User::findOrFail($lecturerSchedules->user_id);
                 return $user->username;
             })
             ->addColumn('action', function ($lecturerSchedules) {
@@ -274,7 +274,7 @@ class AdminController extends Controller
                 return $hari->namahari;
             })
             ->editColumn('name', function ($lecturerSchedules) {
-                $nama = User::where('id', $lecturerSchedules->dosen_id)->first();
+                $nama = User::where('id', $lecturerSchedules->user_id)->first();
                 return $nama->name;
             })
             ->editColumn('matakuliah_id', function ($lecturerSchedules) {
