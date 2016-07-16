@@ -53,36 +53,36 @@
 					<li><a href="{!! url('changepassmahasiswa') !!}" class="{!! set_active('changepassmahasiswa') !!}"><span class="title">Mahasiswa</span></a></li>
 				</ul>
 			</li>
-			<li class="{!! set_active('adminvalidation/'. $currentsemesterDirty) !!}">
+			{{-- <li class="{!! set_active('adminvalidation/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('adminvalidation/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Validasi Absensi</span>
 				</a>
-			</li>
+			</li> --}}
 			<li class="{!! set_active('adminvalidationLab') !!}">
 				<a href="{!! url('adminvalidationLab/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Validasi Absensi Lab</span>
 				</a>
 			</li>
-			<li class="{!! set_active('kelaspenggantiDataView') !!}">
+			{{-- <li class="{!! set_active('kelaspenggantiDataView') !!}">
 				<a href="{!! url('kelaspenggantiDataView') !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Kelas Pengganti</span>
 				</a>
-			</li>
+			</li> --}}
 			<li class="{!! set_active('kelaspenggantiLabDataView') !!}">
 				<a href="{!! url('kelaspenggantiLabDataView') !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Kelas Pengganti Lab</span>
 				</a>
 			</li>
-			<li class="{!! set_active('reportBulanan') !!}">
+			{{-- <li class="{!! set_active('reportBulanan') !!}">
 				<a href="{!! url('reportBulanan') !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report Bulanan Dosen</span>
 				</a>
-			</li>
+			</li> --}}
 			@endif
 
 
@@ -105,18 +105,18 @@
 	        @endforeach
 
 			@if (Auth::user()->roles === 'Dosen' )
-			<li class="{!! set_active('listJadwalDosen/'. $currentsemesterDirty) !!}">
+			{{-- <li class="{!! set_active('listJadwalDosen/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('listJadwalDosen/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title"> Jadwal Perkuliahan </span>
 				</a>
-			</li>
-			<li class="{!! set_active('presensi/'. $currentsemesterDirty) !!}">
+			</li> --}}
+			{{-- <li class="{!! set_active('presensi/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('presensi/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title"> Validasi Absensi</span>
 				</a>
-			</li>
+			</li> --}}
 			@endif
 			@if(isset($dosen_ids))
 				@if (Auth::user()->roles === 'Dosen' && Auth::user()->id == $dosen_ids)
@@ -131,12 +131,12 @@
 
 
 			@if (Auth::user()->roles === 'Dosen')
-			<li class="{!! set_active('reportDosen/'. $currentsemesterDirty) !!}">
+			{{-- <li class="{!! set_active('reportDosen/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('reportDosen/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report</span>
 				</a>
-			</li>
+			</li> --}}
 			@endif 
 			@if(isset($dosen_ids))
 				@if (Auth::user()->roles === 'Dosen' && Auth::user()->id == $dosen_ids)
@@ -149,12 +149,12 @@
 				@endif
 			@endif
 			@if (Auth::user()->roles === 'Dosen')
-			<li class="{!! set_active('reportDosenDetail/'. $currentsemesterDirty) !!}">
+			{{-- <li class="{!! set_active('reportDosenDetail/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('reportDosenDetail/'. $currentsemesterDirty. '/0/0') !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report Mahasiswa</span>
 				</a>
-			</li>
+			</li> --}}
 			<li class="{!! set_active('reportDosenDetailLab/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('reportDosenDetailLab/'. $currentsemesterDirty. '/0/0') !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
@@ -164,12 +164,12 @@
 
 			@endif
 			@if (Auth::user()->roles === 'Mahasiswa')
-			<li class="{!! set_active('reportMahasiswa/'. $currentsemesterDirty) !!}">
+			{{-- <li class="{!! set_active('reportMahasiswa/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('reportMahasiswa/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report</span>
 				</a>
-			</li>
+			</li> --}}
 			<li class="{!! set_active('reportMahasiswaLab/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('reportMahasiswaLab/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
@@ -181,24 +181,24 @@
 
 
 			@if (Auth::user()->roles === 'Admin')
-			<li class="{!! set_active('reportAdmin/'. $currentsemesterDirty) !!}">
+			{{-- <li class="{!! set_active('reportAdmin/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('reportAdmin/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report Dosen</span>
 				</a>
-			</li>
+			</li> --}}
 			<li class="{!! set_active('reportAdminLab/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('reportAdminLab/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report Dosen Lab</span>
 				</a>
 			</li>
-			<li class="{!! set_active('reportMhsAdmin/'. $currentsemesterDirty) !!}">
+			{{-- <li class="{!! set_active('reportMhsAdmin/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('reportMhsAdmin/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report Mahasiswa</span>
 				</a>
-			</li>
+			</li> --}}
 			<li class="{!! set_active('reportMhsLabAdmin/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('reportMhsLabAdmin/'. $currentsemesterDirty) !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
@@ -211,12 +211,12 @@
 					<span class="title">Report Asdos Lab</span>
 				</a>
 			</li>
-			<li class="{!! set_active('reportAdminDosenDetail/'. $currentsemesterDirty) !!}">
+			{{-- <li class="{!! set_active('reportAdminDosenDetail/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('reportAdminDosenDetail/'. $currentsemesterDirty. '/0/0/0') !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
 					<span class="title">Report Dosen Detail</span>
 				</a>
-			</li>
+			</li> --}}
 			<li class="{!! set_active('reportAdminDosenDetailLab/'. $currentsemesterDirty) !!}">
 				<a href="{!! url('reportAdminDosenDetailLab/'. $currentsemesterDirty. '/0/0/0') !!}">
 					<div class="gui-icon"><i class="glyphicon glyphicon-list-alt"></i></div>
