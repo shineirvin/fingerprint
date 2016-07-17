@@ -9,7 +9,7 @@ use App\Http\Requests\KelasPenggantiRequest;
 use App\Jenisruang;
 use App\Kelasmk;
 use App\Kelaspengganti;
-use App\KelaspenggantiLab;
+use App\Kelaspenggantilab;
 use App\Jadwalkelas;
 use App\Matakuliah;
 use App\Ruang;
