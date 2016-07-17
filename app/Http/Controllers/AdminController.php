@@ -215,7 +215,7 @@ class AdminController extends Controller
         $currentsemesterDirty = $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2');
         $currentsemester = (substr($currentsemesterDirty, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterDirty, 0, 4);
         $currentsemesterParamsFilter = (substr($currentsemesterParams, -1) == 1 ? 'GANJIL' : 'GENAP') .' '. substr($currentsemesterParams, 0, 4);
-        $allSemester = Kelasmk::lists('semester');
+        $allSemester = Jadwalkelas::lists('semester');
         foreach ($allSemester as $semester) {
             $smst[] = substr($semester, 0, 4).' '.(substr($semester, -1) == 1 ? 'GANJIL' : 'GENAP');
         }

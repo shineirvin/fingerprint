@@ -49,12 +49,19 @@ class GrabFingerprint extends Command
     {
         $datetime = Carbon::now();
 
-        $ips = \DB::table('kelasmk')
-                  ->join('ipfingerprint', 'kelasmk.ruang_id', '=', 'ipfingerprint.ruang_id')
+        $ips = \DB::table('jadwal_kelas')
+                  ->join('ipfingerprint', 'jadwal_kelas.ruang_id', '=', 'ipfingerprint.ruang_id')
                   ->select('ipfingerprint.ip_address')
                   ->where('semester', $datetime->format('Y') . ($datetime->month > 6 ? '1' : '2'))
                   ->get();
+
         foreach ($ips as $ip) {
+            $ipdata[] = $ip;
+        }
+
+        $ipDirty = collect($ipdata);
+        $ipfingerprints = $ipDirty->unique();
+        foreach ($ipfingerprints as $ip) {
             app('App\Http\Controllers\FingerprintController')->cobaupdatedata($ip->ip_address);    
             \Log::info(app('App\Http\Controllers\FingerprintController')->cobaupdatedata($ip->ip_address));
             \Log::info('=================================================================================');
