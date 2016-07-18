@@ -116,7 +116,7 @@ class PresensiController extends Controller
             })
             ->editColumn('hari_name', function ($lecturerSchedules) {
                 $hari = Hari::findOrFail($lecturerSchedules->hari_id);
-                return $hari->namahari;
+                return $hari->nama;
             })
             ->editColumn('matakuliah_id', function ($lecturerSchedules) {
                 $hari = Matakuliah::findOrFail($lecturerSchedules->matakuliah_id);

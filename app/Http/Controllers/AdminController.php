@@ -238,7 +238,7 @@ class AdminController extends Controller
             })
             ->editColumn('hari_name', function ($lecturerSchedules) {
                 $hari = Hari::findOrFail($lecturerSchedules->hari_id);
-                return $hari->namahari;
+                return $hari->nama;
             })
             ->editColumn('name', function ($lecturerSchedules) {
                 $nama = User::where('id', $lecturerSchedules->dosen_id)->first();
@@ -271,7 +271,7 @@ class AdminController extends Controller
             })
             ->editColumn('hari_name', function ($lecturerSchedules) {
                 $hari = Hari::findOrFail($lecturerSchedules->hari_id);
-                return $hari->namahari;
+                return $hari->nama;
             })
             ->editColumn('name', function ($lecturerSchedules) {
                 $nama = User::where('id', $lecturerSchedules->user_id)->first();
@@ -318,7 +318,7 @@ class AdminController extends Controller
             })
             ->editColumn('hari_name', function ($lecturerSchedules) {
                 $hari = Hari::findOrFail($lecturerSchedules->hari_id);
-                return $hari->namahari;
+                return $hari->nama;
             })
             ->editColumn('name', function ($lecturerSchedules) {
                 $kelasmk = Kelasmk::find($lecturerSchedules->kelasmk_id);
@@ -361,7 +361,7 @@ class AdminController extends Controller
             })
             ->editColumn('hari_name', function ($lecturerSchedules) {
                 $hari = Hari::findOrFail($lecturerSchedules->hari_id);
-                return $hari->namahari;
+                return $hari->nama;
             })
             ->editColumn('name', function ($lecturerSchedules) {
                 $kelasmk = Jadwalkelas::find($lecturerSchedules->jadwalkelas_id);
@@ -528,7 +528,7 @@ class AdminController extends Controller
             })
             ->editColumn('hari_name', function ($lecturerSchedules) {
                 $hari = Hari::findOrFail($lecturerSchedules->hari_id);
-                return $hari->namahari;
+                return $hari->nama;
             })
             ->editColumn('name', function ($lecturerSchedules) {
                 $nama = User::where('id', $lecturerSchedules->dosen_id)->first();
@@ -577,7 +577,7 @@ class AdminController extends Controller
             })
             ->editColumn('hari_name', function ($lecturerSchedules) {
                 $hari = Hari::findOrFail($lecturerSchedules->hari_id);
-                return $hari->namahari;
+                return $hari->nama;
             })
             ->editColumn('name', function ($lecturerSchedules) {
                 $nama = User::where('id', $lecturerSchedules->user_id)->first();

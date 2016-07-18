@@ -60,12 +60,12 @@ class Jadwalkelas extends Model
     public function scopeNamaHari($query)
     {
         $hari = Hari::where('id', $this->hari_id)->first();
-        return $hari->namahari;
+        return $hari->nama;
     }
 
     public function scopeAllHari($query)
     {
-        $hari = Hari::lists('namahari', 'id');
+        $hari = Hari::lists('nama', 'id');
         return $hari;
     }
 
