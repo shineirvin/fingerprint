@@ -12,7 +12,7 @@
 			<div class="card">
 				<div class="card-body">
 					@include ('errors.list')
-					{!! Form::model($kelaspengganti = new App\Kelaspenggantilab, ['url' => 'kelaspenggantiLabData', 'class' => 'form-horizontal', 'method' => 'POST']) !!}
+					{!! Form::model($kelaspengganti = new App\KelaspenggantiLabs, ['url' => 'kelaspenggantiLabData', 'class' => 'form-horizontal', 'method' => 'POST']) !!}
 						@include ('admin/kelaspenggantilab.form', ['SubmitButtonText' => 'Tambah Kelas Pengganti Lab'])
 					{!! Form::close() !!}
 				</div>
