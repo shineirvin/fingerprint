@@ -353,7 +353,7 @@ class FingerprintController extends Controller
 	 * @param  String $ip_address
 	 * @return String             Save filtered data to local database
 	 */
-	public function labfingerprint($ip_address = '192.168.1.201')
+	public function labfingerprint($ip_address)
 	{
 		$newBuffer = $this->connection($ip_address);
 		$for_limit = count($this->connection($ip_address));

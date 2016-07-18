@@ -30,7 +30,7 @@
 
 			
 			@if (Auth::user()->roles === 'Admin')
-			<li class="gui-folder">
+{{-- 			<li class="gui-folder">
 				<a>
 					<div class="gui-icon"><i class="fa fa-puzzle-piece fa-fw"></i></div>
 					<span class="title">Data Master</span>
@@ -40,7 +40,7 @@
 					<li><a href="{!! url('ruangDataView') !!}" class="{!! set_active('ruangDataView') !!}"><span class="title">Ruang</span></a></li>
 					<li><a href="{!! url('jenisruangDataView') !!}" class="{!! set_active('jenisruangDataView') !!}"><span class="title">Jenis Ruang</span></a></li>
 				</ul>
-			</li>
+			</li> --}}
 
 			<li class="gui-folder">
 				<a>

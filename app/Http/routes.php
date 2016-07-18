@@ -241,11 +241,6 @@ Route::group(['middleware' => 'web'], function () {
 
 
 
-
-
-
-
-
 	Route::get('index', 'HomeController@index');
 
 

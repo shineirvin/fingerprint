@@ -62,8 +62,8 @@ class GrabFingerprint extends Command
         $ipDirty = collect($ipdata);
         $ipfingerprints = $ipDirty->unique();
         foreach ($ipfingerprints as $ip) {
-            app('App\Http\Controllers\FingerprintController')->cobaupdatedata($ip->ip_address);    
-            \Log::info(app('App\Http\Controllers\FingerprintController')->cobaupdatedata($ip->ip_address));
+            app('App\Http\Controllers\FingerprintController')->labfingerprint($ip->ip_address);    
+            \Log::info(app('App\Http\Controllers\FingerprintController')->labfingerprint($ip->ip_address));
             \Log::info('=================================================================================');
         }
     }
