@@ -104,8 +104,8 @@ class PresensiLabController extends Controller
                 return $praktikum->nama;
             })
             ->editColumn('ruang_id', function ($lecturerSchedules) {
-                $ruang = Ruang::findOrFail($lecturerSchedules->ruang_id);
-                return $ruang->nama_ruang;
+                $ruang = Ruang::findOrFail($lecturerSchedules->id_ruang);
+                return $ruang->nama;
             })
             ->editColumn('waktu', function ($lecturerSchedules) {
                 return $lecturerSchedules->time_start.' - '.$lecturerSchedules->time_end;

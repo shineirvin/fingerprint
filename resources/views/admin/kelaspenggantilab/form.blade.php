@@ -3,7 +3,7 @@
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Nama Dosen</label>
 		<div class="col-sm-7">
-			{!! Form::text('namadosen', $kelasmk->DosenName().' ('.$kelasmk->dosen_id.')', ['class' => 'form-control input-lg', 'readonly' => 'readonly']	) !!}
+			{!! Form::text('namadosen', $kelasmk->DosenName().' ('.$kelasmk->user_id.')', ['class' => 'form-control input-lg', 'readonly' => 'readonly']	) !!}
 			<div class="form-control-line"></div>
 		</div>
 </div>
@@ -43,7 +43,7 @@
 
 		<label class="col-sm-2 control-label"><i class="fa fa-arrow-right"></i> Ubah ke ruang</label>
 		<div class="col-sm-2">
-			{!! Form::select('ruang_id', $kelasmk->AllRuang(), null, ['id' => 'select1', 'class' => 'select2-container form-control input-lg']) !!}
+			{!! Form::select('id_ruang', $kelasmk->AllRuang(), null, ['id' => 'select1', 'class' => 'select2-container form-control input-lg']) !!}
 			<div class="form-control-line"></div>
 		</div>
 	</div>

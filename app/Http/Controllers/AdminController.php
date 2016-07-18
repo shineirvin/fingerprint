@@ -282,8 +282,8 @@ class AdminController extends Controller
                 return $hari->nama;
             })
             ->editColumn('ruang_id', function ($lecturerSchedules) {
-                $ruang = Ruang::findOrFail($lecturerSchedules->ruang_id);
-                return $ruang->nama_ruang;
+                $ruang = Ruang::findOrFail($lecturerSchedules->id_ruang);
+                return $ruang->nama;
             })
             ->editColumn('waktu', function ($lecturerSchedules) {
                 return $lecturerSchedules->time_start;
@@ -378,8 +378,8 @@ class AdminController extends Controller
                 return $hari->nama;
             })
             ->editColumn('ruang_id', function ($lecturerSchedules) {
-                $ruang = Ruang::findOrFail($lecturerSchedules->ruang_id);
-                return $ruang->nama_ruang;
+                $ruang = Ruang::findOrFail($lecturerSchedules->id_ruang);
+                return $ruang->nama;
             })
             ->editColumn('kelas', function ($lecturerSchedules) {
                 $kelasmk = Jadwalkelas::find($lecturerSchedules->jadwalkelas_id);
@@ -437,7 +437,7 @@ class AdminController extends Controller
         $kelaspengganti->jadwalkelas_id = $request->input('kelasmk_id');
         $kelaspengganti->waktu = $request->input('waktu');
         $kelaspengganti->hari_id = $request->input('hari_id');
-        $kelaspengganti->ruang_id = $request->input('ruang_id');
+        $kelaspengganti->id_ruang = $request->input('id_ruang');
         $kelaspengganti->status = $request->input('status');
         $kelaspengganti->save();
 
@@ -580,19 +580,20 @@ class AdminController extends Controller
                 return $hari->namahari;
             })
             ->editColumn('name', function ($lecturerSchedules) {
-                $nama = User::where('id', $lecturerSchedules->dosen_id)->first();
+                $nama = User::where('id', $lecturerSchedules->user_id)->first();
                 return $nama->name;
             })
             ->editColumn('nim', function ($lecturerSchedules) {
-                return $lecturerSchedules->dosen_id;
+                $nim = User::where('id', $lecturerSchedules->user_id)->first();
+                return $nim->username;
             })
             ->editColumn('matakuliah_id', function ($lecturerSchedules) {
                 $matakuliah = Praktikum::findOrFail($lecturerSchedules->id_praktikum);
                 return $matakuliah->nama;
             })
             ->editColumn('ruang_id', function ($lecturerSchedules) {
-                $ruang = Ruang::findOrFail($lecturerSchedules->ruang_id);
-                return $ruang->nama_ruang;
+                $ruang = Ruang::findOrFail($lecturerSchedules->id_ruang);
+                return $ruang->nama;
             })
             ->editColumn('waktu', function ($lecturerSchedules) {
                 return $lecturerSchedules->time_start;

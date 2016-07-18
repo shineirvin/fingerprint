@@ -18,7 +18,7 @@ class Jadwalkelas extends Model
         'kelas',
         'user_id',
         'hari_id',
-        'ruang_id',
+        'id_ruang',
         'time_start',
         'time_end',
         'status',
@@ -31,26 +31,26 @@ class Jadwalkelas extends Model
 
     public function scopeDosenName($query)
     {
-        $user = User::where('username', $this->dosen_id)->first();
+        $user = User::where('id', $this->user_id)->first();
         return $user->name;
     }
 
     public function scopeNamaRuang($query)
     {
-        $ruang = Ruang::where('id', $this->ruang_id)->first();
-        return $ruang->nama_ruang;
+        $ruang = Ruang::where('id', $this->id_ruang)->first();
+        return $ruang->nama;
     }
 
 
     public function scopeAllRuang($query)
     {
-        $ruang = Ruang::lists('nama_ruang', 'id');
+        $ruang = Ruang::lists('nama', 'id');
         return $ruang;
     }
 
     public function scopeSelectedRuang($query)
     {
-        $ruang = Ruang::where('id', $this->ruang_id)->first();
+        $ruang = Ruang::where('id', $this->id_ruang)->first();
         return $ruang->id;
     }
 
