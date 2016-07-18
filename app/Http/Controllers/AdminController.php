@@ -399,8 +399,8 @@ class AdminController extends Controller
 
     public function registerkelaspenggantilab($id)
     {
-        $kelasmk = Jadwalkelas::find($id);
-        return view('admin/kelaspenggantilab.create', compact('kelasmk'));
+        $jadwalkelas = Jadwalkelas::find($id);
+        return view('admin/kelaspenggantilab.create', compact('jadwalkelas'));
     }
 
     public function store_kelaspengganti(Request $request)
