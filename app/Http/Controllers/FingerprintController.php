@@ -367,9 +367,9 @@ class FingerprintController extends Controller
 
         $kelaspengganti = \DB::table('kelaspenggantilab')
         				  ->join('jadwal_kelas', 'kelaspenggantilab.jadwalkelas_id', '=', 'jadwal_kelas.id_kelas')
-        				  ->select('kelaspenggantilab.id', 'kelaspenggantilab.jadwalkelas_id', 'kelaspenggantilab.waktu', 'kelaspenggantilab.hari_id', 'kelaspenggantilab.status', 'jadwal_kelas.dosen_id')
+        				  ->select('kelaspenggantilab.id', 'kelaspenggantilab.jadwalkelas_id', 'kelaspenggantilab.waktu', 'kelaspenggantilab.hari_id', 'kelaspenggantilab.status', 'jadwal_kelas.user_id')
         				  ->where('kelaspenggantilab.waktu', '<=', Carbon::now())
-        				  ->where('kelaspenggantilab.ruang_id', $ruang->ruang_id)
+        				  ->where('kelaspenggantilab.id_ruang', $ruang->id_ruang)
         				  ->where('kelaspenggantilab.hari_id', $hari)
         				  ->where('kelaspenggantilab.status', '1')
         				  ->first();
@@ -381,7 +381,7 @@ class FingerprintController extends Controller
 			$datetime = array();
 	 		$jadwal_kelas_id = $kelaspengganti->jadwalkelas_id;
 	 		$kelaspenggantilab_id = $kelaspengganti->id;
-	 		$dosen_id = $kelaspengganti->dosen_id;
+	 		$dosen_id = $kelaspengganti->user_id;
 
 			$dpmk = Detailkelas::select('nim')->where('id_jadwal_kelas', $jadwal_kelas_id)->get();
 			foreach ($dpmk as $peserta) {
@@ -392,7 +392,7 @@ class FingerprintController extends Controller
 				$listPeserta[] = $peserta->nim;
 				$listAsdos[] = $peserta->nim;
 			}
-			$listPeserta[] = $kelaspengganti->dosen_id;
+			$listPeserta[] = $kelaspengganti->user_id;
 			$array_search = array_flip($listPeserta);
 	        $lastTime = Dami::orderBy('datetime', 'desc')->first();
 	        for($a=1; $a < $for_limit-1; $a++) {
@@ -550,10 +550,10 @@ class FingerprintController extends Controller
 
 			return 'BERHASIL';
         } else {
-			$data = Jadwalkelas::select('id_kelas', 'time_start', 'time_end', 'ruang_id', 'dosen_id')
+			$data = Jadwalkelas::select('id_kelas', 'time_start', 'time_end', 'id_ruang', 'user_id')
 	        		->where('time_start', '<=', Carbon::now())
 	        		->where('hari_id', $hari)
-	        		->where('ruang_id', $ruang->ruang_id)
+	        		->where('id_ruang', $ruang->id_ruang)
 	        		->orderBy('time_start', 'desc')
 	        		->where('semester', $semester)
 	        		->first();
@@ -561,7 +561,7 @@ class FingerprintController extends Controller
 			$nim = array();
 			$datetime = array();
 	 		$jadwal_kelas_id = $data->id_kelas;
-	 		$dosen_id = $data->dosen_id;
+	 		$dosen_id = $data->user_id;
 
 			$dpmk = Detailkelas::select('nim')->where('id_jadwal_kelas', $data->id_kelas)->get();
 			foreach ($dpmk as $peserta) {
@@ -572,7 +572,7 @@ class FingerprintController extends Controller
 				$listPeserta[] = $peserta->nim;
 				$listAsdos[] = $peserta->nim;
 			}
-			$listPeserta[] = $data->dosen_id;
+			$listPeserta[] = $data->user_id;
 			$array_search = array_flip($listPeserta);
 	        $lastTime = Dami::orderBy('datetime', 'desc')->first();
 	        for($a=1; $a < $for_limit-1; $a++) {
